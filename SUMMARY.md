@@ -16,7 +16,8 @@
     * [informerfactory 机制](kubernetes/yuan-ma-fen-xi/kube-scheduler/informerfactory-ji-zhi.md)
   * [kubelet](kubernetes/yuan-ma-fen-xi/kubelet/README.md)
     * [pod merge](kubernetes/yuan-ma-fen-xi/kubelet/pod-merge.md)
-  * [kubernetes](kubernetes/yuan-ma-fen-xi/kubernetes.md)
+  * [kubernetes](kubernetes/yuan-ma-fen-xi/kubernetes/README.md)
+    * [test](kubernetes/yuan-ma-fen-xi/kubernetes/test.md)
 * [网络](kubernetes/wang-luo/README.md)
   * [flannel](kubernetes/wang-luo/flannel.md)
 
