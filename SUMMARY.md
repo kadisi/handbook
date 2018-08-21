@@ -17,7 +17,9 @@
       * [informerfactory 机制](kubernetes/codeanalyze/kubernetes/kube-scheduler/informerfactory-ji-zhi.md)
     * [kubelet](kubernetes/codeanalyze/kubernetes/kubelet/README.md)
       * [pod merge](kubernetes/codeanalyze/kubernetes/kubelet/pod-merge.md)
-  * [containerd](kubernetes/codeanalyze/containerd.md)
+  * [containerd](kubernetes/codeanalyze/containerd/README.md)
+    * [containerd](kubernetes/codeanalyze/containerd/containerd.md)
+    * [containerd-shim](kubernetes/codeanalyze/containerd/containerd-shim.md)
 * [网络](kubernetes/network/README.md)
   * [flannel](kubernetes/network/flannel.md)
 
