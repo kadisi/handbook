@@ -1,7 +1,3 @@
----
-description: controller manager 中worke queue 的工作逻辑
----
-
 # worke queue
 
 ## 简介
