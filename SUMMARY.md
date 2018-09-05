@@ -20,6 +20,7 @@
   * [containerd](kubernetes/codeanalyze/containerd/README.md)
     * [containerd](kubernetes/codeanalyze/containerd/containerd/README.md)
       * [snapshot service](kubernetes/codeanalyze/containerd/containerd/snapshot-service.md)
+      * [core 代码](kubernetes/codeanalyze/containerd/containerd/core-dai-ma.md)
     * [containerd-shim](kubernetes/codeanalyze/containerd/containerd-shim.md)
 * [网络](kubernetes/network/README.md)
   * [flannel](kubernetes/network/flannel.md)
