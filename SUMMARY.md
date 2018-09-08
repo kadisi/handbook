@@ -22,6 +22,7 @@
       * [snapshot service](kubernetes/codeanalyze/containerd/containerd/snapshot-service.md)
       * [core 代码](kubernetes/codeanalyze/containerd/containerd/core-dai-ma.md)
       * [image spec](kubernetes/codeanalyze/containerd/containerd/image-spec.md)
+      * [image pull](kubernetes/codeanalyze/containerd/containerd/image-pull.md)
     * [containerd-shim](kubernetes/codeanalyze/containerd/containerd-shim.md)
 * [网络](kubernetes/network/README.md)
   * [flannel](kubernetes/network/flannel.md)
