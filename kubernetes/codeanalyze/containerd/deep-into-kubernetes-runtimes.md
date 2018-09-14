@@ -18,12 +18,13 @@ Containerd 的源码现在托管在GitHub上， 地址为[https://github.com/con
 
 本章节后续所有的代码分析都假设是Linux 、go1.10.2 ，Containerd 的代码分支 release/1.1 commit 号为 57508dcb0b5776efaacd0828ed42f819fab5ba07 的环境。
 
- Containerd的编译命令很简单，只需要在代码的根目录下执行 make 即可，最后make命令会在bin目录下编译出:
+ Containerd的编译命令很简单，只需要在代码的根目录下执行 make 即可，最后make命令会在bin目录下编译出对应的二进制:
 
 ```text
 mkdir -p $GOPATH/src/github.com/containerd
 cd  $GOPATH/src/github.com/containerd
 git clone git@github.com:containerd/containerd.git
+# 或者 使用go get 命令 下载Containerd 源码: go get github.com/containerd/containerd 
 cd containerd
 make
 # 输出结果
@@ -37,11 +38,33 @@ make
 
 #若想编译单个二进制，可以执行make bin/{binaries name}, 例如单独编译containerd
 make bin/containerd
+
+#若想成为Containerd 社区的Contributer, 每次push 代码前，最好需要执行check 和 test 命令
+#分别用来做代码检查和单元测试
+# make check 需要提前预装 gometalinter 命令
+make check
+make test
 ```
 
-####  
+ 若想成为Containerd 社区的Contributer，每次push 代码前，需要执行check 和test 命令，分别用来做代码检查和单元测试
 
-#### 
+```text
+# make check 需要提前预装 gometalinter 命令
+make check
+make test
+```
+
+鉴于本章节只是对Containerd的代码进行分析，接下来的介绍如何在Mac 的Goland 开发环境中完成对Containerd的代码分析。Mac 下安装GoLand 2018.2.2 版本， 打开Goland -&gt; Open Project -&gt;选择在GOPATH下刚刚clone下的Containerd 目录 -&gt; Open 按钮。 即打开了Containerd 项目。
+
+![](../../../.gitbook/assets/image%20%283%29.png)
+
+由于我们只是在Mac 下查看Containerd 的代码，并不需要在Mac下编译，最终的运行环境是Linux，所以我们只关心跟Linux 平台相关的代码， 因此需要对Goland进行设置，打开Goland的Preferences -&gt; Go -&gt; Vendoring & Build Tag。 OS 选择linux，Arch 选择Default \(amd64\) 
+
+![](../../../.gitbook/assets/image%20%288%29.png)
+
+至此我们完成了对Goland 的设置，当然你可以设置golang 的主题，代码颜色，查看接口方法实现等快捷键，可以自行学习。
+
+
 
 #### Cri/Containerd 原理详解
 

@@ -16,18 +16,18 @@ ISO 网络模型，分七层，从上到下依次为
 
 TCP 在传输层， IP 在网络层， 传输层在网络层上面， 传输层tcp包含重要的源端口和目的端口字段， IP网络层包含 源ip 目的ip 字段， 只有源端口， 目的端口， 源ip， 目的ip 才能形成一个tcp 链接
 
-![](../../.gitbook/assets/image%20%282%29.png)
+![](../../.gitbook/assets/image%20%284%29.png)
 
   
 
 
-![](../../.gitbook/assets/image%20%283%29.png)
+![](../../.gitbook/assets/image%20%281%29.png)
 
 ## TCP 连接 三次握手
 
 三次握手的简单理解
 
-![](../../.gitbook/assets/image%20%281%29.png)
+![](../../.gitbook/assets/image%20%282%29.png)
 
 1 发送方 问 接收方 听得到吗
 
@@ -37,7 +37,7 @@ TCP 在传输层， IP 在网络层， 传输层在网络层上面， 传输层t
 
 ## TCP 头部
 
-![](../../.gitbook/assets/image%20%284%29.png)
+![](../../.gitbook/assets/image%20%285%29.png)
 
 在TCP报文， 外包包的是IP 层的首部， IP层的数据部分 就是TCP 数据包。
 
@@ -69,7 +69,7 @@ TCP Flags:TCP首部中有6个标志比特，它们中的多个可同时被设置
 
 ## TCP 三次握手
 
-![](../../.gitbook/assets/image%20%285%29.png)
+![](../../.gitbook/assets/image%20%287%29.png)
 
 
 
