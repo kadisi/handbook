@@ -64,9 +64,9 @@ make test
 
 由于我们只是在Mac 下查看Containerd 的代码，并不需要在Mac下编译，最终的运行环境是Linux，所以我们只关心跟Linux 平台相关的代码， 因此需要对Goland进行设置，打开Goland的Preferences -&gt; Go -&gt; Vendoring & Build Tag。 OS 选择linux，Arch 选择Default \(amd64\) 
 
-![](../../../.gitbook/assets/image%20%2811%29.png)
+![](../../../.gitbook/assets/image%20%2812%29.png)
 
-至此我们完成了对Goland 的设置，当然你可以设置golang 的主题，代码颜色，查看接口方法实现等快捷键，可以自行学习。
+至此我们完成了对Goland 的设置，当然你可以设置golang 的主题，代码颜色，查看接口方法实现等快捷键，可以自行学习，使用Goland 建议充分使用Go TO -&gt; Implementation\(s\) 功能，这样能快速查看某个接口都有哪些结构体实现，方便代码追踪，默认快捷键为: Option+⌘+B。
 
 下面的表格给出Containerd 主要的package 的源码分析结果
 
@@ -98,11 +98,11 @@ Containerd是一个遵循行业标准的容器运行时，它强调简单性，�
 
 Containerd涉及之初旨在嵌入到更大的系统中，例如Kubernetes，而不是由开发人员或最终用户直接使用。因此Containerd 对于最终用户而言在使用方面并不如Docker 那么友好。不过Containerd也提供ctr 命令行供测试和调试用。
 
-![](../../../.gitbook/assets/image%20%2812%29.png)
+![](../../../.gitbook/assets/image%20%2813%29.png)
 
 Containerd 最上层提供一个最主要的GRPC 接口，供Docker 或者Kubelet 去调用， 第二层是各种资源对象，其中最主要的有Content，Snapshot，Images，Containers，Task 等资源对象， 其中metadata数据会存放到boltdb 本地数据库中， 而下载的Image manifest 等文件存放到本地特定目录下，最下层是Runtimes，Containerd 通过containerd-shim 默认调用runc 来实际创建容器。
 
-![](../../../.gitbook/assets/image%20%284%29.png)
+![](../../../.gitbook/assets/image%20%285%29.png)
 
 Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，即Containerd 代码中的 CRI Plugin， 因此与kubelet集成时，已经不需要部署单独的Cri-Containerd 服务。CRI Plugin 实现了image service 和 runtime service 接口，当CRI Plugin 接受到kubelet CRI client 的gRPC请求后， 会创建一个client 连接自身的GRPC plugin 服务， 调用相关的container，task，和snapshots等接口。同时CRI plugin 还会调用CNI接口，来进行对Pod 网络设置。
 
@@ -142,7 +142,7 @@ GLOBAL OPTIONS:
    --version, -v                print the version
 ```
 
-刚接触Containerd 时，可以先从ctr命令入手，学习如何创建、启动和进入容器以及如何拉取，导出镜像等等。
+刚接触Containerd 时，可以先从ctr命令入手，学习如何创建、启动和进入容器以及如何拉取，导出镜像等等，在学习的过程中体会与Docker 命令操作的区别。
 
 #### ctr进程启动启动过程
 
@@ -226,15 +226,19 @@ var createCommand = cli.Command{
 
 以createCommand 为例，ctr 会创建gRPC的client，之后会调用run.NewContainer 方法创建容器，NewContainer 方法实现如下：
 
-```text
+```go
 # 文件 cmd/ctr/commands/run/run_unix.go
 func NewContainer(ctx gocontext.Context, client *containerd.Client, context *cli.Context) (containerd.Container, error) {
 	... 部分代码已经省略
 
 	var (
-		// 注释:  
+		// 注释: Spec 结构体Opts 操作列表, Spec 是containers.Container 结构体的一个字段
+		// 注释: Spec 的具体结构体的定义遵循了 runtime-spec的规范，以linux 为例，具体规范链接如下 
+		// 注释: https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md
 		opts  []oci.SpecOpts
+		// 注释: containers.Container 结构体Opts 操作列表
 		cOpts []containerd.NewContainerOpts
+		// 注释: 会根据opts变量最终给spec 变量的特定字段赋值
 		spec  containerd.NewContainerOpts
 	)
 	opts = append(opts, oci.WithEnv(context.StringSlice("env")))
@@ -244,11 +248,14 @@ func NewContainer(ctx gocontext.Context, client *containerd.Client, context *cli
 	if context.Bool("rootfs") {
 		opts = append(opts, oci.WithRootFSPath(ref))
 	} else {
+		// 注释: ctr命令中若没特定指定 默认是overlayfs
 		snapshotter := context.String("snapshotter")
+		// 注释: 通过GRPC调用Containerd 接口，查看此image 是否在Containerd的数据库中
 		image, err := client.GetImage(ctx, ref)
 		if err != nil {
 			return nil, err
 		}
+		// 注释: 判断Image 是否完全下载下来，后续会详细介绍
 		unpacked, err := image.IsUnpacked(ctx, snapshotter)
 		if err != nil {
 			return nil, err
@@ -286,11 +293,65 @@ func NewContainer(ctx gocontext.Context, client *containerd.Client, context *cli
 }
 ```
 
-### 
+NewContainer\(\)方法在return之前，所做的主要任务就是组装cOpts 变量，cOpts 是 NewContainerOpts 列表，NewContainerOpts 类型定义在 container\_opts.go 文件中
+
+```go
+# 文件 /container_opts.go
+// NewContainerOpts allows the caller to set additional options when creating a container
+type NewContainerOpts func(ctx context.Context, client *Client, c *containers.Container) error
+
+// WithImage sets the provided image as the base for the container
+func WithImage(i Image) NewContainerOpts {
+	return func(ctx context.Context, client *Client, c *containers.Container) error {
+		c.Image = i.Name()
+		return nil
+	}
+}
+```
+
+ NewContainerOpts 定义了一个方法，目的是对containers.Container 结构体的某些字段进行赋值。例如 上述的WithImage 方法，通过使用闭包的形式来设置containers.Container 变量c中Image 字段的值。在Containerd代码中，你会发现存在大量类似的代码风格，通过传入一组Opts的操作，使用for循环 一次性的设置某个结构体变量对应字段的值。
+
+最终return client.NewContainer 方法会调用Containerd的GRPC接口创建Container，后续的代码分析中我们会了解到此调用方法仅仅是在Containerd 的boltdb数据库中，创建一条对应的Container数据，仅此而已，真正的Container 运行是在Task 对象中。
+
+```go
+# 文件 /client.go
+// NewContainer will create a new container in container with the provided id
+// the id must be unique within the namespace
+func (c *Client) NewContainer(ctx context.Context, id string, opts ...NewContainerOpts) (Container, error) {
+	ctx, done, err := c.WithLease(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer done(ctx)
+	// 注释: 创建一个默认的container对象，id 为参数传进来的id
+	container := containers.Container{
+		ID: id,
+		Runtime: containers.RuntimeInfo{
+			Name: c.runtime,
+		},
+	}
+	// 注释: 通过for 循环，利用opts 对container 对象对应字段进行赋值
+	for _, o := range opts {
+		if err := o(ctx, c, &container); err != nil {
+			return nil, err
+		}
+	}
+	// 注释: 调用ContainerService().Create()调用Containerd的GRPC接口
+	// 注释: Create() 方法通过代码追踪可以看到由remoteContainers 类型实现
+	// 注释: remoteContainers 在 /containerstore.go 定义
+	r, err := c.ContainerService().Create(ctx, container)
+	if err != nil {
+		return nil, err
+	}
+	return containerFromRecord(c, r), nil
+}
+```
+
+
 
 ### 
 
-### 
+### \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 ### Containerd 进程源码分析
 
