@@ -108,11 +108,84 @@ Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供�
 
 Containerd 每次创建一个container 都会给对应的container 起一个containerd-shim 服务，Containerd-shim 对外提供rRPC 服务，社区也正准备让Containerd-shim 支持gRPC, Containerd-shim 的目的是向上对接Containerd 向下可以支持不同的OCI runtime 实现， 现在Containerd-shim 默认使用的runc，通过runc来最终创建container。每个container 分配单独的Containerd-shim 服务的好处是，防止Containerd-shim 服务挂掉后，导致Containerd 无法对其他的Container进行访问。
 
-### Containerd 原理详解
+### ctr 进程源码分析
+
+Containerd 源码中主要包括了Containerd，ctr，Containerd-shim 相关代码和逻辑，本章节主要讲解ctr 命令相关代码和逻辑， ctr 是Containerd 默认的cli ，根据GRPC 与Containerd 交互。 ctr 提供Container，images, namespaces, tasks, snapshots 等相关命令将允许您创建和管理使用containerd运行的容器。
+
+ctr 命令如下:
+
+```text
+COMMANDS:
+     plugins, plugin           provides information about containerd plugins
+     version                   print the client and server versions
+     containers, c, container  manage containers
+     content                   manage content
+     events, event             display containerd events
+     images, image, i          manage images
+     leases                    manage leases
+     namespaces, namespace     manage namespaces
+     pprof                     provide golang pprof outputs for containerd
+     run                       run a container
+     snapshots, snapshot       manage snapshots
+     tasks, t, task            manage tasks
+     install                   install a new package
+     shim                      interact with a shim directly
+     cri                       interact with cri plugin
+     help, h                   Shows a list of commands or help for one command
+GLOBAL OPTIONS:
+   --debug                      enable debug output in logs
+   --address value, -a value    address for containerd's GRPC server (default: "/run/containerd/containerd.sock")
+   --timeout value              total timeout for ctr commands (default: 0s)
+   --connect-timeout value      timeout for connecting to containerd (default: 0s)
+   --namespace value, -n value  namespace to use with commands (default: "default") [$CONTAINERD_NAMESPACE]
+   --help, -h                   show help
+   --version, -v                print the version
+```
+
+刚接触Containerd 时，可以先从ctr命令入手，学习如何创建、启动和进入容器以及如何拉取，导出镜像等等。
+
+#### ctr进程启动启动过程
+
+ctr 进程的入口源码如下 
+
+```go
+# 入口源码文件  cmd/ctr/main.go
+# 入口main()函数
+func main() {
+	app := app.New()
+	app.Commands = append(app.Commands, pluginCmds...)
+	if err := app.Run(os.Args); err != nil {
+		fmt.Fprintf(os.Stderr, "ctr: %s\n", err)
+		os.Exit(1)
+	}
+}
+```
 
 
+
+
+
+### Containerd 进程源码分析
 
 #### metadata 数据结构
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -186,7 +259,7 @@ import (
 )
 ```
 
-#### containerd-shim 原理详解
+### containerd-shim 原理详解
 
 
 
