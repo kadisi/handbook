@@ -64,9 +64,35 @@ make test
 
 至此我们完成了对Goland 的设置，当然你可以设置golang 的主题，代码颜色，查看接口方法实现等快捷键，可以自行学习。
 
+下面的表格给出Containerd 主要的package 的源码分析结果
+
+| Package | 描述 |
+| :--- | :--- |
+| api | api package定义了Containerd 提供的GRPC接口的相关proto描述文件和对应go 源码文件，例如Containerd  提供的container，task，image，content 接口都在api-services 目录下定义 |
+| bin | 编译出的二进制文件目录 |
+| cmd | 包括了Containerd所有后台进程的代码入口（例如containerd，containerd-shim） |
+| containers |  |
+| content |  |
+| defaults | 默认参数 |
+| events |  |
+| filters | 各种参数的过滤操作 |
+| image |  |
+| labels |  |
+| leases |  |
+| metadata | metadata 数据相关处理逻辑，containerd 默认数据库使用的是boltdb |
+| mount |  |
+| namespaces |  |
+| rumtime |  |
+| server |  |
+| services | 各个GRPC接口的具体实现 |
+| snapshots |  |
+| vendor/github.com/containerd/cri | cri plugin, Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，因此与kubelet集成时，已经不需要部署单独的Cri-containerd 服务。 |
+
+#### Containerd 架构
 
 
-#### Cri/Containerd 原理详解
+
+#### Containerd 原理详解
 
 
 
