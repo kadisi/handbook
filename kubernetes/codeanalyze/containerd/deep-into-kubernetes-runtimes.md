@@ -104,7 +104,9 @@ Containerd 最上层提供一个最主要的GRPC 接口，供Docker 或者Kubele
 
 ![](../../../.gitbook/assets/image%20%284%29.png)
 
-Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，即Containerd 代码中的 CRI Plugin， 因此与kubelet集成时，已经不需要部署单独的Cri-Containerd 服务。CRI Plugin 实现了image service 和 runtime service 接口，当CRI Plugin 接受到kubelet CRI client 的gRPC请求后， 会创建一个client 连接自身的GRPC plugin 服务， 调用相关的container，task，和snapshots等接口。同时CRI plugin 还会调用CNI接口，来进行对Pod 网络设置
+Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，即Containerd 代码中的 CRI Plugin， 因此与kubelet集成时，已经不需要部署单独的Cri-Containerd 服务。CRI Plugin 实现了image service 和 runtime service 接口，当CRI Plugin 接受到kubelet CRI client 的gRPC请求后， 会创建一个client 连接自身的GRPC plugin 服务， 调用相关的container，task，和snapshots等接口。同时CRI plugin 还会调用CNI接口，来进行对Pod 网络设置。
+
+Containerd 每次创建一个container 都会给对应的container 起一个containerd-shim 服务，Containerd-shim 对外提供rRPC 服务，社区也正准备让Containerd-shim 支持gRPC, Containerd-shim 的目的是向上对接Containerd 向下可以支持不同的OCI runtime 实现， 现在Containerd-shim 默认使用的runc，通过runc来最终创建container。每个container 分配单独的Containerd-shim 服务的好处是，防止Containerd-shim 服务挂掉后，导致Containerd 无法对其他的Container进行访问。
 
 ### Containerd 原理详解
 
