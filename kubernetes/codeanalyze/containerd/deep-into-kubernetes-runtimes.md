@@ -155,7 +155,7 @@ func main() {
     // 注释: 核心代码，app.New 里定义了不同COMMANDS 的执行逻辑， 可以着重了解
 	app := app.New()
 	app.Commands = append(app.Commands, pluginCmds...)
-	// 注释: 核心代码，Run 方法最终调用对应的子COMMAND逻辑,可以暂时略过
+	// 注释: 核心代码，Run 会对ctr 命令参数进行解析，将相关参数和值传入到cli.Context 变量中，方法最终调用对应的子COMMAND逻辑,可以暂时略过
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "ctr: %s\n", err)
 		os.Exit(1)
@@ -189,17 +189,108 @@ func New() *cli.App {
 }
 ```
 
-我们以containers.Command 为例进行讲解， containers.Command 包含了
+我们以containers.Command 为例进行讲解， containers.Command 包含了 container 的create、delete、info、list、label 操作逻辑
 
-```text
-cmd/ctr/commands/containers/containers.go
+```go
+# 源码文件 cmd/ctr/commands/containers/containers.go
 
-	createCommand,
+var Command = cli.Command{
+	... 部分代码已经省略
+	Subcommands: []cli.Command{
+		createCommand,
 		deleteCommand,
 		infoCommand,
 		listCommand,
 		setLabelsCommand,
+	},
+}
+var createCommand = cli.Command{
+	... 部分代码已经省略
+	Action: func(context *cli.Context) error {
+		var (
+			id  = context.Args().Get(1)
+			ref = context.Args().First()
+		)
+		... 部分代码已经省略
+		// 注释: 创建gRPC client
+		client, ctx, cancel, err := commands.NewClient(context)
+		... 部分代码已经省略
+		defer cancel()
+		// 注释: 调用NewContainer 创建container
+		_, err = run.NewContainer(ctx, client, context)
+		... 部分代码已经省略
+		return nil
+	},
+}
 ```
+
+以createCommand 为例，ctr 会创建gRPC的client，之后会调用run.NewContainer 方法创建容器，NewContainer 方法实现如下：
+
+```text
+# 文件 cmd/ctr/commands/run/run_unix.go
+func NewContainer(ctx gocontext.Context, client *containerd.Client, context *cli.Context) (containerd.Container, error) {
+	... 部分代码已经省略
+
+	var (
+		// 注释:  
+		opts  []oci.SpecOpts
+		cOpts []containerd.NewContainerOpts
+		spec  containerd.NewContainerOpts
+	)
+	opts = append(opts, oci.WithEnv(context.StringSlice("env")))
+	opts = append(opts, withMounts(context))
+	cOpts = append(cOpts, containerd.WithContainerLabels(commands.LabelArgs(context.StringSlice("label"))))
+	cOpts = append(cOpts, containerd.WithRuntime(context.String("runtime"), nil))
+	if context.Bool("rootfs") {
+		opts = append(opts, oci.WithRootFSPath(ref))
+	} else {
+		snapshotter := context.String("snapshotter")
+		image, err := client.GetImage(ctx, ref)
+		if err != nil {
+			return nil, err
+		}
+		unpacked, err := image.IsUnpacked(ctx, snapshotter)
+		if err != nil {
+			return nil, err
+		}
+		if !unpacked {
+			if err := image.Unpack(ctx, snapshotter); err != nil {
+				return nil, err
+			}
+		}
+		opts = append(opts, oci.WithImageConfig(image))
+		cOpts = append(cOpts,
+			containerd.WithImage(image),
+			containerd.WithSnapshotter(snapshotter),
+			// Even when "readonly" is set, we don't use KindView snapshot here. (#1495)
+			// We pass writable snapshot to the OCI runtime, and the runtime remounts it as read-only,
+			// after creating some mount points on demand.
+			containerd.WithNewSnapshot(id, image))
+	}
+	... 部分代码已经省略
+	if context.IsSet("config") {
+		var s specs.Spec
+		if err := loadSpec(context.String("config"), &s); err != nil {
+			return nil, err
+		}
+		spec = containerd.WithSpec(&s, opts...)
+	} else {
+		spec = containerd.WithNewSpec(opts...)
+	}
+	cOpts = append(cOpts, spec)
+
+	// oci.WithImageConfig (WithUsername, WithUserID) depends on rootfs snapshot for resolving /etc/passwd.
+	// So cOpts needs to have precedence over opts.
+	// TODO: WithUsername, WithUserID should additionally support non-snapshot rootfs
+	return client.NewContainer(ctx, id, cOpts...)
+}
+```
+
+### 
+
+### 
+
+### 
 
 ### Containerd 进程源码分析
 
