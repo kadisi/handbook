@@ -24,7 +24,7 @@ Containerd 的源码现在托管在GitHub上， 地址为[https://github.com/con
 
  Containerd的编译命令很简单，只需要在代码的根目录下执行 make 即可，最后make命令会在bin目录下编译出对应的二进制:
 
-```text
+```bash
 mkdir -p $GOPATH/src/github.com/containerd
 cd  $GOPATH/src/github.com/containerd
 git clone git@github.com:containerd/containerd.git
@@ -146,14 +146,16 @@ GLOBAL OPTIONS:
 
 #### ctr进程启动启动过程
 
-ctr 进程的入口源码如下 
+ctr 进程的入口源码如下 ，相关注释已经在代码中。
 
 ```go
 # 入口源码文件  cmd/ctr/main.go
 # 入口main()函数
 func main() {
+    // 注释: 核心代码，app.New 里定义了不同COMMANDS 的执行逻辑， 可以着重了解
 	app := app.New()
 	app.Commands = append(app.Commands, pluginCmds...)
+	// 注释: 核心代码，Run 方法最终调用对应的子COMMAND逻辑,可以暂时略过
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "ctr: %s\n", err)
 		os.Exit(1)
@@ -161,9 +163,43 @@ func main() {
 }
 ```
 
+在app.New\(\)方法里我们可以看到不同子COMMAND的定义
 
+```go
+# app.New() cmd/ctr/app/main.go
+// New returns a *cli.App instance.
+func New() *cli.App {
+	... 部分代码已经省略
+	app.Commands = append([]cli.Command{
+		plugins.Command,
+		versionCmd.Command,
+		// 注释: 定义了对子COMMAND container 的实现逻辑
+		containers.Command,
+		content.Command,
+		events.Command,
+		images.Command,
+		namespacesCmd.Command,
+		pprof.Command,
+		run.Command,
+		snapshots.Command,
+		tasks.Command,
+	}, extraCmds...)
+	... 部分代码已经省略
+	return app
+}
+```
 
+我们以containers.Command 为例进行讲解， containers.Command 包含了
 
+```text
+cmd/ctr/commands/containers/containers.go
+
+	createCommand,
+		deleteCommand,
+		infoCommand,
+		listCommand,
+		setLabelsCommand,
+```
 
 ### Containerd 进程源码分析
 
