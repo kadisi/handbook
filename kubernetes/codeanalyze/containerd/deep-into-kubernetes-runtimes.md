@@ -64,7 +64,7 @@ make test
 
 由于我们只是在Mac 下查看Containerd 的代码，并不需要在Mac下编译，最终的运行环境是Linux，所以我们只关心跟Linux 平台相关的代码， 因此需要对Goland进行设置，打开Goland的Preferences -&gt; Go -&gt; Vendoring & Build Tag。 OS 选择linux，Arch 选择Default \(amd64\) 
 
-![](../../../.gitbook/assets/image%20%2810%29.png)
+![](../../../.gitbook/assets/image%20%2811%29.png)
 
 至此我们完成了对Goland 的设置，当然你可以设置golang 的主题，代码颜色，查看接口方法实现等快捷键，可以自行学习。
 
@@ -98,7 +98,13 @@ Containerd是一个遵循行业标准的容器运行时，它强调简单性，�
 
 Containerd涉及之初旨在嵌入到更大的系统中，例如Kubernetes，而不是由开发人员或最终用户直接使用。因此Containerd 对于最终用户而言在使用方面并不如Docker 那么友好。不过Containerd也提供ctr 命令行供测试和调试用。
 
-![](../../../.gitbook/assets/image%20%2811%29.png)
+![](../../../.gitbook/assets/image%20%2812%29.png)
+
+Containerd 最上层提供一个最主要的GRPC 接口，供Docker 或者Kubelet 去调用， 第二层是各种资源对象，其中最主要的有Content，Snapshot，Images，Containers，Task 等资源对象， 其中metadata数据会存放到boltdb 本地数据库中， 而下载的Image manifest 等文件存放到本地特定目录下，最下层是Runtimes，Containerd 通过containerd-shim 默认调用runc 来实际创建容器。
+
+![](../../../.gitbook/assets/image%20%284%29.png)
+
+Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，即Containerd 代码中的 CRI Plugin， 因此与kubelet集成时，已经不需要部署单独的Cri-Containerd 服务。CRI Plugin 实现了image service 和 runtime service 接口，当CRI Plugin 接受到kubelet CRI client 的gRPC请求后， 会创建一个client 连接自身的GRPC plugin 服务， 调用相关的container，task，和snapshots等接口。同时CRI plugin 还会调用CNI接口，来进行对Pod 网络设置
 
 ### Containerd 原理详解
 
