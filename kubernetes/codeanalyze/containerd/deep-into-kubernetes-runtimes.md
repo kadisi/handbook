@@ -163,7 +163,7 @@ func main() {
 }
 ```
 
-在app.New\(\)方法里我们可以看到不同子COMMAND的定义
+在app.New\(\)方法里我们可以看到不同子COMMAND的定义：
 
 ```go
 # app.New() cmd/ctr/app/main.go
@@ -189,11 +189,10 @@ func New() *cli.App {
 }
 ```
 
-我们以containers.Command 为例进行讲解， containers.Command 包含了 container 的create、delete、info、list、label 操作逻辑
+我们以containers.Command 为例进行讲解， containers.Command 包含了 container 的create、delete、info、list、label 操作逻辑：
 
 ```go
 # 源码文件 cmd/ctr/commands/containers/containers.go
-
 var Command = cli.Command{
 	... 部分代码已经省略
 	Subcommands: []cli.Command{
@@ -347,15 +346,111 @@ func (c *Client) NewContainer(ctx context.Context, id string, opts ...NewContain
 }
 ```
 
-
-
-### 
-
-### \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+ctr 的代码逻辑相对简单，主要功能就是创建GRPC client 调用Containerd对应的GRPC接口，实现ctr 命令行对应的操作。 在后续的Containerd 进程源码分析中我们会继续从ctr 为入口进行分析。
 
 ### Containerd 进程源码分析
 
+Containerd 进程是整个Containerd服务的核心模块，往上给kubelet，ctr，ctrctl 等提供GRPC接口，往下调用Containerd-shim 进程操作每个Container。
+
+Containerd 的其他介绍 \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+
+在分析Containerd 之前我们需要提前了解一下相关的知识，这样对于我们快速了解Containerd会有很好的帮助
+
+* Containerd 进程默认的本地数据库为BoltDB以及数据在BoltDB中的存储格式 
+* runtime-spec OCI 为容器指定的规范  
+* image-spec OCI为Image 指定的规范 [https://github.com/opencontainers/image-spec](https://github.com/opencontainers/image-spec)
+
+#### BoltDB
+
+BoltDB是一个由golang实现嵌入式key/value的数据库。BoltDB提供的API来高效的存取数据。而且支持完全可序列化的ACID事务，让应用程序可以更简单的处理复杂操作。BoltDB 接口中封装了比如：更新，查看，批量更新等事务的接口，方便开发人员直接使用。
+
+```text
+func (db *DB) Update(fn func(*Tx) error) error 
+func (db *DB) View(fn func(*Tx) error) error 
+func (db *DB) Batch(fn func(*Tx) error) error 
+```
+
+建议在看Containerd 代码前，先对BoltDB 熟悉一遍，了解db 中bucket 的创建，嵌套查询，key/value 的更新查询等， 这让我们以后分析Containerd代码会更加顺畅。具体了解和使用请访问 [https://github.com/boltdb/bolt](https://github.com/boltdb/bolt)。
+
+#### runtime-spec
+
+根据runtime-spec 配置文件以及OCI Bundle ，我们可以使用runc 手动创建容器，具体如何使用runc创建容器，请参考官方文档 [https://github.com/opencontainers/runc](https://github.com/opencontainers/runc)。
+
+我们在这里只需要大体知道spec 文件大体具有哪些参数（下面的实例并不是一个完整的spec文件，部分参数已省略）
+
+```python
+{
+  "ociVersion": "1.0.1-dev",
+  "process": {
+    // 注释: process 启动参数
+    "args": [
+      "sleep",
+      "7200000"
+    ],
+    // 注释: 环境变量
+    "env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "KUBERNETES_PORT_443_TCP_PORT=443",
+    ],
+    "cwd": "/"
+  },
+  // 注释: root 定义了container的文件系统
+  "root": {
+    // 注释: 定义了文件系统的路径
+    "path": "rootfs"
+  },
+  // 注释：mounts定义了除了root外额外的挂载点
+  "mounts": [
+    {
+      "destination": "/dev",
+      "type": "tmpfs",
+      "source": "tmpfs",
+      "options": [
+        "nosuid",
+        "strictatime",
+        "mode=755",
+        "size=65536k"
+      ]
+    }
+  ],
+  "linux": {
+    // 注释： 通过配置resources来配置cgroup 对container进行资源限制
+    "resources": {
+      "memory": {
+        "limit": 0
+      },
+      "cpu": {
+        "shares": 2,
+        "quota": 0,
+        "period": 0
+      }
+    },
+    "cgroupsPath": "/kubepods/besteffort/pod514d8e11-b1bd-11e8-a5f1-42010a8c0002/308096d7fcf226992edc90a74b02b28c026a5db4ca57641d1332b0eef8b9f724",
+    // 注释：配置container 的namespace，namespace 支持pid,network,mount,ipc,uts,user,cgroup类型
+    "namespaces": [
+      {
+        "type": "network",
+        "path": "/proc/4904/ns/net"
+      }
+    ],
+    "rootfsPropagation": "rslave"
+  }
+}
+```
+
+关于runtime-spec 的具体说明请查看[https://github.com/opencontainers/runtime-spec](https://github.com/opencontainers/runtime-spec)，有兴趣的同学可以深入了解。
+
+#### image-spec
+
+
+
+[https://github.com/opencontainers/image-spec](https://github.com/opencontainers/image-spec)
+
+
+
 #### metadata 数据结构
+
+#### 各个plugin 干什么的 以及注册和依赖关系
 
 
 
