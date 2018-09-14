@@ -26,10 +26,24 @@ cd  $GOPATH/src/github.com/containerd
 git clone git@github.com:containerd/containerd.git
 cd containerd
 make
+# 输出结果
+#🇩 bin/ctr
+#🇩 bin/containerd
+#🇩 bin/containerd-stress
+#🇩 bin/containerd-release
+#🇩 bin/containerd-shim
+#🇩 bin/containerd-shim-runc-v1
+#🇩 binaries
 
+#若想编译单个二进制，可以执行make bin/{binaries name}, 例如单独编译containerd
+make bin/containerd
 ```
 
-####  Cri/Containerd 原理详解
+####  
+
+#### 
+
+#### Cri/Containerd 原理详解
 
 
 
