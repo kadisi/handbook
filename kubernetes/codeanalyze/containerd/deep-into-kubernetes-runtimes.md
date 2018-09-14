@@ -1,8 +1,10 @@
+---
+description: 深入理解Kubernetes
+---
+
 # Deep Into kubernetes - runtimes
 
-## 深入理解Kubernetes
-
-### 第6章 容器运行时
+## 第6章 容器运行时
 
 随着容器技术的快速发展，生态逐渐地从单体化运行容器应用，发展为支持大规模容器编排，容器成为了进程执行单元。其中容器编排以Kubernetes,Mesos为代表。面对这些竞争，2016年6月，Docker宣布在Docker Engine中内置Swarm，极大简化了容器编排的复杂性。Google发起CRI（Container RuntimeInterface容器运行时接口）项目，通过shim的抽象层使得调度框架支持不同的容器引擎实现。
 
@@ -12,7 +14,7 @@
 
 Containerd向上为Docker Daemon提供了gRPC接口，使得Docker Daemon屏蔽下面的结构变化，确保原有接口向下兼容。向下通过Containerd-shim结合runC，使得引擎可以独立升级，避免之前Docker Daemon升级会导致所有容器不可用的问题。 1.10以后，Containerd 集成Cri-containerd插件，支持Kubelet CRI规范，可以让Kubelet 直接调用。
 
-#### Containerd 源码结构和编译步骤
+### Containerd 源码结构和编译步骤
 
 Containerd 的源码现在托管在GitHub上， 地址为[https://github.com/containerd/containerd](https://github.com/containerd/containerd)。
 
@@ -88,13 +90,15 @@ make test
 | snapshots |  |
 | vendor/github.com/containerd/cri | cri plugin, Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，因此与kubelet集成时，已经不需要部署单独的Cri-containerd 服务。 |
 
-#### Containerd 架构
+### Containerd 架构
 
 
 
-#### Containerd 原理详解
+### Containerd 原理详解
 
 
+
+#### metadata 数据结构
 
 
 
