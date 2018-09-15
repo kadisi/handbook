@@ -2,7 +2,7 @@
 description: 深入理解Kubernetes
 ---
 
-# Deep Into kubernetes - runtimes 1
+# Deep Into kubernetes - runtimes
 
 ## 第6章 容器运行时
 
