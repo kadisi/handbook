@@ -1,5 +1,5 @@
 ---
-description: 深入理解Kubernetes   容器运行时
+description: 深入理解Kubernetes   容器运行时。
 ---
 
 # Deep Into kubernetes - runtimes
