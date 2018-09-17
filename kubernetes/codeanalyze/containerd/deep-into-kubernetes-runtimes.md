@@ -779,13 +779,66 @@ containerd 进程里除了上文提到的GRPC plugin、CRI Plugin外，还提供
 | Service Plugin |  |
 | Runtime Plugin |  |
 
-\*\*\*\*
+### **Root/state dir**
 
-\*\*\*\*
+Containerd进程的默认Root Dir 是 /var/lib/containerd目录，用于为containerd存储任何类型的持久数据。快照、内容、容器和镜像的元数据以及任何插件数据都将保存在此位置。根目录也是包含插件的命名空间。每个插件都有自己的存储数据的目录。containerd本身实际上没有任何需要存储的持久数据，它的功能来自于加载的插件。子目录列表如下
 
-### **root/state dir**
+```text
+/var/lib/containerd/
+├── io.containerd.content.v1.content
+│   ├── blobs
+│   └── ingest
+├── io.containerd.metadata.v1.bolt
+│   └── meta.db
+├── io.containerd.runtime.v1.linux
+│   ├── default
+│   └── example
+├── io.containerd.snapshotter.v1.btrfs
+└── io.containerd.snapshotter.v1.overlayfs
+    ├── metadata.db
+    └── snapshots
+```
 
-\*\*\*\*
+* **io.containerd.content.v1.content** 目录是用来存放镜像文件
+* **io.containerd.metadata.v1.bolt** 目录用来存放bolddb metadata数据库文件，像namespace，container等的信息都存放到这个数据库中
+* **io.containerd.snapshotter.v1.\***  是根据不同存储驱动生成的目录，我们可以了解containerd 默认使用的snapshotter: overlayfs 的 目录io.containerd.snapshotter.v1.overlayfs， 在此目录下存放了snapshotter 的boltdb文件，具体数据格式上文已经提到过。
+* **io.containerd.runtime.v1.linux**  存放的是runtime 数据，子目录是根据namespace来区分，比如k8s.io 和default 目录
+
+Containerd 进程的默认State Dir 是 /run/containerd 目录，用于存储任何类型的临时数据。套接字、pid、运行时状态、挂载点等存储在此位置。子目录列表如下
+
+```text
+/run/containerd
+├── containerd.sock
+├── debug.sock
+├── io.containerd.runtime.v1.linux
+│   └── default
+│       └── redis
+│           ├── config.json
+│           ├── init.pid
+│           ├── log.json
+│           └── rootfs
+│               ├── bin
+│               ├── data
+│               ├── dev
+│               ├── etc
+│               ├── home
+│               ├── lib
+│               ├── media
+│               ├── mnt
+│               ├── proc
+│               ├── root
+│               ├── run
+│               ├── sbin
+│               ├── srv
+│               ├── sys
+│               ├── tmp
+│               ├── usr
+│               └── var
+└── runc
+    └── default
+        └── redis
+            └── state.json
+```
 
 ## Containerd 进程代码
 
