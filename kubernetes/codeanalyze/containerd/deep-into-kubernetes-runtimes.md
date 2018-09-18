@@ -2,7 +2,7 @@
 description: 深入理解Kubernetes   容器运行时。。。
 ---
 
-# Deep Into kubernetes - runtimes
+# Deep Into kubernetes - runtimes 1
 
 ## 前言
 
@@ -843,49 +843,6 @@ Containerd 进程的默认State Dir 是 /run/containerd 目录，用于存储任
 ```
 
 ### Containerd 进程启动过程
-
-containerd 入口 源代码位置如下：cmd/containerd/main.go
-
-```go
-func main() {
-  app := command.App()
-  if err := app.Run(os.Args); err != nil {
-    fmt.Fprintf(os.Stderr, "containerd: %s\n", err)
-    os.Exit(1)
-  }
-}
-```
-
-上述代码的核心为下面两行，创建一个cli.App的结构体对象：app
-
-plugin service 的加载 全在 buildins\*.go 文件中，以buildins.go 文件为例:
-
-```text
-import (
-  _ "github.com/containerd/containerd/diff/walking/plugin"
-  _ "github.com/containerd/containerd/gc/scheduler"
-  _ "github.com/containerd/containerd/runtime/restart/monitor"
-  _ "github.com/containerd/containerd/services/containers"
-  _ "github.com/containerd/containerd/services/content"
-  _ "github.com/containerd/containerd/services/diff"
-  _ "github.com/containerd/containerd/services/events"
-  _ "github.com/containerd/containerd/services/healthcheck"
-  _ "github.com/containerd/containerd/services/images"
-  _ "github.com/containerd/containerd/services/introspection"
-  _ "github.com/containerd/containerd/services/leases"
-  _ "github.com/containerd/containerd/services/namespaces"
-  _ "github.com/containerd/containerd/services/snapshots"
-  _ "github.com/containerd/containerd/services/tasks"
-  _ "github.com/containerd/containerd/services/version"
-
-)
-```
-
-
-
-#### 各个plugin 干什么的 以及注册和依赖关系
-
-
 
 
 
