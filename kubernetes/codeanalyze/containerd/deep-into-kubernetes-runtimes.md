@@ -142,7 +142,7 @@ GLOBAL OPTIONS:
 
 刚接触Containerd 时，可以先从ctr命令入手，学习如何创建、启动和进入容器以及如何拉取，导出镜像等等，在学习的过程中体会与Docker 命令操作的区别。
 
-### ctr进程启动启动过程
+### ctr进程启动过程
 
 ctr 进程的入口源码如下 ，相关注释已经在代码中。
 
@@ -842,11 +842,11 @@ Containerd 进程的默认State Dir 是 /run/containerd 目录，用于存储任
             └── state.json
 ```
 
-## Containerd 进程代码
+### Containerd 进程启动过程
 
-containerd 入口 cmd-containerd-main.go
+containerd 入口 源代码位置如下：cmd/containerd/main.go
 
-```text
+```go
 func main() {
   app := command.App()
   if err := app.Run(os.Args); err != nil {
@@ -855,6 +855,8 @@ func main() {
   }
 }
 ```
+
+上述代码的核心为下面两行，创建一个cli.App的结构体对象：app
 
 plugin service 的加载 全在 buildins\*.go 文件中，以buildins.go 文件为例:
 
