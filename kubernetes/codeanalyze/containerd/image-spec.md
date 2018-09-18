@@ -6,7 +6,7 @@ image 有OCI 标准去维护， 链接地址 [https://github.com/opencontainers/
 
 docker containerd 所使用的镜像都遵循这个标准， 大家都知道镜像是分层的， 从docker hub 拉取的镜像，基本上分为下面几个metadata：
 
-![](../../../../.gitbook/assets/image.png)
+![](../../../.gitbook/assets/image.png)
 
   
 image Index, image Mainfest, image config, layer

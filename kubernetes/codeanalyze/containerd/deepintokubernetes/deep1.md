@@ -2,7 +2,7 @@
 description: 深入理解Kubernetes   容器运行时。。。
 ---
 
-# Deep Into kubernetes - runtimes 1
+# deep1
 
 ## 前言
 
@@ -20,7 +20,7 @@ Containerd 的源码现在托管在GitHub上， 地址为[https://github.com/con
 
 本章节后续所有的代码分析都假设是Linux 、go1.10.2 ，Containerd 的代码分支 release/1.1 commit 号为 57508dcb0b5776efaacd0828ed42f819fab5ba07 的环境。
 
- Containerd的编译命令很简单，只需要在代码的根目录下执行 make 即可，最后make命令会在bin目录下编译出对应的二进制:
+Containerd的编译命令很简单，只需要在代码的根目录下执行 make 即可，最后make命令会在bin目录下编译出对应的二进制:
 
 ```bash
 mkdir -p $GOPATH/src/github.com/containerd
@@ -48,7 +48,7 @@ make check
 make test
 ```
 
- 若想成为Containerd 社区的Contributer，每次push 代码前，需要执行check 和test 命令，分别用来做代码检查和单元测试
+若想成为Containerd 社区的Contributer，每次push 代码前，需要执行check 和test 命令，分别用来做代码检查和单元测试
 
 ```text
 # make check 需要提前预装 gometalinter 命令
@@ -58,11 +58,11 @@ make test
 
 鉴于本章节只是对Containerd的代码进行分析，接下来的介绍如何在Mac 的Goland 开发环境中完成对Containerd的代码分析。Mac 下安装GoLand 2018.2.2 版本， 打开Goland -&gt; Open Project -&gt;选择在GOPATH下刚刚clone下的Containerd 目录 -&gt; Open 按钮。 即打开了Containerd 项目。
 
-![](../../../.gitbook/assets/image%20%284%29.png)
+![](https://github.com/kadisi/handbook/tree/7880b2f12b0622eba72679adb11d50e214cadea1/kubernetes/.gitbook/assets/image%20%284%29.png)
 
-由于我们只是在Mac 下查看Containerd 的代码，并不需要在Mac下编译，最终的运行环境是Linux，所以我们只关心跟Linux 平台相关的代码， 因此需要对Goland进行设置，打开Goland的Preferences -&gt; Go -&gt; Vendoring & Build Tag。 OS 选择linux，Arch 选择Default \(amd64\) 
+由于我们只是在Mac 下查看Containerd 的代码，并不需要在Mac下编译，最终的运行环境是Linux，所以我们只关心跟Linux 平台相关的代码， 因此需要对Goland进行设置，打开Goland的Preferences -&gt; Go -&gt; Vendoring & Build Tag。 OS 选择linux，Arch 选择Default \(amd64\)
 
-![](../../../.gitbook/assets/image%20%2814%29.png)
+![](https://github.com/kadisi/handbook/tree/7880b2f12b0622eba72679adb11d50e214cadea1/kubernetes/.gitbook/assets/image%20%2814%29.png)
 
 至此我们完成了对Goland 的设置，当然你可以设置golang 的主题，代码颜色，查看接口方法实现等快捷键，可以自行学习，使用Goland 建议充分使用Go TO -&gt; Implementation\(s\) 功能，这样能快速查看某个接口都有哪些结构体实现，方便代码追踪，默认快捷键为: Option+⌘+B。
 
@@ -96,11 +96,11 @@ Containerd是一个遵循行业标准的容器运行时，它强调简单性，�
 
 Containerd涉及之初旨在嵌入到更大的系统中，例如Kubernetes，而不是由开发人员或最终用户直接使用。因此Containerd 对于最终用户而言在使用方面并不如Docker 那么友好。不过Containerd也提供ctr 命令行供测试和调试用。
 
-![](../../../.gitbook/assets/image%20%2815%29.png)
+![](https://github.com/kadisi/handbook/tree/7880b2f12b0622eba72679adb11d50e214cadea1/kubernetes/.gitbook/assets/image%20%2815%29.png)
 
 Containerd 最上层提供一个最主要的GRPC 接口，供Docker 或者Kubelet 去调用， 第二层是各种资源对象，其中最主要的有Content，Snapshot，Images，Containers，Task 等资源对象， 其中metadata数据会存放到boltdb 本地数据库中， 而下载的Image manifest 等文件存放到本地特定目录下，最下层是Runtimes，Containerd 通过containerd-shim 默认调用runc 来实际创建容器。
 
-![](../../../.gitbook/assets/image%20%286%29.png)
+![](https://github.com/kadisi/handbook/tree/7880b2f12b0622eba72679adb11d50e214cadea1/kubernetes/.gitbook/assets/image%20%286%29.png)
 
 Containerd 在1.1版本已经将Cri-containerd作为Plugin的形式对外提供服务，即Containerd 代码中的 CRI Plugin， 因此与kubelet集成时，已经不需要部署单独的Cri-Containerd 服务。CRI Plugin 实现了image service 和 runtime service 接口，当CRI Plugin 接受到kubelet CRI client 的gRPC请求后， 会创建一个client 连接自身的GRPC plugin 服务， 调用相关的container，task，和snapshots等接口。同时CRI plugin 还会调用CNI接口，来进行对Pod 网络设置。
 
@@ -151,13 +151,13 @@ ctr 进程的入口源码如下 ，相关注释已经在代码中。
 # 入口main()函数
 func main() {
     // 注释: 核心代码，app.New 里定义了不同COMMANDS 的执行逻辑， 可以着重了解
-	app := app.New()
-	app.Commands = append(app.Commands, pluginCmds...)
-	// 注释: 核心代码，Run 会对ctr 命令参数进行解析，将相关参数和值传入到cli.Context 变量中，方法最终调用对应的子COMMAND逻辑,可以暂时略过
-	if err := app.Run(os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "ctr: %s\n", err)
-		os.Exit(1)
-	}
+    app := app.New()
+    app.Commands = append(app.Commands, pluginCmds...)
+    // 注释: 核心代码，Run 会对ctr 命令参数进行解析，将相关参数和值传入到cli.Context 变量中，方法最终调用对应的子COMMAND逻辑,可以暂时略过
+    if err := app.Run(os.Args); err != nil {
+        fmt.Fprintf(os.Stderr, "ctr: %s\n", err)
+        os.Exit(1)
+    }
 }
 ```
 
@@ -167,23 +167,23 @@ func main() {
 # app.New() cmd/ctr/app/main.go
 // New returns a *cli.App instance.
 func New() *cli.App {
-	... 部分代码已经省略
-	app.Commands = append([]cli.Command{
-		plugins.Command,
-		versionCmd.Command,
-		// 注释: 定义了对子COMMAND container 的实现逻辑
-		containers.Command,
-		content.Command,
-		events.Command,
-		images.Command,
-		namespacesCmd.Command,
-		pprof.Command,
-		run.Command,
-		snapshots.Command,
-		tasks.Command,
-	}, extraCmds...)
-	... 部分代码已经省略
-	return app
+    ... 部分代码已经省略
+    app.Commands = append([]cli.Command{
+        plugins.Command,
+        versionCmd.Command,
+        // 注释: 定义了对子COMMAND container 的实现逻辑
+        containers.Command,
+        content.Command,
+        events.Command,
+        images.Command,
+        namespacesCmd.Command,
+        pprof.Command,
+        run.Command,
+        snapshots.Command,
+        tasks.Command,
+    }, extraCmds...)
+    ... 部分代码已经省略
+    return app
 }
 ```
 
@@ -192,32 +192,32 @@ func New() *cli.App {
 ```go
 # 源码文件 cmd/ctr/commands/containers/containers.go
 var Command = cli.Command{
-	... 部分代码已经省略
-	Subcommands: []cli.Command{
-		createCommand,
-		deleteCommand,
-		infoCommand,
-		listCommand,
-		setLabelsCommand,
-	},
+    ... 部分代码已经省略
+    Subcommands: []cli.Command{
+        createCommand,
+        deleteCommand,
+        infoCommand,
+        listCommand,
+        setLabelsCommand,
+    },
 }
 var createCommand = cli.Command{
-	... 部分代码已经省略
-	Action: func(context *cli.Context) error {
-		var (
-			id  = context.Args().Get(1)
-			ref = context.Args().First()
-		)
-		... 部分代码已经省略
-		// 注释: 创建gRPC client
-		client, ctx, cancel, err := commands.NewClient(context)
-		... 部分代码已经省略
-		defer cancel()
-		// 注释: 调用NewContainer 创建container
-		_, err = run.NewContainer(ctx, client, context)
-		... 部分代码已经省略
-		return nil
-	},
+    ... 部分代码已经省略
+    Action: func(context *cli.Context) error {
+        var (
+            id  = context.Args().Get(1)
+            ref = context.Args().First()
+        )
+        ... 部分代码已经省略
+        // 注释: 创建gRPC client
+        client, ctx, cancel, err := commands.NewClient(context)
+        ... 部分代码已经省略
+        defer cancel()
+        // 注释: 调用NewContainer 创建container
+        _, err = run.NewContainer(ctx, client, context)
+        ... 部分代码已经省略
+        return nil
+    },
 }
 ```
 
@@ -226,67 +226,67 @@ var createCommand = cli.Command{
 ```go
 # 文件 cmd/ctr/commands/run/run_unix.go
 func NewContainer(ctx gocontext.Context, client *containerd.Client, context *cli.Context) (containerd.Container, error) {
-	... 部分代码已经省略
+    ... 部分代码已经省略
 
-	var (
-		// 注释: Spec 结构体Opts 操作列表, Spec 是containers.Container 结构体的一个字段
-		// 注释: Spec 的具体结构体的定义遵循了 runtime-spec的规范，以linux 为例，具体规范链接如下 
-		// 注释: https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md
-		opts  []oci.SpecOpts
-		// 注释: containers.Container 结构体Opts 操作列表
-		cOpts []containerd.NewContainerOpts
-		// 注释: 会根据opts变量最终给spec 变量的特定字段赋值
-		spec  containerd.NewContainerOpts
-	)
-	opts = append(opts, oci.WithEnv(context.StringSlice("env")))
-	opts = append(opts, withMounts(context))
-	cOpts = append(cOpts, containerd.WithContainerLabels(commands.LabelArgs(context.StringSlice("label"))))
-	cOpts = append(cOpts, containerd.WithRuntime(context.String("runtime"), nil))
-	if context.Bool("rootfs") {
-		opts = append(opts, oci.WithRootFSPath(ref))
-	} else {
-		// 注释: ctr命令中若没特定指定 默认是overlayfs
-		snapshotter := context.String("snapshotter")
-		// 注释: 通过GRPC调用Containerd 接口，查看此image 是否在Containerd的数据库中
-		image, err := client.GetImage(ctx, ref)
-		if err != nil {
-			return nil, err
-		}
-		// 注释: 判断Image 是否完全下载下来，后续会详细介绍
-		unpacked, err := image.IsUnpacked(ctx, snapshotter)
-		if err != nil {
-			return nil, err
-		}
-		if !unpacked {
-			if err := image.Unpack(ctx, snapshotter); err != nil {
-				return nil, err
-			}
-		}
-		opts = append(opts, oci.WithImageConfig(image))
-		cOpts = append(cOpts,
-			containerd.WithImage(image),
-			containerd.WithSnapshotter(snapshotter),
-			// Even when "readonly" is set, we don't use KindView snapshot here. (#1495)
-			// We pass writable snapshot to the OCI runtime, and the runtime remounts it as read-only,
-			// after creating some mount points on demand.
-			containerd.WithNewSnapshot(id, image))
-	}
-	... 部分代码已经省略
-	if context.IsSet("config") {
-		var s specs.Spec
-		if err := loadSpec(context.String("config"), &s); err != nil {
-			return nil, err
-		}
-		spec = containerd.WithSpec(&s, opts...)
-	} else {
-		spec = containerd.WithNewSpec(opts...)
-	}
-	cOpts = append(cOpts, spec)
+    var (
+        // 注释: Spec 结构体Opts 操作列表, Spec 是containers.Container 结构体的一个字段
+        // 注释: Spec 的具体结构体的定义遵循了 runtime-spec的规范，以linux 为例，具体规范链接如下 
+        // 注释: https://github.com/opencontainers/runtime-spec/blob/master/config-linux.md
+        opts  []oci.SpecOpts
+        // 注释: containers.Container 结构体Opts 操作列表
+        cOpts []containerd.NewContainerOpts
+        // 注释: 会根据opts变量最终给spec 变量的特定字段赋值
+        spec  containerd.NewContainerOpts
+    )
+    opts = append(opts, oci.WithEnv(context.StringSlice("env")))
+    opts = append(opts, withMounts(context))
+    cOpts = append(cOpts, containerd.WithContainerLabels(commands.LabelArgs(context.StringSlice("label"))))
+    cOpts = append(cOpts, containerd.WithRuntime(context.String("runtime"), nil))
+    if context.Bool("rootfs") {
+        opts = append(opts, oci.WithRootFSPath(ref))
+    } else {
+        // 注释: ctr命令中若没特定指定 默认是overlayfs
+        snapshotter := context.String("snapshotter")
+        // 注释: 通过GRPC调用Containerd 接口，查看此image 是否在Containerd的数据库中
+        image, err := client.GetImage(ctx, ref)
+        if err != nil {
+            return nil, err
+        }
+        // 注释: 判断Image 是否完全下载下来，后续会详细介绍
+        unpacked, err := image.IsUnpacked(ctx, snapshotter)
+        if err != nil {
+            return nil, err
+        }
+        if !unpacked {
+            if err := image.Unpack(ctx, snapshotter); err != nil {
+                return nil, err
+            }
+        }
+        opts = append(opts, oci.WithImageConfig(image))
+        cOpts = append(cOpts,
+            containerd.WithImage(image),
+            containerd.WithSnapshotter(snapshotter),
+            // Even when "readonly" is set, we don't use KindView snapshot here. (#1495)
+            // We pass writable snapshot to the OCI runtime, and the runtime remounts it as read-only,
+            // after creating some mount points on demand.
+            containerd.WithNewSnapshot(id, image))
+    }
+    ... 部分代码已经省略
+    if context.IsSet("config") {
+        var s specs.Spec
+        if err := loadSpec(context.String("config"), &s); err != nil {
+            return nil, err
+        }
+        spec = containerd.WithSpec(&s, opts...)
+    } else {
+        spec = containerd.WithNewSpec(opts...)
+    }
+    cOpts = append(cOpts, spec)
 
-	// oci.WithImageConfig (WithUsername, WithUserID) depends on rootfs snapshot for resolving /etc/passwd.
-	// So cOpts needs to have precedence over opts.
-	// TODO: WithUsername, WithUserID should additionally support non-snapshot rootfs
-	return client.NewContainer(ctx, id, cOpts...)
+    // oci.WithImageConfig (WithUsername, WithUserID) depends on rootfs snapshot for resolving /etc/passwd.
+    // So cOpts needs to have precedence over opts.
+    // TODO: WithUsername, WithUserID should additionally support non-snapshot rootfs
+    return client.NewContainer(ctx, id, cOpts...)
 }
 ```
 
@@ -299,10 +299,10 @@ type NewContainerOpts func(ctx context.Context, client *Client, c *containers.Co
 
 // WithImage sets the provided image as the base for the container
 func WithImage(i Image) NewContainerOpts {
-	return func(ctx context.Context, client *Client, c *containers.Container) error {
-		c.Image = i.Name()
-		return nil
-	}
+    return func(ctx context.Context, client *Client, c *containers.Container) error {
+        c.Image = i.Name()
+        return nil
+    }
 }
 ```
 
@@ -315,32 +315,32 @@ func WithImage(i Image) NewContainerOpts {
 // NewContainer will create a new container in container with the provided id
 // the id must be unique within the namespace
 func (c *Client) NewContainer(ctx context.Context, id string, opts ...NewContainerOpts) (Container, error) {
-	ctx, done, err := c.WithLease(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer done(ctx)
-	// 注释: 创建一个默认的container对象，id 为参数传进来的id
-	container := containers.Container{
-		ID: id,
-		Runtime: containers.RuntimeInfo{
-			Name: c.runtime,
-		},
-	}
-	// 注释: 通过for 循环，利用opts 对container 对象对应字段进行赋值
-	for _, o := range opts {
-		if err := o(ctx, c, &container); err != nil {
-			return nil, err
-		}
-	}
-	// 注释: 调用ContainerService().Create()调用Containerd的GRPC接口
-	// 注释: Create() 方法通过代码追踪可以看到由remoteContainers 类型实现
-	// 注释: remoteContainers 在 /containerstore.go 定义
-	r, err := c.ContainerService().Create(ctx, container)
-	if err != nil {
-		return nil, err
-	}
-	return containerFromRecord(c, r), nil
+    ctx, done, err := c.WithLease(ctx)
+    if err != nil {
+        return nil, err
+    }
+    defer done(ctx)
+    // 注释: 创建一个默认的container对象，id 为参数传进来的id
+    container := containers.Container{
+        ID: id,
+        Runtime: containers.RuntimeInfo{
+            Name: c.runtime,
+        },
+    }
+    // 注释: 通过for 循环，利用opts 对container 对象对应字段进行赋值
+    for _, o := range opts {
+        if err := o(ctx, c, &container); err != nil {
+            return nil, err
+        }
+    }
+    // 注释: 调用ContainerService().Create()调用Containerd的GRPC接口
+    // 注释: Create() 方法通过代码追踪可以看到由remoteContainers 类型实现
+    // 注释: remoteContainers 在 /containerstore.go 定义
+    r, err := c.ContainerService().Create(ctx, container)
+    if err != nil {
+        return nil, err
+    }
+    return containerFromRecord(c, r), nil
 }
 ```
 
@@ -366,7 +366,7 @@ Containerd 的其他介绍 \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\
 
 在 gRPC 里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容易地创建分布式应用和服务。与许多 RPC 系统类似，gRPC 也是基于以下理念：定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。在服务端实现这个接口，并运行一个 gRPC 服务器来处理客户端调用。在客户端拥有一个存根能够像服务端一样的方法。
 
-gRPC已经应用在Google的云服务和对外提供的API中，其主要应用场景如下： 
+gRPC已经应用在Google的云服务和对外提供的API中，其主要应用场景如下：
 
 * 低延迟、高扩展性、分布式的系统 
 * 同云服务器进行通信的移动应用客户端 
@@ -382,7 +382,7 @@ BoltDB是一个由golang实现嵌入式key/value的数据库。BoltDB提供的AP
 ```text
 func (db *DB) Update(fn func(*Tx) error) error 
 func (db *DB) View(fn func(*Tx) error) error 
-func (db *DB) Batch(fn func(*Tx) error) error 
+func (db *DB) Batch(fn func(*Tx) error) error
 ```
 
 建议在看Containerd 代码前，先对BoltDB 熟悉一遍，了解db 中bucket 的创建，嵌套查询，key/value 的更新查询等， 这让我们以后分析Containerd代码会更加顺畅。具体了解和使用请访问 [https://github.com/boltdb/bolt](https://github.com/boltdb/bolt)。
@@ -442,9 +442,7 @@ metadata格式如下 （部分数据已经省略），第一层的bucket 为v1 �
 │   │   │   │   │   └── updatedat=**
 ```
 
-
-
-snapshotter 以overlayfs 为例 默认db 文件 存放在 /var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/metadata.db 
+snapshotter 以overlayfs 为例 默认db 文件 存放在 /var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/metadata.db
 
 格式如下（部署数据 已经省略），第一层的bucket 为v1 代表了版本号，第二层的bucket分别为parents和snapshots，其中parents bucket 里存放的key 因为是不可读的，暂时以�显示。
 
@@ -472,8 +470,6 @@ snapshotter 以overlayfs 为例 默认db 文件 存放在 /var/lib/containerd/io
 │   │   │   └── size=**
 │   │   │   └── updatedat=**
 ```
-
-
 
 ### runtime-spec
 
@@ -553,19 +549,15 @@ The OCI Image Format partner project is the [OCI Runtime Spec project](https://g
 
 下面是一个image 镜像的关系图：
 
-
-
 关系图
 
-![](../../../.gitbook/assets/image%20%2813%29.png)
-
-
+![](https://github.com/kadisi/handbook/tree/7880b2f12b0622eba72679adb11d50e214cadea1/kubernetes/.gitbook/assets/image%20%2813%29.png)
 
 * Image Index和Manifest的关系是"1..\*"，一个Image Index 对应多个Manifest，Image Index 是最上层Manifest 文件的索引，包含了哪些平台下的Manifest，打开一个Image Index 文件里面会有一个Manifest 列表。
 * Image Manifest和Config的关系是"1..1"，一个Image Manifest 文件 对应一个Config 文件，在Image Manifest文件中有一个config 字段代表指向哪个Config 文件。
 * Image Manifest和Filesystem Layers是一对多的关系，一个Image Manifest文件对应多个Filesystem Layer，在Image Manifest文件中会保存一个Layers的列表。
 
-在containerd 下，默认这些文件都会存放在 
+在containerd 下，默认这些文件都会存放在
 
 ```text
 /var/lib/containerd/io.containerd.content.v1.content/blobs/sha256
@@ -576,7 +568,6 @@ The OCI Image Format partner project is the [OCI Runtime Spec project](https://g
 ```text
 # ctr 命令下载busybox 镜像
 ctr image pull docker.io/library/busybox:latest
-
 ```
 
 以下为输出内容
@@ -594,7 +585,7 @@ done
 
 可以看到ctr 会下载三种类型的文件分别是: index 文件：cb63aa0641a885f54de20f61d152187419e8f6b159ed11a251a09d115fdff9bd, manifest 文件：5e8e0509e829bb8f990249135a36e81a3ecbe94294e7a185cc14616e5fad96bd, 一个layer 文件：8c5a7da1afbc602695fcb2cd6445743cec5ff32053ea589ea9bd8773b7068185，一个config 文件：e1ddd7948a1c31709a23cc5b7dfe96e55fc364f90e1cebcde0773a1b5a30dcda，下面我们依次解析这几个文件（所有下载的这些文件都会默认存放到/var/lib/containerd/io.containerd.content.v1.content/blobs/sha256目录下）
 
-**Image Index 文件:** 
+**Image Index 文件:**
 
 打开cb63aa0641a885f54de20f61d152187419e8f6b159ed11a251a09d115fdff9bd这个文件，我们会看到如下内容（部分内容已经省略）
 
@@ -757,11 +748,9 @@ state = "/run/containerd"
         # 注释: 配置的镜像仓库地址，可以配置多个，支持https 和http
         [plugins.cri.registry.mirrors."docker.io"]
           endpoint = ["https://registry-1.docker.io"]
-	    [plugins.cri.registry.mirrors."10.146.0.2"]
+        [plugins.cri.registry.mirrors."10.146.0.2"]
           endpoint = ["http://10.146.0.2"]
 ```
-
-
 
 ### **Plugin**
 
@@ -844,21 +833,13 @@ Containerd 进程的默认State Dir 是 /run/containerd 目录，用于存储任
 
 ### Containerd 进程启动过程
 
-
-
 ## containerd-shim 原理详解
-
-
-
-
 
 ### 引用文档
 
 {% embed data="{\"url\":\"https://jimmysong.io/posts/kubernetes-open-interfaces-cri-cni-csi/\",\"type\":\"link\",\"title\":\"Kubernetes中的开放接口CRI、CNI、CSI\",\"description\":\"容器运行时接口、容器网络接口、容器存储接口解析\",\"icon\":{\"type\":\"icon\",\"url\":\"https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/favicon.ico\",\"aspectRatio\":0},\"thumbnail\":{\"type\":\"thumbnail\",\"url\":\"https://ws4.sinaimg.cn/large/006tKfTcly1ft1oje0atgj31kw1kzk1j.jpg\",\"aspectRatio\":0}}" %}
 
-
-
-image 
+image
 
 {% embed data="{\"url\":\"https://segmentfault.com/a/1190000009309347\",\"type\":\"link\",\"title\":\"走进docker\(02\)：image\(镜像\)是什么？ - 个人文章 - SegmentFault 思否\",\"description\":\"上一篇介绍了hello-world的大概流程，那么hello-world的image里面到底包含了些什么呢？里面的格式是怎么样的呢？\",\"icon\":{\"type\":\"icon\",\"url\":\"https://static.segmentfault.com/v-5b973eab/global/img/touch-icon.png\",\"aspectRatio\":0},\"thumbnail\":{\"type\":\"thumbnail\",\"url\":\"https://static.segmentfault.com/v-5b973eab/global/img/touch-icon.png\",\"aspectRatio\":0}}" %}
 
