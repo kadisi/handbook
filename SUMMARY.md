@@ -22,6 +22,7 @@
       * [deep1](kubernetes/codeanalyze/containerd/deepintokubernetes/deep1.md)
       * [deep2](kubernetes/codeanalyze/containerd/deepintokubernetes/deep2.md)
       * [deep3](kubernetes/codeanalyze/containerd/deepintokubernetes/deep3.md)
+      * [reference](kubernetes/codeanalyze/containerd/deepintokubernetes/reference.md)
     * [snapshot service](kubernetes/codeanalyze/containerd/snapshot-service.md)
     * [core 代码](kubernetes/codeanalyze/containerd/core-dai-ma.md)
     * [image spec](kubernetes/codeanalyze/containerd/image-spec.md)
