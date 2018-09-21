@@ -28,73 +28,19 @@ var startCommand = cli.Command{
 		... 部分代码已经省略
 		// 注释: 创建grpc client
 		client, ctx, cancel, err := commands.NewClient(context)
-		if err != nil {
-			return err
-		}
-		defer cancel()
-		container, err := client.LoadContainer(ctx, id)
-		if err != nil {
-			return err
-		}
-
+		... 部分代码已经省略
+		// 注释：获得container的spec 数据
 		spec, err := container.Spec(ctx)
 		if err != nil {
 			return err
 		}
-
-		var (
-			tty    = spec.Process.Terminal
-			opts   = getNewTaskOpts(context)
-			ioOpts = []cio.Opt{cio.WithFIFODir(context.String("fifo-dir"))}
-		)
+		... 部分代码已经省略
+		// 注释 核心逻辑： 创建task
 		task, err := NewTask(ctx, client, container, "", tty, context.Bool("null-io"), ioOpts, opts...)
 		if err != nil {
 			return err
 		}
-		defer task.Delete(ctx)
-		if context.IsSet("pid-file") {
-			if err := commands.WritePidFile(context.String("pid-file"), int(task.Pid())); err != nil {
-				return err
-			}
-		}
-		statusC, err := task.Wait(ctx)
-		if err != nil {
-			return err
-		}
-
-		var con console.Console
-		if tty {
-			con = console.Current()
-			defer con.Reset()
-			if err := con.SetRaw(); err != nil {
-				return err
-			}
-		}
-		if err := task.Start(ctx); err != nil {
-			return err
-		}
-		if tty {
-			if err := HandleConsoleResize(ctx, task, con); err != nil {
-				logrus.WithError(err).Error("console resize")
-			}
-		} else {
-			sigc := commands.ForwardAllSignals(ctx, task)
-			defer commands.StopCatch(sigc)
-		}
-
-		status := <-statusC
-		code, _, err := status.Result()
-		if err != nil {
-			return err
-		}
-		if _, err := task.Delete(ctx); err != nil {
-			return err
-		}
-		if code != 0 {
-			return cli.NewExitError("", int(code))
-		}
-		return nil
-	},
+		... 部分代码已经省略
 }
 ```
 
