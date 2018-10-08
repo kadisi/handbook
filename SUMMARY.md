@@ -32,3 +32,7 @@
   * [tcp 协议](kubernetes/network/tcp-xie-yi.md)
   * [flannel](kubernetes/network/flannel.md)
 
+## compute
+
+* [计算机](compute/ji-suan-ji.md)
+
