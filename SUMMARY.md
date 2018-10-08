@@ -34,5 +34,7 @@
 
 ## compute
 
-* [计算机](compute/ji-suan-ji.md)
+* [computeg knowledge](compute/computeg-knowledge.md)
+* [ASCII\_Unicode\_UTF-8](compute/ascii_unicode_utf-8.md)
+* [algorithm](compute/algorithm.md)
 
