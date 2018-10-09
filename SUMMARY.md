@@ -36,6 +36,7 @@
 
 * [computeg knowledge](compute/computeg-knowledge.md)
 * [tcp connect](compute/tcp-connect.md)
+* [https connect](compute/https-connect.md)
 * [http connect](compute/http-connect.md)
 * [ASCII\_Unicode\_UTF-8](compute/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm.md)
