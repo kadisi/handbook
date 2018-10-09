@@ -35,6 +35,7 @@
 ## compute
 
 * [computeg knowledge](compute/computeg-knowledge.md)
+* [tcp nianbao](compute/tcp-nianbao.md)
 * [tcp connect](compute/tcp-connect.md)
 * [https connect](compute/https-connect.md)
 * [http connect](compute/http-connect.md)
