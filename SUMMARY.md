@@ -35,6 +35,7 @@
 ## compute
 
 * [computeg knowledge](compute/computeg-knowledge.md)
+* [http connect](compute/http-connect.md)
 * [ASCII\_Unicode\_UTF-8](compute/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm.md)
 
