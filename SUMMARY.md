@@ -42,5 +42,9 @@
   * [http connect](compute/knowledge/http-connect.md)
   * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
 * [algorithm](algorithm/README.md)
-  * [inter sort](algorithm/inter/quick_sort.md)
+  * [inter sort](algorithm/inter/inter_sort.md)
+
+## Language
+* [golang](language/golang/README.md)
+  * [channel](language/golang/channel.md)
 
