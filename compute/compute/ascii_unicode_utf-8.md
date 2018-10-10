@@ -1,8 +1,4 @@
----
-description: 字符编码笔记：ASCII，Unicode 和 UTF-8
----
-
-# ASCII\_Unicode\_UTF-8
+# ascii unicode tif-8
 
 ### **一、ASCII 码**
 

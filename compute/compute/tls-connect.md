@@ -1,7 +1,3 @@
----
-description: TLS 单向认证和双向认证
----
-
 # tls connect
 
 个人总结：

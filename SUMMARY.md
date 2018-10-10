@@ -34,17 +34,18 @@
 
 ## compute
 
-* [compute knowledge](compute/README.md)
-  * [tcp nianbao](compute/knowledge/tcp-nianbao.md)
-  * [tcp connect](compute/knowledge/tcp-connect.md)
-  * [tls connect](compute/knowledge/tls-connect.md)
-  * [https connect](compute/knowledge/https-connect.md)
-  * [http connect](compute/knowledge/http-connect.md)
-  * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
-* [algorithm](algorithm/README.md)
-  * [inter sort](algorithm/inter/inter_sort.md)
+* [compute knowledge](compute/compute/README.md)
+  * [tcp nianbao](compute/compute/tcp-nianbao.md)
+  * [tcp connect](compute/compute/tcp-connect.md)
+  * [tls connect](compute/compute/tls-connect.md)
+  * [https connect](compute/compute/https-connect.md)
+  * [http connect](compute/compute/http-connect.md)
+  * [ascii unicode tif-8](compute/compute/ascii_unicode_utf-8.md)
+* [algorithm](compute/algorithm/README.md)
+  * [inter sort](compute/algorithm/inter_sort.md)
 
 ## Language
+
 * [golang](language/golang/README.md)
   * [channel](language/golang/channel.md)
 
