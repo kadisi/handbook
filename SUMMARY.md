@@ -41,6 +41,6 @@
   * [https connect](compute/knowledge/https-connect.md)
   * [http connect](compute/knowledge/http-connect.md)
   * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
-* [algorithm](compute/algorithm/README.md)
-  * [quick sort](compute/algorithm/quick_sort.md)
+* [algorithm](algorithm/README.md)
+  * [inter sort](algorithm/inter/quick_sort.md)
 
