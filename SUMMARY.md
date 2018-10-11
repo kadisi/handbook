@@ -35,6 +35,7 @@
 ## compute
 
 * [compute knowledge](compute/compute/README.md)
+  * [golang memory manager](compute/compute/golang-memory-manager.md)
   * [tcp nianbao](compute/compute/tcp-nianbao.md)
   * [tcp connect](compute/compute/tcp-connect.md)
   * [tls connect](compute/compute/tls-connect.md)
