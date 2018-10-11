@@ -92,6 +92,14 @@ func newobject(typ *_type) unsafe.Pointer {
 
 实在是太简单了，没啥可说的。mallocgc 函数会根据申请的内存大小，去对应的内存块链表上找合适的内存来进行分配，是 Go 自己改造的 tcmalloc 那一套。
 
+## 这里就会提到new 和make 的区别
+
+new 是调用底层的mallocgc 方法，来在底层的内存块链表中寻找一块合适的内存来分配，对里面的数据不会进行初始化
+
+而make 是在很对不同的对象，调用不同底层make 方法，比如make（【】int）,会调用底层的makeslice 方法，创建对应的slice对应的底层数据结构，并对里面的数据进行初始化
+
+
+
 内存拷贝:
 
 ```text
