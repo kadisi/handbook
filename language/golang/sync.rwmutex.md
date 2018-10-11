@@ -147,3 +147,9 @@ func (rw *RWMutex) Unlock() {
 
 写锁的解锁是写锁的上锁的反向操作，上锁时候会直接对readCount 减去一个常数，解锁会再加上这个常数，获得新的readCount 值 这时候r 代表了在write 过程中，新阻塞的read 锁，需要对readSem 信号量执行release 操作，有几个执行几遍，使用for 循环， 
 
+
+
+引用参考
+
+[https://medium.com/golangspec/sync-rwmutex-ca6c6c3208a0](https://medium.com/golangspec/sync-rwmutex-ca6c6c3208a0)
+

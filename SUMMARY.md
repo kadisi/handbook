@@ -48,5 +48,6 @@
 
 * [golang](language/golang/README.md)
   * [sync.RWMutex](language/golang/sync.rwmutex.md)
+  * [lock](language/golang/lock.md)
   * [channel](language/golang/channel.md)
 
