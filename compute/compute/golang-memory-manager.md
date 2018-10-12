@@ -664,3 +664,9 @@ Thank you for reading this. As always I look forward to your comments. And pleas
 10. Function definitions are in https://github.com/golang/go/blob/master/src/runtime/mem\_linux.go and assembly in https://github.com/golang/go/blob/master/src/runtime/sys\_linux\_amd64.s\#L449. There is really cool post about a bug, which happened because Go does not use libc wrappers: https://marcan.st/2017/12/debugging-an-evil-go-runtime-bug/. [![&#x21A9;](https://s.w.org/images/core/emoji/11/svg/21a9.svg)](javascript:)
 11. Read about tcmalloc design in http://goog-perftools.sourceforge.net/doc/tcmalloc.html [![&#x21A9;](https://s.w.org/images/core/emoji/11/svg/21a9.svg)](javascript:)
 
+
+
+
+
+[http://goog-perftools.sourceforge.net/doc/tcmalloc.html](http://goog-perftools.sourceforge.net/doc/tcmalloc.html)
+
