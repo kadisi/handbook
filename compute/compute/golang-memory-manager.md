@@ -11,6 +11,18 @@ In order to implement Paged Virtual Memory, there is a chip called **Memory Mana
 
 MMU保存了虚拟内存地址到物理内存地址的映射关系， 便于CPU访问
 
+
+
+golang 并没有用glibc 的malloc 去alloc 内存， 是只要像os 要的内存（通过mmap），然后golang 自己实现了内存分配和释放， 原理也类似malloc 所做的。 GOlang 的内存分配是基于TCMalloc
+
+## TCMalloc
+
+TCMalloc 比glibc 的malloc（通常） 快
+
+
+
+
+
 引用
 
 {% embed url="https://qbview.url.cn/getResourceInfo?appid=62&url=https%3A%2F%2Fpovilasv.me%2Fgo-memory-management%2F%3Fnsukey%3Db%252F0qdLVIGFjCwncla5prCIjG79DImHoMv4F%252F2wEgVRc18j6KFHIv%252FqdKB7CXxn936gM0fczd0LWrAYgx%252FkWFsmdHkOtEwCu98jS9s1OhIg0LT5Ig8A%252Bh9lkLAkJBmALEsQHKkrApq68kFMz4DcbapzwBN2lRfeZmy192lngx%252BLc%253D&openid=ooa-VuIgptTMkjkAA2-PESbZuRmY&version=10000&doview=1&platformtype=600" %}
