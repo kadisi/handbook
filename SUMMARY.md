@@ -49,6 +49,7 @@
 
 * [golang](language/golang/README.md)
   * [slice](language/golang/slice.md)
+  * [string](language/golang/string.md)
   * [reflect](language/golang/reflect.md)
   * [interface](language/golang/interface.md)
   * [sync.RWMutex](language/golang/sync.rwmutex.md)
