@@ -17,7 +17,23 @@ golang 并没有用glibc 的malloc 去alloc 内存， 是只要像os 要的内�
 
 ## TCMalloc
 
-TCMalloc 比glibc 的malloc（通常） 快
+* TCMalloc 比glibc 的malloc（通常叫ptmalloc2） 快
+* ptmalloc2 需要大约300纳秒 来执行一个malloc
+* TCMalloc 大约需要50纳秒
+
+TCMalloc在多线编程中减少了所得竞争
+
+对于小对象，有虚拟的zero 竞争
+
+对于大对象，TCMalloc 尝试使用高效的自旋锁
+
+
+
+TCMalloc针对于大对象和小对象有不同的处理逻辑，对于小对象，一般是使用thread-local cache 去预先存储，然后拱起分配，一般thread-local cache 资源耗尽，则内存对象则会从中心数据结构转移到thread-local cache
+
+具体可以往下看
+
+
 
 
 
