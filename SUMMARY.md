@@ -55,5 +55,6 @@
   * [interface](language/golang/interface.md)
   * [sync.RWMutex](language/golang/sync.rwmutex.md)
   * [lock](language/golang/lock.md)
+  * [select 和switch](language/golang/select-he-switch.md)
   * [channel](language/golang/channel.md)
 
