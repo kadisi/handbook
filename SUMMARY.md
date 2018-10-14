@@ -34,20 +34,20 @@
 
 ## compute
 
-* [compute knowledge](compute/compute/README.md)
-  * [golang memory manager](compute/compute/golang-memory-manager.md)
-  * [tcp nianbao](compute/compute/tcp-nianbao.md)
-  * [tcp connect](compute/compute/tcp-connect.md)
-  * [tls connect](compute/compute/tls-connect.md)
-  * [https connect](compute/compute/https-connect.md)
-  * [http connect](compute/compute/http-connect.md)
-  * [ascii unicode tif-8](compute/compute/ascii_unicode_utf-8.md)
+* [compute knowledge](compute/knowledge/README.md)
+  * [tcp nianbao](compute/knowledge/tcp-nianbao.md)
+  * [tcp connect](compute/knowledge/tcp-connect.md)
+  * [tls connect](compute/knowledge/tls-connect.md)
+  * [https connect](compute/knowledge/https-connect.md)
+  * [http connect](compute/knowledge/http-connect.md)
+  * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm/README.md)
   * [inter sort](compute/algorithm/inter_sort.md)
 
 ## Language
 
 * [golang](language/golang/README.md)
+  * [memory manager](language/golang/golang-memory-manager.md)
   * [unsafe.Pointer](language/golang/unsafe.pointer.md)
   * [slice](language/golang/slice.md)
   * [string](language/golang/string.md)
