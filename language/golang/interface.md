@@ -1,7 +1,3 @@
----
-description: 解析golang 的interface
----
-
 # interface
 
 首先要理解duck-typing \(鸭子类型\)， 

@@ -1,7 +1,3 @@
----
-description: 深入理解channel
----
-
 # channel
 
 ![](../../.gitbook/assets/image%20%289%29.png)

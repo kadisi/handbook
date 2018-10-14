@@ -1,7 +1,3 @@
----
-description: golang string解释
----
-
 # string
 
 golang string 的底层数据结构

@@ -1,7 +1,3 @@
----
-description: golang 同步机制的实现
----
-
 # lock
 
 Golang的提供的同步机制有sync模块下的Mutex、WaitGroup以及语言自身提供的chan等。 这些同步的方法都是以runtime中实现的底层同步机制（cas、atomic、spinlock、sem）为基础的， 本文主要探讨Golang底层的同步机制如何实现。

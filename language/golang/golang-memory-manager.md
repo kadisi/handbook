@@ -1,4 +1,4 @@
-# golang memory manager
+# memory manager
 
 RAM  可以简单的认为是内存
 
