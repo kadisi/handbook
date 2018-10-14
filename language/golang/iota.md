@@ -108,3 +108,14 @@ func main() {
 // 打印结果  0 1 zz zz 4
 ```
 
+```text
+const (
+	A, B int = iota, iota+1
+	_, _
+	C, D
+	E int = iota+10
+)
+fmt.Println(A, B, C, D, E)
+// 0 1 2 3 13
+```
+
