@@ -4,7 +4,7 @@ description: 解释golang 中iota 的用法和含义
 
 # iota
 
-iota 代表了下一行自增长
+iota 代表了下一行自增长, 默认情况下，不打断的情况下iota 没增加一行，会+1
 
 ## iota 只能在常量表达式const {} 中使用
 
