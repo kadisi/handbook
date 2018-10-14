@@ -52,6 +52,7 @@
   * [slice](language/golang/slice.md)
   * [string](language/golang/string.md)
   * [reflect](language/golang/reflect.md)
+  * [iota](language/golang/iota.md)
   * [interface 1](language/golang/interface-1.md)
   * [interface](language/golang/interface.md)
   * [sync.RWMutex](language/golang/sync.rwmutex.md)
