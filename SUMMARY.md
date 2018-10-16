@@ -42,6 +42,7 @@
   * [http connect](compute/knowledge/http-connect.md)
   * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm/README.md)
+  * [list](compute/algorithm/list.md)
   * [inter sort](compute/algorithm/inter_sort.md)
 
 ## Language

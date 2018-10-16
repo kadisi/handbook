@@ -80,7 +80,26 @@ const (
 // Fig: 4
 ```
 
+```text
+const (
+    Apple, Banana = iota + 1, iota + 2
+    Cherimoya, Durian   // = iota + 1, iota + 2 
+    Elderberry, Fig     //= iota + 1, iota + 2
+)
+iota 在下一行增长，而不是立即取得它的引用。
+// Apple: 1 
+// Banana: 2 
+// Cherimoya: 2 
+// Durian: 3 
+// Elderberry: 3 
+// Fig: 4
+```
+
+
+
 ## 中间插队
+
+如果 `iota` 中间出现插队的情况，那么后续的值会使用插队的值：直到重新遇到iota
 
 ```text
 const ( 
@@ -92,6 +111,8 @@ const (
 
 那么打印出来的结果是 i=0,j=3.14,k=2,l=3
 ```
+
+如果 `iota` 中间出现插队的情况，那么后续的值会使用插队的值
 
 ```text
 const (
