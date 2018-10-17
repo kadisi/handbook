@@ -48,6 +48,7 @@
 ## Language
 
 * [golang](language/golang/README.md)
+  * [gc](language/golang/gc.md)
   * [memory manager](language/golang/golang-memory-manager.md)
   * [unsafe.Pointer](language/golang/unsafe.pointer.md)
   * [slice](language/golang/slice.md)
