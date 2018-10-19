@@ -1,6 +1,6 @@
 # Table of contents
 
-* [kubernetes](README.md)
+* [手记](README.md)
 
 ## kubernetes
 
@@ -18,21 +18,20 @@
     * [kubelet](kubernetes/codeanalyze/kubernetes/kubelet/README.md)
       * [pod merge](kubernetes/codeanalyze/kubernetes/kubelet/pod-merge.md)
   * [containerd](kubernetes/codeanalyze/containerd/README.md)
-    * [deepIntoKubernetes](kubernetes/codeanalyze/containerd/deepintokubernetes/README.md)
-      * [deep1](kubernetes/codeanalyze/containerd/deepintokubernetes/deep1.md)
-      * [deep2](kubernetes/codeanalyze/containerd/deepintokubernetes/deep2.md)
-      * [deep3](kubernetes/codeanalyze/containerd/deepintokubernetes/deep3.md)
-      * [reference](kubernetes/codeanalyze/containerd/deepintokubernetes/reference.md)
+    * [深入理解kubernetes](kubernetes/codeanalyze/containerd/deepintokubernetes/README.md)
+      * [理解1](kubernetes/codeanalyze/containerd/deepintokubernetes/deep1.md)
+      * [理解2](kubernetes/codeanalyze/containerd/deepintokubernetes/deep2.md)
+      * [理解3](kubernetes/codeanalyze/containerd/deepintokubernetes/deep3.md)
+      * [参考](kubernetes/codeanalyze/containerd/deepintokubernetes/reference.md)
     * [snapshot service](kubernetes/codeanalyze/containerd/snapshot-service.md)
     * [core 代码](kubernetes/codeanalyze/containerd/core-dai-ma.md)
     * [image spec](kubernetes/codeanalyze/containerd/image-spec.md)
     * [image pull](kubernetes/codeanalyze/containerd/image-pull.md)
     * [containerd-shim](kubernetes/codeanalyze/containerd/containerd-shim.md)
-* [网络](kubernetes/network/README.md)
+* [kubernetes 网络](kubernetes/network/README.md)
   * [flannel](kubernetes/network/flannel.md)
 
 ## compute
-
 * [compute knowledge](compute/knowledge/README.md)
   * [网络](compute/knowledge/network/README.md)
   	* [tcp 协议](compute/knowledge/network/tcp-xie-yi.md)
@@ -41,17 +40,19 @@
   	* [tls connect](compute/knowledge/network/tls-connect.md)
   	* [https connect](compute/knowledge/network/https-connect.md)
   	* [http connect](compute/knowledge/network/http-connect.md)
-  * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
+  * [编码](compute/knowledge/encoding/README.md)
+  	* [ascii unicode utf-8](compute/knowledge/encoding/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm/README.md)
-  * [list](compute/algorithm/list.md)
-  * [recursion](compute/algorithm/recursion.md)
-  * [heap sort](compute/algorithm/heap-sort.md)
-  * [merge sort](compute/algorithm/merge-sort.md)
-  * [other sort](compute/algorithm/other-sort.md)
-  * [quick sort](compute/algorithm/inter_sort.md)
+  * [数据结构](compute/algorithm/datastruct/README.md)
+  	* [list](compute/algorithm/datastruct/list.md)
+  	* [recursion](compute/algorithm/datastruct/recursion.md)
+  * [排序](compute/algorithm/sort/README.md)
+  * [heap sort](compute/algorithm/sort/heap-sort.md)
+  * [merge sort](compute/algorithm/sort/merge-sort.md)
+  * [other sort](compute/algorithm/sort/other-sort.md)
+  * [quick sort](compute/algorithm/sort/inter_sort.md)
 
 ## Language
-
 * [golang](language/golang/README.md)
   * [gc](language/golang/gc.md)
   * [memory manager](language/golang/golang-memory-manager.md)
