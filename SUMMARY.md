@@ -43,6 +43,7 @@
   * [ascii unicode tif-8](compute/knowledge/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm/README.md)
   * [list](compute/algorithm/list.md)
+  * [recursion](compute/algorithm/recursion.md)
   * [heap sort](compute/algorithm/heap-sort.md)
   * [quick sort](compute/algorithm/inter_sort.md)
 
