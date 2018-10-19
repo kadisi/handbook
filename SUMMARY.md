@@ -45,6 +45,7 @@
   * [list](compute/algorithm/list.md)
   * [recursion](compute/algorithm/recursion.md)
   * [heap sort](compute/algorithm/heap-sort.md)
+  * [merge sort](compute/algorithm/merge-sort.md)
   * [quick sort](compute/algorithm/inter_sort.md)
 
 ## Language
