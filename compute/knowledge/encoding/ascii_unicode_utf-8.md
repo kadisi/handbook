@@ -1,4 +1,4 @@
-# ascii unicode tif-8
+# ascii unicode utf-8
 
 ### **一、ASCII 码**
 

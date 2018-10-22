@@ -1,4 +1,4 @@
-# memory manager
+# 内存管理
 
 RAM  可以简单的认为是内存
 

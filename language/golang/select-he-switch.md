@@ -1,7 +1,3 @@
----
-description: 解释golang 中select 和switch 的区别
----
-
 # select 和switch
 
 引用：[https://colobu.com/2017/07/07/select-vs-switch-in-golang/](https://colobu.com/2017/07/07/select-vs-switch-in-golang/)
@@ -16,7 +12,7 @@ select 主要是针对channel 操作的，select case 可以同事监控多个ch
 
 `select` 和 `switch` 是 Go语言中进行分支操作的两个方式，各有各的应用场景。
 
-#### select {#select}
+#### select <a id="select"></a>
 
 `select`只能应用于channel的操作，既可以用于channel的数据接收，也可以用于channel的数据发送。
 
@@ -56,7 +52,7 @@ func main() {
 }
 ```
 
-#### switch {#switch}
+#### switch <a id="switch"></a>
 
 `switch`可以为各种类型进行分支操作， 设置可以为接口类型进行分支判断\(通过i.\(type\)\)。
 

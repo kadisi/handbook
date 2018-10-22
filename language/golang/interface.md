@@ -1,4 +1,4 @@
-# interface
+# 接口
 
 首先要理解duck-typing \(鸭子类型\)， 
 

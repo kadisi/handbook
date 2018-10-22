@@ -1,8 +1,4 @@
----
-description: 关于struct 和interface 实现的问题
----
-
-# interface 1
+# 接口1
 
 > ```text
 > package main
