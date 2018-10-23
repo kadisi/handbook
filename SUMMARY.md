@@ -50,6 +50,7 @@
   * [排序](compute/algorithm/sort/README.md)
     * [heap sort](compute/algorithm/sort/heap-sort.md)
     * [merge sort](compute/algorithm/sort/merge-sort.md)
+    * [line sort](compute/algorithm/sort/line-sort.md)
     * [other sort](compute/algorithm/sort/other-sort.md)
     * [quick sort](compute/algorithm/sort/inter_sort.md)
 
