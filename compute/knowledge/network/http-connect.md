@@ -6,8 +6,7 @@
 
 #### 一、 HTTP请求和响应步骤
 
-![](//upload-images.jianshu.io/upload_images/3985563-ef43bfa84bb68de1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/528/format/webp)  
- 图片来自：[理解Http请求与响应](https://link.jianshu.com?t=http://android.jobbole.com/85218/)
+![](../../../.gitbook/assets/image%20%284%29.png)
 
 以上完整表示了HTTP请求和响应的7个步骤，下面从TCP/IP协议模型的角度来理解HTTP请求和响应如何传递的。
 
