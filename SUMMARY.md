@@ -3,8 +3,9 @@
 * [手记](README.md)
 
 ## docker
+
 * [知识点](docker/knowledge/README.md)
-	* [entrypoint cmd](docker/knowledge/entrypoint.md)
+  * [entrypoint cmd](docker/knowledge/entrypoint.md)
 
 ## kubernetes
 
