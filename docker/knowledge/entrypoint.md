@@ -1,5 +1,5 @@
 ---
-description: docker 中entrypoint 和 cmd 的区别
+description: entrypoint cmd
 ---
 
 # entrypoint cmd
