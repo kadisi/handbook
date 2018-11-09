@@ -41,6 +41,7 @@
 * [compute knowledge](compute/knowledge/README.md)
   * [操作系统](compute/knowledge/os/README.md)
     * [锁](compute/knowledge/os/lock.md)
+    * [共享内存](compute/knowledge/os/sharemem.md)
   * [网络](compute/knowledge/network/README.md)
     * [tcp 协议](compute/knowledge/network/tcp-xie-yi.md)
     * [tcp nianbao](compute/knowledge/network/tcp-nianbao.md)
