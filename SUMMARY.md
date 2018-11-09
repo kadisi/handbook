@@ -79,4 +79,5 @@
   * [lock](language/golang/lock.md)
   * [select 和switch](language/golang/select-he-switch.md)
   * [channel](language/golang/channel.md)
+  * [数据争用](language/golang/dateraces.md)
 
