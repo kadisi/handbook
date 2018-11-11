@@ -28,3 +28,7 @@ Linux Namespace 是Linux提供的内核级别环境隔离的方法，很早以�
 
 # 未完待续 还需要继续研究操作系统原理
 
+引用链接
+
+[https://www.ibm.com/developerworks/cn/linux/1506_cgroup/index.html](https://www.ibm.com/developerworks/cn/linux/1506_cgroup/index.html)
+
