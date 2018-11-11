@@ -6,6 +6,7 @@
 
 * [知识点](docker/knowledge/README.md)
   * [entrypoint cmd](docker/knowledge/entrypoint.md)
+  * [namespace](docker/knowledge/namespace.md)
 
 ## kubernetes
 
@@ -62,7 +63,7 @@
     * [merge sort](compute/algorithm/sort/merge-sort.md)
     * [line sort](compute/algorithm/sort/line-sort.md)
     * [other sort](compute/algorithm/sort/other-sort.md)
-    * [quick sort](compute/algorithm/sort/inter_sort.md)
+    * [quick sort](compute/algorithm/sort/quick.md)
 
 ## Language
 
