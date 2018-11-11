@@ -8,9 +8,23 @@ Linux Namespace 是Linux提供的内核级别环境隔离的方法，很早以�
 
 
 
-| 分类 | 系统调用 | 备注 |
+| 分类(namespace) | 系统调用 | 备注 |
 | :--- | :--- | :--- |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+|mount  | CLONE_NEWNS |  |
+|uts| CLONE_NEWUTS |  |
+|ipc  | CLONE_NEWIPC |  |
+| pid | CLONE_NEWPID |  |
+| network| CLONE_NEWNET |  |
+| user|  | CLONE_NEWUSER |
+
+主要是三个主要的系统调用
+
+* clone() 实现线程的系统调用，用来创建新的进程，并通过设计上述参数达到隔离
+* unshare() 使某个进程脱离某个namespace
+* setns() 把某个进程加入到某个namespace
+
+# clone 系统调用
+
+
+# 未完待续 还需要继续研究操作系统原理
 
