@@ -31,6 +31,8 @@
   * [数据结构](compute/algorithm/datastruct/README.md)
     * [list](compute/algorithm/datastruct/list.md)
     * [recursion](compute/algorithm/datastruct/recursion.md)
+  * [算法思想](compute/algorithm/thought/README.md)
+  	* [二分](compute/algorithm/thought/binary.md)
   * [排序](compute/algorithm/sort/README.md)
     * [heap sort](compute/algorithm/sort/heap-sort.md)
     * [merge sort](compute/algorithm/sort/merge-sort.md)
