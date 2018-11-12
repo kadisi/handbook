@@ -25,6 +25,7 @@
     * [tls connect](compute/knowledge/network/tls-connect.md)
     * [https connect](compute/knowledge/network/https-connect.md)
     * [http connect](compute/knowledge/network/http-connect.md)
+    * [dpdk](compute/knowledge/network/dpdk.md)
   * [编码](compute/knowledge/encoding/README.md)
     * [ascii unicode utf-8](compute/knowledge/encoding/ascii_unicode_utf-8.md)
 * [algorithm](compute/algorithm/README.md)
@@ -68,6 +69,8 @@
       * [informerfactory 机制](compute/codeanalyze/kubernetes/kube-scheduler/informerfactory-ji-zhi.md)
     * [kubelet](compute/codeanalyze/kubernetes/kubelet/README.md)
       * [pod merge](compute/codeanalyze/kubernetes/kubelet/pod-merge.md)
+  * [kubernetes 网络](compute/kubernetes-wang-luo/README.md)
+    * [flannel](compute/kubernetes-wang-luo/flannel.md)
   * [containerd](compute/codeanalyze/containerd/README.md)
     * [深入理解kubernetes](compute/codeanalyze/containerd/deepintokubernetes/README.md)
       * [理解1](compute/codeanalyze/containerd/deepintokubernetes/deep1.md)
@@ -79,6 +82,3 @@
     * [image spec](compute/codeanalyze/containerd/image-spec.md)
     * [image pull](compute/codeanalyze/containerd/image-pull.md)
     * [containerd-shim](compute/codeanalyze/containerd/containerd-shim.md)
-* [kubernetes 网络](compute/kubernetes-wang-luo/README.md)
-  * [flannel](compute/kubernetes-wang-luo/flannel.md)
-
