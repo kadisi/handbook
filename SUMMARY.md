@@ -40,6 +40,8 @@
     * [line sort](compute/algorithm/sort/line-sort.md)
     * [other sort](compute/algorithm/sort/other-sort.md)
     * [quick sort](compute/algorithm/sort/quick.md)
+  * [其他](compute/algorithm/other/README.md)
+  	* [算术运算](compute/algorithm/other/arithmetic.md)
 * [golang](compute/golang/README.md)
   * [垃圾回收](compute/golang/gc.md)
   * [内存管理](compute/golang/golang-memory-manager.md)
