@@ -3,14 +3,12 @@
 * [手记](README.md)
 
 ## docker
-
 * [知识点](docker/knowledge/README.md)
   * [entrypoint cmd](docker/knowledge/entrypoint.md)
   * [namespace](docker/knowledge/namespace.md)
   * [cgroup](docker/knowledge/cgroup.md)
 
 ## compute
-
 * [compute knowledge](compute/knowledge/README.md)
   * [操作系统](compute/knowledge/os/README.md)
     * [锁](compute/knowledge/os/lock.md)
@@ -56,6 +54,8 @@
   * [channel](compute/golang/channel.md)
   * [数据争用](compute/golang/dateraces.md)
   * [goroutine](compute/golang/goroutine.md)
+
+
 ## 源码分析 
 * [源码分析](compute/codeanalyze/README.md)
   * [kubernetes](compute/codeanalyze/kubernetes/README.md)
