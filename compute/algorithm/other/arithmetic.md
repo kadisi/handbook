@@ -70,6 +70,53 @@ a = b + (-c)
 * 5 \* 3
 = 0000 0101 \* 0000 0011
 
+5 乘以 3 ，代表了三个五 相加， 根据3 的二进制表示 0011 可以理解为 1 个五 + 2个五
+按照这种思想 可以这么理解
+3 的第 0 位 为 1， 因此需要将5左移0 位， 还是5
+3 的第1位 为 1，因此需要将5 左移1位， 得 0000 1010 为10
+两者相加 5 + 10 = 15
+
+同样 对于
+* 3 \* 5
+= 0000 0011  \* 0000 0101
+5的第0位为1 ,需要将3左移0位， 为 3
+5的第1位为0， 不做操作
+5的第2位为1， 需要将3左移2位， 为 0000 1100 为 12
+3 + 12 为 15
+
+golang 实现两个数相乘， 不用 加减乘除
+```
+
+// i是从右边开始算， 范围是[0,31]闭区间
+var MASK int32 = 0x01
+
+func getBitValue(value int32, i uint) int32 {
+    return (value >> i) & MASK
+}
+
+func Muilty(v1, v2 int32) int32 {
+    var value int32 = 0
+    var i uint = 0
+    for ; i<=31; i= uint(Sum(int32(i), 1)) {
+        if getBitValue(v2, i) == 1 {
+            value = Sum(value, (v1 << i))
+        }
+        if v2 >> i == 0 {
+            break
+        }
+    }
+    return value
+}
+
+func Sum(a, b int32) int32{
+    if a == 0 {
+        return b
+    }
+    return Sum((a&b)<<1, a^b)
+}
+
+```
+
 
 
 
