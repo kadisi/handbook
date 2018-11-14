@@ -7,6 +7,7 @@
   * [entrypoint cmd](docker/knowledge/entrypoint.md)
   * [namespace](docker/knowledge/namespace.md)
   * [cgroup](docker/knowledge/cgroup.md)
+  * [flannel](docker/knowledge/flannel.md)
 
 ## compute
 * [知识](compute/knowledge/README.md)
@@ -75,8 +76,6 @@
       * [informerfactory 机制](codeanalyze/kubernetes/kube-scheduler/informerfactory-ji-zhi.md)
     * [kubelet](codeanalyze/kubernetes/kubelet/README.md)
       * [pod merge](codeanalyze/kubernetes/kubelet/pod-merge.md)
-  * [kubernetes 网络](codeanalyze/kubernetes-wang-luo/README.md)
-    * [flannel](codeanalyze/kubernetes-wang-luo/flannel.md)
   * [containerd](codeanalyze/containerd/README.md)
     * [深入理解kubernetes](codeanalyze/containerd/deepintokubernetes/README.md)
       * [理解1](codeanalyze/containerd/deepintokubernetes/deep1.md)
