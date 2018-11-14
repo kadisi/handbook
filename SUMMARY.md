@@ -3,12 +3,14 @@
 * [手记](README.md)
 
 ## docker
+
 * [entrypoint cmd](docker/entrypoint.md)
 * [namespace](docker/namespace.md)
 * [cgroup](docker/cgroup.md)
 * [flannel](docker/flannel.md)
 
 ## compute
+
 * [操作系统](compute/os/README.md)
   * [锁](compute/os/lock.md)
   * [共享内存](compute/os/sharemem.md)
@@ -28,6 +30,7 @@
   * [ascii unicode utf-8](compute/encoding/ascii_unicode_utf-8.md)
 
 ## algorithm
+
 * [数据结构](algorithm/datastruct/README.md)
   * [链表](algorithm/datastruct/list.md)
   * [递归](algorithm/datastruct/recursion.md)
@@ -43,6 +46,7 @@
   * [算术运算](algorithm/other/arithmetic.md)
 
 ## language
+
 * [golang](language/golang/README.md)
   * [垃圾回收](language/golang/gc.md)
   * [内存管理](language/golang/golang-memory-manager.md)
@@ -61,27 +65,28 @@
   * [goroutine](language/golang/goroutine.md)
 
 ## code analyze
-* [kubernetes](codeanalyze/kubernetes/README.md)
-  * [kube-apiserver](codeanalyze/kubernetes/apiserver.md)
-  * [kube-controller-manager](codeanalyze/kubernetes/kube-controller-manager/README.md)
-    * [worke queue](codeanalyze/kubernetes/kube-controller-manager/worke-queue.md)
-    * [rs controller](codeanalyze/kubernetes/kube-controller-manager/rs-controller.md)
-    * [deploy controller](codeanalyze/kubernetes/kube-controller-manager/deploy-controller.md)
-  * [kube-scheduler](codeanalyze/kubernetes/kube-scheduler/README.md)
-    * [调度机制](codeanalyze/kubernetes/kube-scheduler/tiao-du-ji-zhi.md)
-    * [调度选举](codeanalyze/kubernetes/kube-scheduler/tiao-du-xuan-ju.md)
-    * [informerfactory 机制](codeanalyze/kubernetes/kube-scheduler/informerfactory-ji-zhi.md)
-  * [kubelet](codeanalyze/kubernetes/kubelet/README.md)
-    * [pod merge](codeanalyze/kubernetes/kubelet/pod-merge.md)
-* [containerd](codeanalyze/containerd/README.md)
-  * [深入理解kubernetes](codeanalyze/containerd/deepintokubernetes/README.md)
-    * [理解1](codeanalyze/containerd/deepintokubernetes/deep1.md)
-    * [理解2](codeanalyze/containerd/deepintokubernetes/deep2.md)
-    * [理解3](codeanalyze/containerd/deepintokubernetes/deep3.md)
-    * [参考](codeanalyze/containerd/deepintokubernetes/reference.md)
-  * [snapshot service](codeanalyze/containerd/snapshot-service.md)
-  * [core 代码](codeanalyze/containerd/core-dai-ma.md)
-  * [image spec](codeanalyze/containerd/image-spec.md)
-  * [image pull](codeanalyze/containerd/image-pull.md)
-  * [containerd-shim](codeanalyze/containerd/containerd-shim.md)
+
+* [kubernetes](code-analyze/kubernetes/README.md)
+  * [kube-apiserver](code-analyze/kubernetes/apiserver.md)
+  * [kube-controller-manager](code-analyze/kubernetes/kube-controller-manager/README.md)
+    * [worke queue](code-analyze/kubernetes/kube-controller-manager/worke-queue.md)
+    * [rs controller](code-analyze/kubernetes/kube-controller-manager/rs-controller.md)
+    * [deploy controller](code-analyze/kubernetes/kube-controller-manager/deploy-controller.md)
+  * [kube-scheduler](code-analyze/kubernetes/kube-scheduler/README.md)
+    * [调度机制](code-analyze/kubernetes/kube-scheduler/tiao-du-ji-zhi.md)
+    * [调度选举](code-analyze/kubernetes/kube-scheduler/tiao-du-xuan-ju.md)
+    * [informerfactory 机制](code-analyze/kubernetes/kube-scheduler/informerfactory-ji-zhi.md)
+  * [kubelet](code-analyze/kubernetes/kubelet/README.md)
+    * [pod merge](code-analyze/kubernetes/kubelet/pod-merge.md)
+* [containerd](code-analyze/containerd/README.md)
+  * [深入理解kubernetes](code-analyze/containerd/deepintokubernetes/README.md)
+    * [理解1](code-analyze/containerd/deepintokubernetes/deep1.md)
+    * [理解2](code-analyze/containerd/deepintokubernetes/deep2.md)
+    * [理解3](code-analyze/containerd/deepintokubernetes/deep3.md)
+    * [参考](code-analyze/containerd/deepintokubernetes/reference.md)
+  * [snapshot service](code-analyze/containerd/snapshot-service.md)
+  * [core 代码](code-analyze/containerd/core-dai-ma.md)
+  * [image spec](code-analyze/containerd/image-spec.md)
+  * [image pull](code-analyze/containerd/image-pull.md)
+  * [containerd-shim](code-analyze/containerd/containerd-shim.md)
 
