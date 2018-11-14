@@ -13,6 +13,7 @@
 
 * [操作系统](compute/os/README.md)
   * [锁](compute/os/lock.md)
+  * [总线锁](compute/os/buslock.md)
   * [共享内存](compute/os/sharemem.md)
   * [共享库](compute/os/sharelibrary.md)
   * [软连接](compute/os/ln.md)
