@@ -29,7 +29,7 @@
   * [http 链接](compute/network/http-connect.md)
   * [dpdk](compute/network/dpdk.md)
 * [编码](compute/encoding/README.md)
-  * [ascii unicode utf-8](compute/encoding/ascii_unicode_utf-8.md)
+  * [ascii](compute/encoding/ascii_unicode_utf-8.md)
 
 ## algorithm
 
