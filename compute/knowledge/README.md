@@ -2,7 +2,7 @@
 计算机知识: 计算机相关知识
 ---
 
-# compute knowledge
+# 知识
 
 
 

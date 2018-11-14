@@ -4,7 +4,7 @@ description: 手记 -- 博客
 
 # 手记
 
-## 通用
+## 通用标题
 
 Becoming a super hero is a fairly straight forward process:
 
