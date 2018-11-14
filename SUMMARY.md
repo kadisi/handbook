@@ -11,7 +11,7 @@
 
 ## compute
 
-* [compute knowledge](compute/knowledge/README.md)
+* [计算机知识](compute/knowledge/README.md)
   * [操作系统](compute/knowledge/os/README.md)
     * [锁](compute/knowledge/os/lock.md)
     * [共享内存](compute/knowledge/os/sharemem.md)
@@ -28,7 +28,8 @@
     * [dpdk](compute/knowledge/network/dpdk.md)
   * [编码](compute/knowledge/encoding/README.md)
     * [ascii unicode utf-8](compute/knowledge/encoding/ascii_unicode_utf-8.md)
-* [algorithm](compute/algorithm/README.md)
+## 算法 
+* [算法](compute/algorithm/README.md)
   * [数据结构](compute/algorithm/datastruct/README.md)
     * [链表](compute/algorithm/datastruct/list.md)
     * [递归](compute/algorithm/datastruct/recursion.md)
@@ -42,6 +43,7 @@
     * [快排](compute/algorithm/sort/quick.md)
   * [其他](compute/algorithm/other/README.md)
     * [算术运算](compute/algorithm/other/arithmetic.md)
+## 编程语言 
 * [golang](compute/golang/README.md)
   * [垃圾回收](compute/golang/gc.md)
   * [内存管理](compute/golang/golang-memory-manager.md)
@@ -60,7 +62,6 @@
   * [goroutine](compute/golang/goroutine.md)
 
 ## 源码分析
-
 * [源码分析](codeanalyze/README.md)
   * [kubernetes](codeanalyze/kubernetes/README.md)
     * [kube-apiserver](codeanalyze/kubernetes/apiserver.md)
