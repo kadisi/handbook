@@ -16,7 +16,7 @@ PID 为进程自身的ID ， PGID为进程所在的进程组的ID PPID为进程�
 
 如下图
 
-![](../../.gitbook/assets/image%20%2818%29.png)
+![](../../.gitbook/assets/image%20%2819%29.png)
 
   
 图中箭头表示父进程通过[fork和exec机制](http://www.cnblogs.com/vamei/archive/2012/09/20/2694466.html)产生子进程。ps和cat都是bash的子进程。进程组的领导进程的PID成为进程组ID。领导进程可以先终结。此时进程组依然存在，并持有相同的PGID，直到进程组中最后一个进程终结。
