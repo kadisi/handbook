@@ -9,7 +9,7 @@
   * [cgroup](docker/knowledge/cgroup.md)
 
 ## compute
-* [计算机知识](compute/knowledge/README.md)
+* [知识](compute/knowledge/README.md)
   * [操作系统](compute/knowledge/os/README.md)
     * [锁](compute/knowledge/os/lock.md)
     * [共享内存](compute/knowledge/os/sharemem.md)
@@ -27,7 +27,7 @@
   * [编码](compute/knowledge/encoding/README.md)
     * [ascii unicode utf-8](compute/knowledge/encoding/ascii_unicode_utf-8.md)
 
-## 算法 
+## algorithm 
 * [算法](algorithm/README.md)
   * [数据结构](algorithm/datastruct/README.md)
     * [链表](algorithm/datastruct/list.md)
@@ -43,7 +43,7 @@
   * [其他](algorithm/other/README.md)
     * [算术运算](algorithm/other/arithmetic.md)
 
-## 编程语言 
+## language 
 * [golang](language/golang/README.md)
   * [垃圾回收](language/golang/gc.md)
   * [内存管理](language/golang/golang-memory-manager.md)
@@ -61,7 +61,7 @@
   * [数据争用](language/golang/dateraces.md)
   * [goroutine](language/golang/goroutine.md)
 
-## 源码分析
+## code analyze 
 * [源码分析](codeanalyze/README.md)
   * [kubernetes](codeanalyze/kubernetes/README.md)
     * [kube-apiserver](codeanalyze/kubernetes/apiserver.md)
