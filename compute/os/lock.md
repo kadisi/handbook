@@ -1,5 +1,5 @@
 ---
-操作系统: 锁
+操作系统  锁
 ---
 
 # 锁
@@ -48,7 +48,7 @@ linux spinlock 在内核中相对比较常见， 因为内核中有很多需要�
 
 ## golang 的死锁检测
 
-举例:
+举例
 
 ```text
 func main() {
@@ -67,7 +67,7 @@ func main() {
 ```text
 input 1
 input 2
-fatal error: all goroutines are asleep - deadlock!
+fatal error all goroutines are asleep - deadlock!
 
 goroutine 1 [chan send]:
 main.main()
