@@ -58,7 +58,7 @@ echo 'You got to trust me on this, I saved the world'
 
 ### Image
 
-![](.gitbook/assets/image%20%2813%29.png)
+![](.gitbook/assets/image%20%2814%29.png)
 
 ### table
 
@@ -129,7 +129,7 @@ bbbbb
 
 ### files
 
-{% file src=".gitbook/assets/image \(22\).png" %}
+{% file src=".gitbook/assets/image \(23\).png" %}
 
 
 

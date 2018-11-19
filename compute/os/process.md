@@ -16,22 +16,22 @@ PID 为进程自身的ID ， PGID为进程所在的进程组的ID PPID为进程�
 
 如下图
 
-![](../../.gitbook/assets/image%20%2819%29.png)
+![](../../.gitbook/assets/image%20%2820%29.png)
 
-  
 图中箭头表示父进程通过[fork和exec机制](http://www.cnblogs.com/vamei/archive/2012/09/20/2694466.html)产生子进程。ps和cat都是bash的子进程。进程组的领导进程的PID成为进程组ID。领导进程可以先终结。此时进程组依然存在，并持有相同的PGID，直到进程组中最后一个进程终结。
 
 我们将一些进程归为进程组的一个重要原因是我们可以将[信号](http://www.cnblogs.com/vamei/archive/2012/10/04/2711818.html)发送给一个进程组。进程组中的所有进程都会收到该信号。我们会在下一部分深入讨论这一点。
 
 ## 进程 fork
+
 fork 有两个典型的用法
+
 * 一个进程创建一个自身的副本， 这样每个副本都可以在另一个副本执行其他任务的同事处理各自的某个操作。 这是网络服务器的典型用法， 
 * 一个进程想要执行另一个程序， 既然创建新进程的唯一方法是调用fork，该进程于是首先调用fork创建一个自身的副本， 然后其中一个副本（通常为子进程）调用exec 把自身替换成新的程序。 这是诸如shell之类的典型用法。
 
 存放在硬盘上的可执行程序文件能够被Unix 执行的唯一方法是: 又一个现有进程调用六个exec函数中的某一个（当这6个函数中是哪一个被调用并不重要时， 我们往往把他们统称为exec函数）exec 把当前进程镜像替换成新的程序文件，而且该新程序通常从main函数开始执行。 进程ID并不改变。 我们称调用exec的进程为调用进程（calling process）称新执行的程序为新程序（new program）
 
-
 ## 引用
 
-{% embed url="http://www.cnblogs.com/vamei/archive/2012/10/07/2713023.html" %}
+{% embed url="http://www.cnblogs.com/vamei/archive/2012/10/07/2713023.html" caption="" %}
 
