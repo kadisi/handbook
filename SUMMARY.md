@@ -30,6 +30,7 @@
   * [https 链接](compute/network/https-connect.md)
   * [http 链接](compute/network/http-connect.md)
   * [dpdk](compute/network/dpdk.md)
+  * [socket 套接字](compute/network/socket.md)
 * [编码](compute/encoding/README.md)
   * [ascii](compute/encoding/ascii_unicode_utf-8.md)
 
