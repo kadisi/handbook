@@ -147,7 +147,8 @@ fork 有两个典型的用法
 存放在硬盘上的可执行程序文件能够被unix 执行的唯一方法是： 由一个现有进程调用六个exec函数中的某一个， exec 吧当前进程镜像替换成新的程序文件， 而且该程序通常从main函数开始执行， 进程id 并不改变， 我们称调用exec 的进程为调用进程（calling process）成新的执行的程序为新程序（new program）
 
 
-
+下图是典型的并发服务器程序轮廓
+![](../../.gitbook/assets/concurrent_code.png)
 
 
 
