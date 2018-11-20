@@ -21,7 +21,7 @@ ISO 网络模型，分七层，从上到下依次为
 
 TCP 在传输层， IP 在网络层， 传输层在网络层上面， 传输层tcp包含重要的源端口和目的端口字段， IP网络层包含 源ip 目的ip 字段， 只有源端口， 目的端口， 源ip， 目的ip 才能形成一个tcp 链接
 
-![](../../.gitbook/assets/image%20%2813%29.png)
+![](../../.gitbook/assets/image%20%2814%29.png)
 
 ![](../../.gitbook/assets/image%20%283%29.png)
 
@@ -39,7 +39,7 @@ TCP 在传输层， IP 在网络层， 传输层在网络层上面， 传输层t
 
 ## TCP 头部
 
-![](../../.gitbook/assets/image%20%2816%29.png)
+![](../../.gitbook/assets/image%20%2817%29.png)
 
 在TCP报文， 外包包的是IP 层的首部， IP层的数据部分 就是TCP 数据包。
 
@@ -69,7 +69,7 @@ TCP Flags:TCP首部中有6个标志比特，它们中的多个可同时被设置
 
 ## TCP 三次握手
 
-![](../../.gitbook/assets/image%20%2819%29.png)
+![](../../.gitbook/assets/image%20%2820%29.png)
 
 1. 第一次握手：建立连接。客户端发送连接请求报文段，将SYN位置为1，Sequence Number为x，请求的报文实际上还是一个tcp数据包，只不过这个包没有data， 最大的特点就是这个包的首部SYN标志位为1，代表了这个包是一个SYN包，而数据包中的确认号 Sequence Number x是随机产生的，因为是SYN包，所以确认号对数据的前后顺序不影响 ；然后，客户端进入SYN\_SEND状态，等待服务器的确认；
 2. 第二次握手：服务器收到SYN报文段。服务器收到客户端的SYN报文段，需要对这个SYN报文段进行确认，设置Acknowledgment Number为x+1\(Sequence Number+1\)；同时，自己自己还要发送SYN请求信息，将SYN位置为1，Sequence Number为y，这个y也是服务器端随机产生的；服务器端将上述所有信息放到一个报文段（即SYN+ACK报文段）中，这个时候SYN字段是1， ACK 字段也是1，代表的是连接请求响应报文， 确认号字段为x+1，一并发送给客户端，此时服务器进入SYN\_RECV状态；
@@ -97,7 +97,7 @@ TCP协议是一种面向连接的、可靠的、基于字节流的运输层通�
 
 第四次分手： 主机A： 好的， 我也知道了，咱们拜拜吧，从此老死不相往来（A 知道B没数据可发后，俩人就开始拜拜了）
 
-![](../../.gitbook/assets/image%20%2818%29.png)
+![](../../.gitbook/assets/image%20%2819%29.png)
 
 当客户端和服务器通过三次握手建立了TCP连接以后，当数据传送完毕，肯定是要断开TCP连接的啊。那对于TCP的断开连接，这里就有了神秘的“四次分手”。
 

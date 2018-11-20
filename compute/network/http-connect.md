@@ -6,7 +6,7 @@
 
 #### 一、 HTTP请求和响应步骤
 
-![](../../.gitbook/assets/image%20%285%29.png)
+![](../../.gitbook/assets/image%20%286%29.png)
 
 以上完整表示了HTTP请求和响应的7个步骤，下面从TCP/IP协议模型的角度来理解HTTP请求和响应如何传递的。
 
