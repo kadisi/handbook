@@ -21,6 +21,7 @@
   * [进程](compute/os/process.md)
   * [整数 浮点数](compute/os/float.md)
   * [三态门](compute/os/tristate.md)
+  * [信号](compute/os/signal.md)
 * [网络](compute/network/README.md)
   * [tcp 协议](compute/network/tcp-xie-yi.md)
   * [tcp 粘包](compute/network/tcp-nianbao.md)
