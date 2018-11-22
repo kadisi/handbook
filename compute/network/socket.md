@@ -22,7 +22,7 @@ int socket(int family, int type, int protocal)
 
 其中family 参数指定协议族， 该参数也往往被称为协议域。 type参数指明套接字类型， protocal 应该设置为某个协议类型常值。并非所有family 与type的组合都是有效的。
 
-![](../../.gitbook/assets/image%20%289%29.png)
+![](../../.gitbook/assets/image%20%2810%29.png)
 
 socket 函数在成功返回一个小的非负整数值，他与文件描述符类似，我们把它称为套接字描述符。 简称sockfd。 为了得到这个套接字描述符， 我们只是指定了协议族（IPV4 IPV6 UNIX）和套接字类型 （字节流， 数据报文， 或者原始套接字）我们并没有指定本地协议地址或者远程协议地址
 
@@ -87,7 +87,7 @@ int listen(int sockfd, int backlog)
 
 如下图， 描述了监听套接字的两个队列
 
-![](../../.gitbook/assets/image%20%2813%29.png)
+![](../../.gitbook/assets/image%20%2814%29.png)
 
 每当在为完成连接队列中，创建一项时候， 来自监听套接字的参数就会被复制到即将建立的链接中。连接的创建机制是完全自动的， 无需服务器进程插手， 下图展示了用这两个队列连接时候所交换的分组。
 

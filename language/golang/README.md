@@ -2,9 +2,9 @@
 description: golang 语言
 ---
 
-# 概述 
+# golang
 
-golang  高效的核心在于减少了系统调用
+golang 高效的核心在于减少了系统调用
 
 例如 golang 的MPG 模型 就是减少了线程的上下文切换
 
