@@ -33,6 +33,7 @@
   * [dpdk](compute/network/dpdk.md)
   * [socket 套接字](compute/network/socket.md)
   * [select和poll](compute/network/select.md)
+  * [iptables](compute/network/iptables.md)
 * [编码](compute/encoding/README.md)
   * [ascii](compute/encoding/ascii_unicode_utf-8.md)
 

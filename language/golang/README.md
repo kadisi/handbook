@@ -2,7 +2,7 @@
 description: golang 语言
 ---
 
-# golang
+# 概述 
 
 golang  高效的核心在于减少了系统调用
 
