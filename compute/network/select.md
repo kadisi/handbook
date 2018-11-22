@@ -145,6 +145,18 @@ int select(int maxfdpl, fd_set *readset, fd_set *writeset, fd_set *expectset, co
 中间的三个参数，readset,writeset, expectset 指定我们要让内核测试读， 写 和异常条件的描述符。
 
 
+**select 最大描述符在Unix 下256 ， 在Linux 下是1024**
+
+
+# shutdown 函数
+
+终止网络连接的通常方法是调用close 函数。 不过close 有两个限制，却可以使用shutdown 来避免
+
+* close 把描述符的引用计数减一， 仅在改计数变为0 时候， 才关闭套接字。 在之前也讨论过， 使用shutdown 可以不管引用计数就激发TCP 正常连接终止序列。
+
+* close 终止度和写两个方向的传送， 既然TCP是全双工的。 有时候我们需要告知对端我们已经完成了数据发送， 即使对端仍有数据要发送给我们。 
+
+
 
 
 
