@@ -53,6 +53,7 @@
   * [快排](algorithm/sort/quick.md)
 * [其他](algorithm/other/README.md)
   * [算术运算](algorithm/other/arithmetic.md)
+  * [全排列](algorithm/other/fullArrange.md)
 
 ## language
 
