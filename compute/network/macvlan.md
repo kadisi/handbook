@@ -55,6 +55,168 @@ macvlan 子接口用使用 mac0@etch0 的形式， 是为了清楚的定义子�
 
 # macvlan mode
 
+mac vlan 一共四种模式， **private bridge vepa Passthru**
+
+## private
+
+具有相同父接口的子接口之间是不能够互相通信的。 所有经过子接口的数据帧都会经过父接口去转发。虽然上层的物理交换机发现这个数据帧 是从一个子接口到另一个子接口的，但是数据帧最终还会被drop掉。
+
+![](../../.gitbook/assets/mode_private.png)
+
+
+## VEPA
+
+所有来自子接口的数据帧都会通过父接口转发出去。VEPA模式要求 物理交换机支持 IEEE 802.1Qbg aka Virtual Ethernet Port。
+
+具有VEPA能力的交换机能否返回所有数据帧，这些数据帧的源和目的都来源于本地mavclan接口。 因此具有相同父接口的macvlan子接口能够互相通信通过外部的物理交换机。
+Broadcast frames coming in through the parent interface get flooded to all macvlan interfaces in VEPA mode. 
+
+当你在物理交换机上强制策略并且你想让所有vm -to- vm 通过物理交换机通信，VEPA模式是很有用的。
+
+缺点：
+数据帧 出 和 会 要经过父接口和物理交换机 ，性能会低
+
+
+![](../../.gitbook/assets/mode_vepa.png)
+
+## bridge
+
+macvlan 使用一个简单的bridge 来连接同一个父接口下的所有子接口。 在同一个父接口下，数据帧从一个子接口到另一个子接口会直接传递，而不需要发出去。
+dcast frames get flooded to all other bridge ports and to the external interface, but when they come back from a VEP switch, they are discarded. Since all macvlan sub-interface  MAC addresses are known, macvlan bridge mode does not require MAC learning and does not need STP.
+
+因为macvlan bridge模式下 父接口都已经知道了子接口的mac地址，所以不需要mac学习，不需要STP 即生成树协议
+
+macvlan bridge 模式提供了vm之间快速通信，但是有一点我们需要注意： 如果父接口down了， 所有父接口下的子接口都会down，
+
+当物理接口无法链接时候， 所有vm 不能够互相链接。
+
+
+![](../../.gitbook/assets/mode_bridge.png)
+
+## Passthru
+
+允许单个vm 能够直接连接到物理接口。 这个模式的优势是 vm能够更改mac地址和其他接口的参数。
+
+这种模式很少用
+
+
+![](../../.gitbook/assets/mode_p.png)
+
+# macvlan vs(versus) bridge
+
+## macvlan
+
+```
+The macvlan is a trivial bridge that doesn’t need to do learning as it knows every mac address it can receive, so it doesn’t need to implement learning or stp. Which makes it simple stupid and and fast.
+
+macvlan是一个不需要学习的小桥梁，因为它知道它可以接收到的每个mac地址，所以它不需要实现学习或stp。这使得它简单、愚蠢和快速。
+```
+
+* 当你只需要提供物理网络到你vm或者container的出口连接时候
+* 会使用你较少的cpu 提供更好的输出
+
+## bridge
+
+* 当你需要在同一个host连接vm 或者container 
+* 对于多个bridge 复杂的网络拓扑
+* 你需要提供现金的flood控制， FDB操作等
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
