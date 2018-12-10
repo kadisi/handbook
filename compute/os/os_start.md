@@ -172,6 +172,7 @@ initdefault的值是2，表明系统启动时的运行级别为2。如果需要�
 ```
 
 用户登录一般有三种方式
+
 ```
 命令行
 
@@ -184,6 +185,7 @@ ssh 登录
 * 命令行
 	init 调用getttyc 程序（get teletype）让用户输入用户名和密码， 输入完成后，再调用lgin 程序， 核对密码， 如果正确， 则从/etc/passwd 读取用户指定的shell, 启动这个shell
 	/etc/passwd 文件内容
+
 ```
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/bin:/sbin/nologin
@@ -207,6 +209,8 @@ tcpdump:x:72:72::/:/sbin/nologin
 dockerroot:x:998:995:Docker User:/var/lib/docker:/sbin/nologin
 
 ```
+
+
 * ssh 登录 
 	这时系统调用sshd程序（Debian还会再运行/etc/pam.d/ssh ），取代getty和login，然后启动shell。
 * 图形界面 
@@ -220,12 +224,15 @@ dockerroot:x:998:995:Docker User:/var/lib/docker:/sbin/nologin
 
 * 命令行
 	首先读取/etc/profile 这是对所有用户都有效的配置， 依次寻找下面的文件
+
+
 ```
 　　~/.bash_profile
 　　~/.bash_login
 　　~/.profile
 　　
 ```
+
 	需要注意的是， 这三个文件只要有一个存在就不需要读入后面的文件了，比如，要是 ~/.bash_profile 存在，就不会再读入后面两个文件了。
 
 * ssh登录：与第一种情况完全相同。

@@ -80,6 +80,7 @@
 * [shell](language/shell/README.md)
   * [if语法](language/shell/grammar.md)
   * [eval](language/shell/eval.md)
+  * [string](language/shell/string.md)
 
 ## work
 * [问题](language/work/README.md)
