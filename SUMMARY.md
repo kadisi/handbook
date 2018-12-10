@@ -75,6 +75,11 @@
   * [数据争用](language/golang/dateraces.md)
   * [goroutine](language/golang/goroutine.md)
 
+## shell 
+* [shell](language/shell/README.md)
+  * [if语法](language/shell/grammar.md)
+  * [eval](language/shell/eval.md)
+
 ## code analyze
 
 * [kubernetes](code-analyze/kubernetes/README.md)
