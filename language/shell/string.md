@@ -4,7 +4,7 @@ description: shell 字符串
 
 # 字符串处理技巧
 
-* ${#VALUE} 计算变量VALUE字符串的字符数量
+${#VALUE} 计算变量VALUE字符串的字符数量
 
 ```
 VALUE=abcd
@@ -15,6 +15,7 @@ out: 4
 ``` 
 
 * ${VALUE%.\*}或${VALUE%%.\*}：删除VALUE字符串中以分隔符“.”匹配的右边字符，保留左边字符。
+
 ```
 VALUE=abcd.12e4
 echo ${VALUE%%.*}
@@ -74,8 +75,8 @@ echo ${VALUE:0-4:3} #12e
 
 echo ${VALUE:0-4:2} #12
 
-
 ```
+
 补充
 	
 	左边第一个字符从“0”开始，
