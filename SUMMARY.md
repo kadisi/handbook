@@ -26,6 +26,7 @@
   * [用户态/内核态](compute/os/use_kernal_mode.md)
   * [系统启动顺序](compute/os/os_start.md)
 * [网络](compute/network/README.md)
+  * [udp](compute/network/udp.md)
   * [tcp1](compute/network/tcp-xie-yi.md)
   * [http1](compute/network/http-connect.md)
   * [dpdk](compute/network/dpdk.md)
