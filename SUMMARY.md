@@ -57,7 +57,7 @@
   * [快排](algorithm/sort/quick.md)
 * [其他](algorithm/other/README.md)
   * [算术运算](algorithm/other/arithmetic.md)
-  * [全排列](algorithm/other/fullArrange.md)
+  * [全排列](algorithm/other/fullarrange.md)
 
 ## language
 
@@ -78,17 +78,20 @@
   * [数据争用](language/golang/dateraces.md)
   * [goroutine](language/golang/goroutine.md)
 
-## shell 
-* [shell](language/shell/README.md)
-  * [if语法](language/shell/grammar.md)
-  * [eval](language/shell/eval.md)
-  * [string](language/shell/string.md)
+## shell
+
+* [shell](shell/shell/README.md)
+  * [if语法](shell/shell/grammar.md)
+  * [eval](shell/shell/eval.md)
+  * [string](shell/shell/string.md)
 
 ## work
-* [问题](language/work/README.md)
-  * [macvlan](language/work/macvlan.md)
+
+* [问题](work/wen-ti/README.md)
+  * [macvlan](work/wen-ti/macvlan.md)
 
 ## code analyze
+
 * [kubernetes](code-analyze/kubernetes/README.md)
   * [borg](code-analyze/kubernetes/borg.md)
   * [kube-apiserver](code-analyze/kubernetes/apiserver.md)

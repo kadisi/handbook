@@ -10,7 +10,7 @@
 
 ### 从逻辑上讲。
 
- **防火墙可以大体分为主机防火墙和网络防火墙。**
+**防火墙可以大体分为主机防火墙和网络防火墙。**
 
 主机防火墙： 针对单个主机进行防护
 
@@ -60,15 +60,11 @@ iptables 其实是一个命令行工具， 位于用户空间， 我们用这个
 
 \*\*\*\*
 
-
-其实我们上面描述的场景并不完善, 因为客户端发来的报文访问的目的地址可能并不是本机， 而是其他服务器。 当本机的内核支持 **IP_FORWARD**时， 我们可以将报文转发给其他服务器。 这个时候 我们就会提到iptables 中的其他**关卡**， 也就是其他的**链** ， 他们就是 
+其实我们上面描述的场景并不完善, 因为客户端发来的报文访问的目的地址可能并不是本机， 而是其他服务器。 当本机的内核支持 **IP\_FORWARD**时， 我们可以将报文转发给其他服务器。 这个时候 我们就会提到iptables 中的其他**关卡**， 也就是其他的**链** ， 他们就是
 
 * 路由前
-
 * 转发
-
 * 路由后
-
 * 另外还有上面提到的 input， output
 
 也就是当我们启用了防火墙功能时候， 报文需要经过如下关卡， 也就是说， 根据实际情况的不同， 报文经过的**链** 可能不同。 如果报文需要转发， 则报文不会经过input 链发往用户空间， 而是直接在内核空间中经过forward 链和postrouting 链转发出去。
@@ -77,12 +73,9 @@ iptables 其实是一个命令行工具， 位于用户空间， 我们用这个
 
 所以根据上图， 我们能够想象出某些常用场景，报文的流向：
 
-* 到本机某进程的报文： PREROUTING --> INPUT
-
-* 由本机转发的报文： PREOUTING --> FORWARD --> POSTROUTING
-
-* 由本机某进程发出的报文， 通常为相应报文： OUT --> POSTROUTING
-
+* 到本机某进程的报文： PREROUTING --&gt; INPUT
+* 由本机转发的报文： PREOUTING --&gt; FORWARD --&gt; POSTROUTING
+* 由本机某进程发出的报文， 通常为相应报文： OUT --&gt; POSTROUTING
 
 ## 链的概念
 
@@ -100,15 +93,11 @@ iptables 其实是一个命令行工具， 位于用户空间， 我们用这个
 
 必须能！！！
 
-
 我们把具有相同功能的规则的集合叫做 **表**， 所以说不同功能的规则， 我们可以放置在不同表中进行管理。而IPtables已经为我们定义了4种表。
 
-* filter 表： 负责过滤功能， 
-
+* filter 表： 负责过滤功能，
 * nat 表： 网络地址转换
-
 * mangle 表： 拆解报文， 做出修改， 并重新封装。
-
 * raw 表： 关闭NAT表上启用的链接追踪机制
 
 也就是说我们自定义的所有规则， 则都是这4种分类中的规则， 或者说所有规则都存在于这4张表中。
@@ -136,27 +125,19 @@ D 关卡最屌， 海陆空都能防
 下面讲 每个**链**中规则都存在于哪些**表**中
 
 * PREROUTING ： RAW, mangle, nat表
-
-* INPUT: mangle, filter (centos7 有nat表， centos6 没有)
-
+* INPUT: mangle, filter \(centos7 有nat表， centos6 没有\)
 * FORWARD: mangle, filter
-
 * OUTPUT: raw, mangle, nat , filter 表
-
 * POSTROUTING: mangle， nat 表
 
-但是！！！  **我们在实际使用过程中， 往往是通过 表 作为操作入口， 对规则进行定义**
+但是！！！ **我们在实际使用过程中， 往往是通过 表 作为操作入口， 对规则进行定义**
 
 从 链 的角度更容易从入门的角度理解， 但是为了以便在实际使用的时候， 更加顺畅的理解他们， 我们还要将**表** **链**的管理罗列出来
 
 * raw 表 中的规则可以被哪些链使用： PREROUTING, OUTPUT
-
 * mangle 表中规则可以被哪些链使用： PREROUTING,INPUT, FORWARD, OUTPUT, POSTROUTING
-
 * nat 表中的规则可以被哪些链使用： PREROUTING, OUTPUT, POSTROUTING
-
 * filter 表中的规则可以被哪些链使用： INPUT, FORWARD, OUTPUT
-
 
 **我们还需要注意一点， 哪些表中的规则会放在 链最前面执行， 这就需要一个优先级问题**, 我们哪PREROUTING 链图是
 
@@ -164,11 +145,11 @@ D 关卡最屌， 海陆空都能防
 
 prerouting 规则存放于三张表中， 三张表的执行优先级如下：
 
-**raw --> mangle --> nat**
+**raw --&gt; mangle --&gt; nat**
 
 但是iptable 为我们定义了4张表， 当他们处于同一条链时候， 执行的优先级如下（由高到底）
 
-raw --> mangle --> nat --> filter 
+raw --&gt; mangle --&gt; nat --&gt; filter
 
 ## 数据经过防火墙的流程
 
@@ -180,143 +161,6 @@ raw --> mangle --> nat --> filter
 
 ![](../../.gitbook/assets/iptables1.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \*\*\*\*
 
 \*\*\*\*
@@ -325,5 +169,5 @@ raw --> mangle --> nat --> filter
 
 ## 引用
 
-{% embed url="http://www.zsythink.net/archives/1199" %}
+{% embed url="http://www.zsythink.net/archives/1199" caption="" %}
 

@@ -1,6 +1,6 @@
-# http 链接
+# http1
 
-
+## http 链接
 
 > 本文以HTTP请求和响应的过程来讲解涉及到的相关知识点。
 
@@ -15,8 +15,7 @@
 TCP/IP协议模型（Transmission Control Protocol/Internet Protocol），包含了一系列构成互联网基础的网络协议，是Internet的核心协议，通过20多年的发展已日渐成熟，并被广泛应用于局域网和广域网中，目前已成为事实上的国际标准。TCP/IP协议簇是一组不同层次上的多个协议的组合，通常被认为是一个四层协议系统，与OSI的七层模型相对应。
 
 HTTP协议就是基于TCP/IP协议模型来传输信息的。  
-![](//upload-images.jianshu.io/upload_images/3985563-e533b0cdd7fca359.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/590/format/webp)  
-
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-e533b0cdd7fca359.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/590/format/webp)
 
 \(1\). 链路层
 
@@ -39,27 +38,25 @@ IGMP是Internet组管理协议。它用来把一个UDP数据报多播到多个�
 TCP为两台主机提供高可靠性的数据通信。它所做的工作包括把应用程序交给它的数据分成合适的小块交给下面的网络层，确认接收到的分组，设置发送最后确认分组的超时时钟等。由于运输层提供了高可靠性的端到端的通信，因此应用层可以忽略所有这些细节。为了提供可靠的服务，TCP采用了超时重传、发送和接收端到端的确认分组等机制。
 
 UDP则为应用层提供一种非常简单的服务。它只是把称作数据报的分组从一台主机发送到另一台主机，但并不保证该数据报能到达另一端。一个数据报是指从发送方传输到接收方的一个信息单元（例如，发送方指定的一定字节数的信息）。UDP协议任何必需的可靠性必须由应用层来提供。  
- \(4\). 应用层
+\(4\). 应用层
 
 应用层决定了向用户提供应用服务时通信的活动。TCP/IP 协议族内预存了各类通用的应用服务。包括 HTTP，FTP（File Transfer Protocol，文件传输协议），DNS（Domain Name System，域名系统）服务。  
-![](//upload-images.jianshu.io/upload_images/3985563-1891c256487e9d85.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/757/format/webp)  
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-1891c256487e9d85.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/757/format/webp)
 
-
-当应用程序用TCP传送数据时，数据被送入协议栈中，然后逐个通过每一层直到被当作一串比特流送入网络。其中每一层对收到的数据都要增加一些首部信息（有时还要增加尾部信息），该过程如图所示。![](//upload-images.jianshu.io/upload_images/3985563-5d534a249b4825a9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/780/format/webp)  
-
+当应用程序用TCP传送数据时，数据被送入协议栈中，然后逐个通过每一层直到被当作一串比特流送入网络。其中每一层对收到的数据都要增加一些首部信息（有时还要增加尾部信息），该过程如图所示。![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-5d534a249b4825a9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/780/format/webp)
 
 当目的主机收到一个以太网数据帧时，数据就开始从协议栈中由底向上升，同时去掉各层协议加上的报文首部。每层协议盒都要去检查报文首部中的协议标识，以确定接收数据的上层协议。这个过程称作分用（Demultiplexing）。协议是通过目的端口号、源I P地址和源端口号进行解包的。
 
 通过以上步骤我们从TCP/IP模型的角度来理解了一次HTTP请求与响应的过程。
 
-下面这张图更清楚明白：![](//upload-images.jianshu.io/upload_images/3985563-ecf824604debcdf1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/671/format/webp)
+下面这张图更清楚明白：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-ecf824604debcdf1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/671/format/webp)
 
 下面具体来看如何进行一步步操作的。
 
 #### 三、TCP三次握手
 
 TCP是面向连接的，无论哪一方向另一方发送数据之前，都必须先在双方之间建立一条连接。在TCP/IP协议中，TCP协议提供可靠的连接服务，连接是通过三次握手进行初始化的。三次握手的目的是同步连接双方的序列号和确认号并交换 TCP窗口大小信息。  
-![](//upload-images.jianshu.io/upload_images/3985563-f2fe3775bd2678c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/656/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-f2fe3775bd2678c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/656/format/webp)
 
 第一次握手：建立连接。客户端发送连接请求报文段，将SYN位置为1，Sequence Number为x；然后，客户端进入SYN\_SEND状态，等待服务器的确认；
 
@@ -94,7 +91,7 @@ TCP是面向连接的，无论哪一方向另一方发送数据之前，都必�
 有时需要对用户之前的HTTP通信状态进行保存，比如执行一次登陆操作，在30分钟内所有的请求都不需要再次登陆。于是引入了Cookie技术。
 
 HTTP/1.1想出了持久连接（HTTP keep-alive）方法。其特点是，只要任意一端没有明确提出断开连接，则保持TCP连接状态，在请求首部字段中的Connection: keep-alive即为表明使用了持久连接。  
- 等等还有很多。。。。。。
+等等还有很多。。。。。。
 
 下面开始讲解重头戏：HTTP请求报文，响应报文，对应于上述步骤的2，3，4，5，6。
 
@@ -103,7 +100,7 @@ HTTP报文是面向文本的，报文中的每一个字段都是一些ASCII码�
 #### 五、HTTP请求报文
 
 一个HTTP请求报文由请求行（request line）、请求头部（header）、空行和请求数据4个部分组成，下图给出了请求报文的一般格式。  
-![](//upload-images.jianshu.io/upload_images/3985563-cd59a3899ef546e1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/466/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-cd59a3899ef546e1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/466/format/webp)
 
 **1.请求行**
 
@@ -124,8 +121,7 @@ URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 **端口和路径有时可以省略（HTTP默认端口号是80）**
 
 如下例：  
-![](//upload-images.jianshu.io/upload_images/3985563-54ce5eca048253be.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/725/format/webp)  
-
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-54ce5eca048253be.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/725/format/webp)
 
 有时会带参数，GET请求
 
@@ -138,8 +134,7 @@ URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 请求头部为请求报文添加了一些附加信息，由“名/值”对组成，每行一对，名和值之间使用冒号分隔。
 
 常见请求头如下：  
-![](//upload-images.jianshu.io/upload_images/3985563-539378eee14fa322.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/593/format/webp)  
-
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-539378eee14fa322.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/593/format/webp)
 
 请求头部的最后会有一个空行，表示请求头部结束，接下来为请求数据，这一行非常重要，必不可少。
 
@@ -149,22 +144,22 @@ URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 
 下面是一个POST方法的请求报文：
 
-> POST 　/index.php　HTTP/1.1 　　 请求行  
->  Host: localhost  
->  User-Agent: Mozilla/5.0 \(Windows NT 5.1; rv:10.0.2\) Gecko/20100101 Firefox/10.0.2　　请求头  
->  Accept: text/html,application/xhtml+xml,application/xml;q=0.9,_/_;q=0.8  
->  Accept-Language: zh-cn,zh;q=0.5  
->  Accept-Encoding: gzip, deflate  
->  Connection: keep-alive  
->  Referer: [http://localhost/](https://link.jianshu.com?t=http://localhost/)  
->  Content-Length：25  
->  Content-Type：application/x-www-form-urlencoded  
->  　　空行  
->  username=aa&password=1234　　请求数据
+> POST /index.php HTTP/1.1 请求行  
+> Host: localhost  
+> User-Agent: Mozilla/5.0 \(Windows NT 5.1; rv:10.0.2\) Gecko/20100101 Firefox/10.0.2 请求头  
+> Accept: text/html,application/xhtml+xml,application/xml;q=0.9,_/_;q=0.8  
+> Accept-Language: zh-cn,zh;q=0.5  
+> Accept-Encoding: gzip, deflate  
+> Connection: keep-alive  
+> Referer: [http://localhost/](https://link.jianshu.com?t=http://localhost/)  
+> Content-Length：25  
+> Content-Type：application/x-www-form-urlencoded  
+> 空行  
+> username=aa&password=1234 请求数据
 
 #### 六、HTTP响应报文
 
-![](//upload-images.jianshu.io/upload_images/3985563-c6ee8f8526f59fc0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/480/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-c6ee8f8526f59fc0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/480/format/webp)
 
 HTTP响应报文主要由状态行、响应头部、空行以及响应数据组成。
 
@@ -177,19 +172,19 @@ HTTP响应报文主要由状态行、响应头部、空行以及响应数据组�
 **状态码**
 
 状态代码为3位数字。  
- 1xx：指示信息--表示请求已接收，继续处理。  
- 2xx：成功--表示请求已被成功接收、理解、接受。  
- 3xx：重定向--要完成请求必须进行更进一步的操作。  
- 4xx：客户端错误--请求有语法错误或请求无法实现。  
- 5xx：服务器端错误--服务器未能实现合法的请求。
+1xx：指示信息--表示请求已接收，继续处理。  
+2xx：成功--表示请求已被成功接收、理解、接受。  
+3xx：重定向--要完成请求必须进行更进一步的操作。  
+4xx：客户端错误--请求有语法错误或请求无法实现。  
+5xx：服务器端错误--服务器未能实现合法的请求。
 
-下面列举几个常见的：![](//upload-images.jianshu.io/upload_images/3985563-8f3bf059bc4365e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/609/format/webp)
+下面列举几个常见的：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-8f3bf059bc4365e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/609/format/webp)
 
 **2.响应头部**
 
 与请求头部类似，为响应报文添加了一些附加信息
 
-常见响应头部如下：![](//upload-images.jianshu.io/upload_images/3985563-33ed95479f541a07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600/format/webp)
+常见响应头部如下：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-33ed95479f541a07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600/format/webp)
 
 **3.响应数据**
 
@@ -197,29 +192,29 @@ HTTP响应报文主要由状态行、响应头部、空行以及响应数据组�
 
 下面是一个响应报文的实例：
 
-> HTTP/1.1 200 OK　　状态行
+> HTTP/1.1 200 OK 状态行
 
-Date: Sun, 17 Mar 2013 08:12:54 GMT　　响应头部  
- Server: Apache/2.2.8 \(Win32\) PHP/5.2.5  
- X-Powered-By: PHP/5.2.5  
- Set-Cookie: PHPSESSID=c0huq7pdkmm5gg6osoe3mgjmm3; path=/  
- Expires: Thu, 19 Nov 1981 08:52:00 GMT  
- Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0  
- Pragma: no-cache  
- Content-Length: 4393  
- Keep-Alive: timeout=5, max=100  
- Connection: Keep-Alive  
- Content-Type: text/html; charset=utf-8
+Date: Sun, 17 Mar 2013 08:12:54 GMT 响应头部  
+Server: Apache/2.2.8 \(Win32\) PHP/5.2.5  
+X-Powered-By: PHP/5.2.5  
+Set-Cookie: PHPSESSID=c0huq7pdkmm5gg6osoe3mgjmm3; path=/  
+Expires: Thu, 19 Nov 1981 08:52:00 GMT  
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0  
+Pragma: no-cache  
+Content-Length: 4393  
+Keep-Alive: timeout=5, max=100  
+Connection: Keep-Alive  
+Content-Type: text/html; charset=utf-8
 
 > 空行  
->  &lt;html&gt;　　响应数据  
->  &lt;head&gt;  
->  &lt;title&gt;HTTP响应示例&lt;title&gt;  
->  &lt;/head&gt;  
->  &lt;body&gt;  
->  Hello HTTP!  
->  &lt;/body&gt;  
->  &lt;/html&gt;
+> &lt;html&gt; 响应数据  
+> &lt;head&gt;  
+> &lt;title&gt;HTTP响应示例&lt;title&gt;  
+> &lt;/head&gt;  
+> &lt;body&gt;  
+> Hello HTTP!  
+> &lt;/body&gt;  
+> &lt;/html&gt;
 
 关于请求头部和响应头部的知识点很多，这里只是简单介绍。
 
@@ -228,8 +223,7 @@ Date: Sun, 17 Mar 2013 08:12:54 GMT　　响应头部
 #### 七、TCP四次挥手
 
 当客户端和服务器通过三次握手建立了TCP连接以后，当数据传送完毕，肯定是要断开TCP连接的啊。那对于TCP的断开连接，这里就有了神秘的“四次分手”。  
-![](//upload-images.jianshu.io/upload_images/3985563-c1c59148f8b26c43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/691/format/webp)  
-
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-c1c59148f8b26c43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/691/format/webp)
 
 第一次分手：主机1（可以使客户端，也可以是服务器端），设置Sequence Number，向主机2发送一个FIN报文段；此时，主机1进入FIN\_WAIT\_1状态；这表示主机1没有数据要发送给主机2了；
 
@@ -243,15 +237,11 @@ Date: Sun, 17 Mar 2013 08:12:54 GMT　　响应头部
 
 TCP协议是一种面向连接的、可靠的、基于字节流的运输层通信协议。TCP是全双工模式，这就意味着，当主机1发出FIN报文段时，只是表示主机1已经没有数据要发送了，主机1告诉主机2，它的数据已经全部发送完毕了；但是，这个时候主机1还是可以接受来自主机2的数据；当主机2返回ACK报文段时，表示它已经知道主机1没有数据发送了，但是主机2还是可以发送数据到主机1的；当主机2也发送了FIN报文段时，这个时候就表示主机2也没有数据要发送了，就会告诉主机1，我也没有数据要发送了，之后彼此就会愉快的中断这次TCP连接。
 
-通过以上步骤便完成了HTTP的请求和响应，进行了数据传递，这其中涉及到需要知识点，都进行了逐一了解。  
+通过以上步骤便完成了HTTP的请求和响应，进行了数据传递，这其中涉及到需要知识点，都进行了逐一了解。
 
+## https 链接
 
-
-# https 链接
-
-
-
-## HTTPS加密过程和TLS证书验证
+### HTTPS加密过程和TLS证书验证
 
 #### 前言
 
@@ -263,7 +253,7 @@ TCP协议是一种面向连接的、可靠的、基于字节流的运输层通�
 
 ![](https://user-gold-cdn.xitu.io/2018/1/5/160c5b10d3f27e00?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
-1. _**客户端发起`HTTPS`请求**_ 这个没什么好说的，就是用户在浏览器里输入一个`HTTPS`网址，然后连接到服务端的443端口。
+1. _**客户端发起**_`HTTPS`_**请求**_ 这个没什么好说的，就是用户在浏览器里输入一个`HTTPS`网址，然后连接到服务端的443端口。
 2. _**服务端的配置**_ 采用`HTTPS`协议的服务器必须要有一套数字证书，可以自己制作，也可以向组织申请。区别就是自己颁发的证书需要客户端验证通过，才可以继续访问，而使用受信任的公司申请的证书则不会弹出提示页面。这套证书其实就是一对公钥和私钥。如果对公钥不太理解，可以想象成一把钥匙和一个锁头，只是世界上只有你一个人有这把钥匙，你可以把锁头给别人，别人可以用这个锁把重要的东西锁起来，然后发给你，因为只有你一个人有这把钥匙，所以只有你才能看到被这把锁锁起来的东西。
 3. _**传送证书**_ 这个证书其实就是公钥，只是包含了很多信息，如证书的颁发机构，过期时间等等。
 4. _**客户端解析证书**_ 这部分工作是由客户端的SSL/TLS来完成的，首先会验证公钥是否有效，比如颁发机构，过期时间等等，如果发现异常，则会弹出一个警示框，提示证书存在的问题。如果证书没有问题，那么就生成一个\*\*\*随机值\*\*\*。然后用证书（也就是公钥）对这个随机值进行加密。就好像上面说的，把随机值用锁头锁起来，这样除非有钥匙，不然看不到被锁住的内容。
@@ -361,13 +351,11 @@ _**那么，客户端是是如何验证某个证书的有效性，或者验证�
 
 [https://juejin.im/post/5a4f4884518825732b19a3ce](https://juejin.im/post/5a4f4884518825732b19a3ce)
 
-
-
-# tls 链接
+## tls 链接
 
 个人总结：
 
-首先 对于https 在连接建立好后，以后的数据加密都是通过对称加密算法进行加密的，目的是提高性能和速率，非对称加密的目的是加密  对称加密算法的秘钥
+首先 对于https 在连接建立好后，以后的数据加密都是通过对称加密算法进行加密的，目的是提高性能和速率，非对称加密的目的是加密 对称加密算法的秘钥
 
 单向认证： 大体流程：
 
@@ -380,7 +368,7 @@ _**那么，客户端是是如何验证某个证书的有效性，或者验证�
 * 服务端使用私钥解密，获得对称加密的秘钥（随机数）
 * 后续 客户端和服务器端在传输数时，会用对应的对称加密算法 和 随机数对数据进行加密
 
-双向认证： 
+双向认证：
 
 双向认证比单向认证多了一个客户端也要给服务器端发送公钥，同时 对称加密方案。大体流程
 
@@ -396,25 +384,23 @@ _**那么，客户端是是如何验证某个证书的有效性，或者验证�
 * 服务器端收到加密的秘钥后，用服务器端的私钥进行解密，获得对称加密的秘钥
 * 后续客户端和服务器端数据传输会使用对称加密方案和秘钥进行加密
 
-
-
 SSL/TLS在通信中主要有双向认证和单向认证，其原理基本差不多，单向认证中客户端会认证服务器端身份，服务器端不对客户端进行认证 ，双向认证要求客户端和服务端都会互相认证，即双发之间要证书交换 ，具体如下：
 
 SSL/TLS在通信中主要有双向认证和单向认证，其原理基本差不多，单向认证中客户端会认证服务器端身份，服务器端不对客户端进行认证 ，双向认证要求客户端和服务端都会互相认证，即双发之间要证书交换 ，具体如下：
 
-#### 一、SSL协议加密方式 <a id="&#x4E09;ssl&#x534F;&#x8BAE;&#x52A0;&#x5BC6;&#x65B9;&#x5F0F;"></a>
+#### 一、SSL协议加密方式  <a id="&#x4E09;ssl&#x534F;&#x8BAE;&#x52A0;&#x5BC6;&#x65B9;&#x5F0F;"></a>
 
 SSL协议即用到了对称加密也用到了非对称加密\(公钥加密\)，在建立传输链路时，SSL首先对对称加密的密钥使用公钥进行非对称加密，链路建立好之后，SSL对传输内容使用对称加密。
 
-1. 对称加密 
+1. 对称加密
 
    速度高，可加密内容较大，用来加密会话过程中的消息
 
-2. 公钥加密 
+2. 公钥加密
 
    加密速度较慢，但能提供更好的身份认证技术，用来加密对称加密的密钥
 
-#### 二、单向认证 <a id="&#x56DB;&#x5355;&#x5411;&#x8BA4;&#x8BC1;"></a>
+#### 二、单向认证  <a id="&#x56DB;&#x5355;&#x5411;&#x8BA4;&#x8BC1;"></a>
 
 Https在建立Socket连接之前，需要进行握手，具体过程如下：
 
@@ -435,11 +421,11 @@ Https在建立Socket连接之前，需要进行握手，具体过程如下：
 5. 服务器端在客户端提供的加密方案中选择加密程度最高的加密方式。
 6. 服务器将选择好的加密方案通过明文方式返回给客户端
 7. 客户端接收到服务端返回的加密方式后，使用该加密方式生成产生随机码，用作通信过程中对称加密的密钥，使用服务端返回的公钥进行加密，将加密后的随机码发送至服务器
-8. 服务器收到客户端返回的加密信息后，使用自己的私钥进行解密，获取对称加密密钥。 
+8. 服务器收到客户端返回的加密信息后，使用自己的私钥进行解密，获取对称加密密钥。
 
    在接下来的会话中，服务器和客户端将会使用该密码进行对称加密，保证通信过程中信息的安全。
 
-#### 三、双向认证 <a id="&#x4E94;&#x53CC;&#x5411;&#x8BA4;&#x8BC1;"></a>
+#### 三、双向认证  <a id="&#x4E94;&#x53CC;&#x5411;&#x8BA4;&#x8BC1;"></a>
 
 双向认证和单向认证原理基本差不多，只是除了客户端需要认证服务端以外，增加了服务端对客户端的认证，具体过程如下：
 
@@ -466,19 +452,18 @@ Https在建立Socket连接之前，需要进行握手，具体过程如下：
 
 文章出处：
 
-{% embed url="http://blog.csdn.net/duanbokan/article/details/50847612" %}
+{% embed url="http://blog.csdn.net/duanbokan/article/details/50847612" caption="" %}
 
 参考文章：
 
-{% embed url="http://blog.csdn.net/self\_examination/article/details/47070209" %}
+{% embed url="http://blog.csdn.net/self\_examination/article/details/47070209" caption="" %}
 
 引用：
 
 [https://www.infinisign.com/faq/ssl-tls-authentication](https://www.infinisign.com/faq/ssl-tls-authentication)
 
-  
 作者：Ruheng  
-链接：https://www.jianshu.com/p/c1d6a294d3c0  
+链接：[https://www.jianshu.com/p/c1d6a294d3c0](https://www.jianshu.com/p/c1d6a294d3c0)  
 來源：简书  
 简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
 
