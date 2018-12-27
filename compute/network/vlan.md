@@ -101,6 +101,56 @@ linux 我们可以通过ip link add 命令增加一个vlan 设备， vlan 设备
 vlan 设备下可以再绑定macvlan bridge
 
 
+# 交换机 端口vlan 标签处理
+
+交换机内部不存在 不带tag标签的数据帧报文， 内部流动的数据帧时钟是带有标签的。数据帧从外部设备流入交换机内部叫接受数据包过程， 而从交换机内部流出到外部设备叫做发送数据包过程
+
+## access、trunk 、hybrid 端口接受数据包
+
+* 不带vlan tag 的数据帧： 打上端口pvid， 如果确实pvid 在vlan 允许列表中的话，送入交换机的转发进程，查找mac 表找到相应的接口 负责丢弃
+
+* 带vlan tag： access 处理过程， 如果vlan tag=pvid 允许通过进入交换机内部，否则丢弃数据包， trunk 口和hybird 处理过程： 如果vlan tag 在允许访问vlan 列表则进入交换机转发数据帧， 负责丢弃
+
+## access trunk hybird 端口发送数据包
+
+* 不带vlan tag 的数据帧： 不可能出现
+
+* 带vlan tag 的数据帧： 
+	
+	* access 口的处理过程是如果将tag 剥离 转发出去， 其中access 口只处理与pvid 相应的数据帧， 其他即使意外收到其他vlan的数据帧也不会处理
+
+	* trunk 口处理过程是如果vlan tag = pvid， 剥离tag 转发出去， 如果vlan tag ！= pvid 直接转发出去
+
+	* hubrid 口处理过程是如果该vlan 在本端口配置的属性是untag ， 则暴力tag 进行转发， 如果属性是tag， 则直接发送
+
+
+PVID并不是加在帧头的标记，而是端口的属性，用来标识端口接收到的未标记的帧
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
