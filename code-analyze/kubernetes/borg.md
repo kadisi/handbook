@@ -42,11 +42,14 @@ Borg’s users are Google developers and system administrators \(site reliabilit
 
 borg 的用户是google 的开发人员和系统管理员，他们在borg上运行google 的应用程序和服务。 用户以job的形式提交他们的工作负载给borg，每个job 包含了一个或者多个task，这些task 运行了相同的程序（二进制）
 
-**旁白: job 相当于k8s 的pod， task 相当于container** 
 
 每个job 运行在borg 的cell 里， 这个cell 可以认为是多台机器组成的管理单元
 
-**旁白 这个cell 相当于kubernetes一个集群下， 打上特定标签的一组主机** 
+```
+旁白 
+
+这个cell 相当于kubernetes一个集群
+```
 
 本章节剩余部分主要介绍了在用户视角下borg系统提供的主要功能
 
@@ -65,15 +68,18 @@ Many application frameworks have been built on top of Borg over the last few yea
 
 最近几年， 许多应用程序框架都已经构建在了borg 上。包括我们内部的map reduce 系统， Flumenjava， millwhell， pregel。 他们中大部分都有一个控制器
 
- **旁白， 相当于k8s 的operator** 
-
 这个控制器用来提交一个master job 和多个work job。前两个框架类似于YARN的应用程序管理器 ， 我们的分布式粗才能系统， GFS， 他的后继者 CFS bigtable 和megastore 都运行在borg上。
 
 For this paper, we classify higher-priority Borg jobs as “production” \(prod\) ones, and the rest as “non-production” \(non-prod\). Most long-running server jobs are prod; most batch jobs are non-prod. In a representative cell, prod jobs are allocated about 70% of the total CPU resources and represent about 60% of the total CPU usage; they are allocated about 55% of the total memory and represent about 85% of the total memory usage. The discrepancies between allocation and usage will prove important in §5.5.
 
 在这篇论文里， 我们把搞优先级的borg job 归类为prod\(生成的意思\) ，剩下的归类于 non-prod\(非生产的\) ， 大多数的长期服务是prod，大多数的batch jobs 是non-prod.
 
- **旁白， 这里隐含了一个意思， 都是生成的job 可能无法再细分优先级， 如果再继续分优先级， 这就要更加细粒度的抢占策略， 这样很可能导致上层用户服务的不可用， 从产品层面和收费层面 估计不可行 所以优先级 抢占可能仅仅发生在 prod 与non-prod 之间** 
+```
+旁白
+
+这里隐含了一个意思， 都是生成的job 可能无法再细分优先级， 如果再继续分优先级， 这就要更加细粒度的抢占策略， 这样很可能导致上层用户服务的不可用， 从产品层面和收费层面 估计不可行 所以优先级 抢占可能仅仅发生在 prod 与non-prod 之间
+
+```
 
 在一个比较典型的cell中， prod job 给分配了70%的CPU资源，然而实际使用了60%的资源。 分配了55%的内存，然而实际使用了85%的内存。 在5.5章 展示了分配 和实际值的差是很重要的（旁边， 类似于kubernetes 的request 和limit）
 
@@ -82,6 +88,7 @@ For this paper, we classify higher-priority Borg jobs as “production” \(prod
 The machines in a cell belong to a single cluster, defined by the high-performance datacenter-scale network fabric that connects them. A cluster lives inside a single datacenter building, and a collection of buildings makes up a site.1 A cluster usually hosts one large cell and may have a few smaller-scale test or special-purpose cells. We assiduously avoid any single point of failure.
 
 一个cell 里的所有机器 都属于一个单个集群。 集群是有高性能的数据中心级别的网络光纤连接的。 一个集群安装在一个单独的楼里，多个楼组成了一个site，一个集群通常包括一个大的cell 以及一些小规模的用于测试或者其他特性的cell。 我们会尽量避免单点故障
+
 
 Our median cell size is about 10 k machines after excluding test cells; some are much larger. The machines in a cell are heterogeneous in many dimensions: sizes \(CPU, RAM, disk, network\), processor type, performance, and capabilities such as an external IP address or flash storage. Borg isolates users from most of these differences by determining where in a cell to run tasks, allocating their resources, installing their programs and other dependencies, monitoring their health, and restarting them if they fail.
 
@@ -93,27 +100,46 @@ A Borg job’s properties include its name, owner, and the number of tasks it ha
 
 jobs 属性包括： name， 拥有者，一组task。jobs 可以提供约束来强制他的task 运行在具有特定架构的机器上。这些架构包括：处理器， 操作系统版本， 或者外部IP。 约束条件可以是硬约束也可以是软约束。 软约束相当于最好而不是要求。 job 的启动可以被延迟，直到一个优先的job完成了。 一个job 只能运行在一个cell中。
 
- **旁白 这里的约束相当于kubernetes的node seleter 以及现在普遍使用的 affinity， affinity 分为 nodeaffinity 和 podaffinity 以及 podantiaffinity , 同时k8s 也提供了 软约束和硬约束 preferredDuringSchedulingIgnoredDuringExecution 和 requiredDuringSchedulingIgnoredDuringExecution , 约束条件支持多种形式**
+```
+旁白
+
+这里的约束相当于kubernetes的node seleter 以及现在普遍使用的 affinity， affinity 分为 nodeaffinity 和 podaffinity 以及 podantiaffinity , 同时k8s 也提供了 软约束和硬约束 preferredDuringSchedulingIgnoredDuringExecution 和 requiredDuringSchedulingIgnoredDuringExecution , 约束条件支持多种形式
+
+```
 
 Each task maps to a set of Linux processes running in a container on a machine \[62\]. The vast majority of the Borg workload does not run inside virtual machines \(VMs\),because we don’t want to pay the cost of virtualization. Also, the system was designed at a time when we had a considerable investment in processors with no virtualization support in hardware.
 
-每个task 对应了一组linux process，这些process 运行在机器的容器里。 **注意 绝大多数borg 的工作负载没有运行在虚拟机中， 因为我们不想支付虚拟化带来的成本， 而且在这个系统的设计之初，我们已经在不支持硬件虚拟化的处理器上做了大量的投入， 旁白： 估计那时候还没有硬件虚拟化的事**
+每个task 对应了一组linux process，这些process 运行在机器的容器里。 
+
+```
+注意 绝大多数borg 的工作负载没有运行在虚拟机中， 因为我们不想支付虚拟化带来的成本， 而且在这个系统的设计之初，我们已经在不支持硬件虚拟化的处理器上做了大量的投入， 旁白： 估计那时候还没有硬件虚拟化的事
+
+```
 
 A task has properties too, such as its resource requirements and the task’s index within the job. Most task properties are the same across all tasks in a job, but can be overridden – e.g., to provide task-specific command-line flags. Each resource dimension \(CPU cores, RAM, disk space, disk access rate, TCP ports,2 etc.\) is specified independently at fine granularity; we don’t impose fixed-sized buckets or slots \(§5.4\). Borg programs are statically linked to reduce dependencies on their runtime environment, and structured as packages of binaries and data files, whose installation is orchestrated by Borg.
 
 task 也有属性， 如它的资源需求，task 在job 中的索引位置. 在一个job 中的所有task中， 大多数task的属性都是相同的， 但是可以被重写。 例如： 提供了task 专用命令行参数。 每个资源需求（cpu 内存，磁盘空间，访问速率， tcp端口等等）都可以按照一个粒度单独的提供 ，borg 程序是静态连接的。 目的是为了降低他们对运行环境的依赖。 这些应用程序的二进制和数据文件被打包成一个package。 应用程序的安装完全依靠borg 进行编排。
 
-**旁白 kubernetes 的 pod和 container 跟 borg 的job task 异曲同工。 现在业内的容器也是普遍使用镜像来讲应用程序打包， 解决依赖的问题。 现在的镜像格式遵循OCI image spec**
+```
+旁白 
+kubernetes 的 pod和 container 跟 borg 的job task 异曲同工。 现在业内的容器也是普遍使用镜像来讲应用程序打包， 解决依赖的问题。 现在的镜像格式遵循OCI image spec
+```
 
 Users operate on jobs by issuing remote procedure calls \(RPCs\) to Borg, most commonly from a command-line tool, other Borg jobs, or our monitoring systems \(§2.6\). Most job descriptions are written in the declarative configuration language BCL. This is a variant of GCL \[12\], which generates protobuf files \[67\], extended with some Borg-specific keywords. GCL provides lambda functions to allow calculations, and these are used by applications to adjust their configurations to their environment; tens of thousands of BCL files are over 1 k lines long, and we have accumulated tens of millions of lines of BCL. Borg job configurations have similarities to Aurora configuration files \[6\].
 
 用户通过RPC 来操作borg 的job。 大多数还是通过命令行 或者监控系统。
 
- **旁白： Google 内有深厚的技术积累， 开发人员和使用者反而觉得命令行比界面操作便利 和 快速。 而国内大部分的容器产品或者思维方式，还是把api 或者命令行进行界面化**
+```
+旁白
+ Google 内有深厚的技术积累， 开发人员和使用者反而觉得命令行比界面操作便利 和 快速。 而国内大部分的容器产品或者思维方式，还是把api 或者命令行进行界面化
+```
 
 大多数的job 描述都是使用BCL 这种声明式配置语言编写的
 
-**旁白 kubernetes 的对资源的编写也是声明式的 yaml 或者json 文件**
+```
+旁白 
+kubernetes 的对资源的编写也是声明式的 yaml 或者json 文件
+```
 
 BCL 是GCL的一个变种， 它能够生成protobuf 文件。 GCL提供了lambda funtion 来允许计算。这样应用程序使用它来调整自己的配置。 成千上万的BCL文件超过一千行, 在系统中我们总共跑了上千万行的BCL。 borg job配置非常类似于aurora配置文件。
 
@@ -127,11 +153,17 @@ A user can change the properties of some or all of the tasks in a running job by
 
 用户可以改变一个运行中job 里的一些或者所有的task属性，通过push 一个新的job 配置文件， 它会告知borg来把job 的task 更新成新的配置。
 
-**旁白 类似于kubectl apply**
+```
+旁白 
+类似于kubectl apply
+```
 
 这个操作类似于一个轻量级，非原子性的事务。这种操作可以很容易的undone 知道它是关闭。 更新通常是滚动式的， 可以限制因为更新导致task中断的数量
 
-**旁白 kubectl scale**
+```
+旁白 
+kubectl scale
+```
 
 Some task updates \(e.g., pushing a new binary\) will always require the task to be restarted; some \(e.g., increasing resource requirements or changing constraints\) might make the task no longer fit on the machine, and cause it to be stopped and rescheduled; and some \(e.g., changing priority\) can always be done without restarting or moving the task.
 
@@ -153,7 +185,6 @@ An alloc set is like a job: it is a group of allocs that reserve resources on mu
 
 一个alloc set 类似一个job， 他是一组allocs 保留了多个机器的资源。 一旦一个alloc set 被创建， 一个或者多个job 可以被提交进去跑。 总而言之， 我们通常会用task 表示一个alloc 或者一个top-level的task和job 来表示一个job 或者alloc set。
 
-**旁白， 有点模糊**
 
 ### 优先级， 配额和管理控制
 
@@ -169,7 +200,10 @@ Although a preempted task will often be rescheduled elsewhere in the cell, preem
 
 虽然一个被抢占的task 经常会被调度到cell 中其他地方， 它总能在一个cell中找到一席之地。抢占瀑布可能会发生： 就是如果一个搞优先级的task 抢占了一个低优先级的task，而这个低优先级的task 又抢占了另一个更低优先级的task，如此等等，会发生抢占瀑布。 为了避免这种情况， 我们不允许prod 级别的task 互相排挤抢占
 
-**旁白， borg 这个理论给我们一个好的提示，就是如果两个用户的task 都是生产级别的，那我们不能让两个用户的task 互相抢占， 即使你给更多的钱 ， 哈哈 ~~~, 我们只能让生产的 去抢占batch 去抢占测试的， 这样才对**
+```
+旁白
+ borg 这个理论给我们一个好的提示，就是如果两个用户的task 都是生产级别的，那我们不能让两个用户的task 互相抢占， 即使你给更多的钱 ， 哈哈 ~~~, 我们只能让生产的 去抢占batch 去抢占测试的， 这样才对
+```
 
 合理粒度的优先级总是有用的，在一定场景下，例如： mapreduce master 的task 运行在一个比较高的优先级 比那些workers，这是为了提高他们的高可靠性
 
@@ -179,15 +213,17 @@ Priority expresses relative importance for jobs that are running or waiting to r
 
 Quota-checking 是管理控制的一部分， 这并不是调度层的，配额不足的job 在提交时候会立刻被拒绝。
 
-**旁白， 这一点跟kubernetes 不一样， kubernetes在调度层才知道配额是否不足， 如果配额不足， 在调度的事件中才会提示** 
+```
+旁白
+ 这一点跟kubernetes 不一样， kubernetes在调度层才知道配额是否不足， 如果配额不足， 在调度的事件中才会提示
+```
 
 Higher-priority quota costs more than quota at lowerpriority. Production-priority quota is limited to the actual resources available in the cell, so that a user who submits a production-priority job that fits in their quota can expect it to run, modulo fragmentation and constraints. Even though we encourage users to purchase no more quota than they need, many users overbuy because it insulates them against future shortages when their application’s user base grows. We respond to this by over-selling quota at lower-priority levels: every user has infinite quota at priority zero, although this is frequently hard to exercise because resources are oversubscribed. A low-priority job may be admitted but remain pending \(unscheduled\) due to insufficient resources.
 
-高优先级的配额比低优先级的配额话费更多。 生成级别的配额会被限制在一个cell中实际的可用资源中。 所以，提交适合他们配额的生产级别job的用户可以期望它来运行，modulo fragmentation and constraints \(旁白： 没搞明白\) 。
+高优先级的配额比低优先级的配额话费更多。 生成级别的配额会被限制在一个cell中实际的可用资源中。 所以，提交适合他们配额的生产级别job的用户可以期望它来运行，modulo fragmentation and constraints \(没搞明白\) 。
 
 尽管 我们鼓励用户购买的配额不要超过他们的需求
 
-**旁白 奸商 ,尽管 ~~~~**
 
 许多用户超买（不是超卖）因为当他们的应用程序的用户突然爆发时候， 他们因为已经超买了可以杜绝这种短期的影响。 我们做出的回应是对低优先级的进行超卖（超售\): 每个用户在优先级为0 时候， 都有无限的配, 尽管这个很难执行 因为资源已经超额预订了。 一个低优先级的job 会被接纳， 但是由于资源不足，仍然会处于pending 状态。
 
@@ -205,11 +241,17 @@ It’s not enough to create and place tasks: a service’s clients and other sys
 
 单纯创建和安置task 是不够的： 一个service 的客户端和其他系统需要能够找到他们， 即使他们换了一个机器。 为了搞定这个， borg创建了一个稳定的 ‘borg name service’ 名字给每一个task。 这个名字包括cell 名字， job 名字和task number。
 
-**旁白， container 的命名规范 kubernetes 也有点类似**
+```
+旁白
+ container 的命名规范 kubernetes 也有点类似
+```
 
 borg 把task 的hostname 和端口写在一个持久化的高可用文件里。这个文件被用来我们的RPC系统来发现task 的endpoint。
 
-**旁白， kubernetes 实际上是把pod 的信息注册到etcd中， 然后由endpoint controller 来发现这些endpoint**
+```
+旁白
+ kubernetes 实际上是把pod 的信息注册到etcd中， 然后由endpoint controller 来发现这些endpoint
+```
 
 BNS 那么也是构成了task dns name的基础部分，所以cc cell中的ubar 用户的在jfoo job中的第50个task 的dns 名称会是： 50.jfoo.ubar.cc.borg.google.com。 borg 也会写job 的大小和task 的健康信息到持久化文件中无论他改变与否。所以loadbalancer 可以通过它来决定路由请求。
 
@@ -217,7 +259,9 @@ Almost every task run under Borg contains a built-in HTTP server that publishes 
 
 在borg上 几乎每个task 都会内置一个http server ，用来公开这个task 的健康状况和数千个性能metrics,\(例如rpc 延迟\) 。borg 监控这个监控探测的url。 并且重启那些没有返回的或者返回一个http错误码的task。其他的数据 是有监控工具来跟踪。
 
-**旁白： kubernetes 也有相应的监控探测接口 Probe 分别是 readinessProbe 和 livenessProbe** 
+```
+旁白： kubernetes 也有相应的监控探测接口 Probe 分别是 readinessProbe 和 livenessProbe
+```
 
 A service called Sigma provides a web-based user interface \(UI\) through which a user can examine the state of all their jobs, a particular cell, or drill down to individual jobs and tasks to examine their resource behavior, detailed logs, execution history, and eventual fate. Our applications generate voluminous logs; these are automatically rotated to avoid running out of disk space, and preserved for a while after the task’s exit to assist with debugging. If a job is not running Borg provides a “why pending?” annotation, together with guidance on how to modify the job’s resource requests to better fit the cell. We publish guidelines for “conforming” resource shapes that are likely to schedule easily.
 
@@ -237,7 +281,10 @@ A Borg cell consists of a set of machines, a logically centralized controller ca
 
 一个borg的cell 包含一组机器， 一个逻辑的中心控制器称作为borgmaster， 运行在cell里的每个集群上的agent 称作为borglet。borg 所有的组件都用c++ 写的。
 
- **旁白 borgmaster 对应kubernetes 的 etcd + apiserver+ scheduler + controller-manager , borglet 对应kubernetes 的kubelet** 
+```
+旁白 
+borgmaster 对应kubernetes 的 etcd + apiserver+ scheduler + controller-manager , borglet 对应kubernetes 的kubelet
+```
 
 ### borgmaster
 
@@ -263,11 +310,19 @@ When a job is submitted, the Borgmaster records it persistently in the Paxos sto
 
 当一个job提交后， borgmaster 把它持久化到paxos存储中，并且增加job task 到一个pending 队列中。 调度器异步扫描等待队列， 如果有足够的可用资源 来满足job的约束条件，调度器会分配task到机器上。（调度器主要是操作task 而不是job）
 
-**旁白， kubernetes 队列中存的是pod， 实际调度也是pod 跟borg 还有点不一样， 最根本原因估计是pod 和 container 是不能分离到多个machine 上的** 
+```
+旁白
+kubernetes 队列中存的是pod， 实际调度也是pod 跟borg 还有点不一样， 最根本原因估计是pod 和 container 是不能分离到多个machine 上的
+```
 
 调度器根据优先级从高到底进行扫描， 在同一个优先级下，通过轮转的方式来确保对每个用户公平， 避免队首阻塞大型作业。 调度算法分为两部分： 可行性检查， 为了找出task 适合的机器， 第二部分是打分， 从中选出一个合适的机器。
 
-**旁白 kubernetes 的scheduler 调度算法分为预选 和 优选 跟borg 的很相似**
+```
+旁白 
+
+kubernetes 的scheduler 调度算法分为预选 和 优选 跟borg 的很相似
+
+```
 
 In feasibility checking, the scheduler finds a set of machines that meet the task’s constraints and also have enough “available” resources – which includes resources assigned to lower-priority tasks that can be evicted. In scoring, the scheduler determines the “goodness” of each feasible machine. The score takes into account user-specified preferences, but is mostly driven by built-in criteria such as minimizing the number and priority of preempted tasks, picking machines that already have a copy of the task’s packages, spreading tasks across power and failure domains, and packing quality including putting a mix of high and low priority tasks onto a single machine to allow the high-priority ones to expand in a load spike.
 
@@ -291,13 +346,22 @@ If the machine selected by the scoring phase doesn’t have enough available res
 
 如果一个被选的机器被评分系统认为没有足够的资源去分配新的task，borg 抢占kill 低优先级的task， 按照由低到高的顺序， 直到它可以有合适的资源。我们把被强占的task 增加到调度器的pending 队列中， 而不是迁移或者休眠他们。
 
-**旁白 这样如果有合适的资源后，会重新调度他们**
+```
+旁白 
+
+这样如果有合适的资源后，会重新调度他们
+```
 
 Task startup latency \(the time from job submission to a task running\) is an area that has received and continues to receive significant attention. It is highly variable, with the median typically about 25 s. Package installation takes about 80% of the total: one of the known bottlenecks is contention for the local disk where packages are written to. To reduce task startup time, the scheduler prefers to assign tasks to machines that already have the necessary packages \(programs and data\) installed: most packages are immutable and so can be shared and cached. \(This is the only form of data locality supported by the Borg scheduler.\) In addition, Borg distributes packages to machines in parallel using treeand torrent-like protocols.
 
 task 启动延迟（job提交到task running的时间）是一个重点关注的区域。 启动延迟时间是高度可变的。 中等时间大约是25s，package的安装占用了大约80%的时间： 一个已知的瓶颈是软件包写磁盘的争用。为了减少task 启动时间， 调度器更喜欢把那些task 分配到那些已经有pacakge安装的机器里： 大多数的package 是不可变的， 并且可以被共享和缓存。（这是borg调度器唯一的数据局部性支持） ,另外， borg 使用类似BT协议 分发package 到机器上。
 
-**旁白： kubernetes 调度器貌似没有对镜像是否已经安装的调度算法， kubernetes 的镜像分发也没用使用BT协议** 
+```
+旁白
+
+kubernetes 调度器貌似没有对镜像是否已经安装的调度算法， kubernetes 的镜像分发也没用使用BT协议
+
+```
 
 Additionally, the scheduler uses several techniques to let it scale up to cells with tens of thousands of machines \(§3.4\). 此外 调度器采用多种技术让它能够扩展到数万台机器的cell中。
 
@@ -311,7 +375,13 @@ The Borgmaster polls each Borglet every few seconds to retrieve the machine’s 
 
 borgmaster 每个几秒轮训borglet 来获得机器的当前状态， 并向其发送输出请求。borgmaster 控制通信频率， 避免了显式的流量控制需求，阻止了恢复风暴
 
-**旁白：k8s 的kubelet 是主动上报的， borg 是主动拉取的， 跟普罗米修斯相似**
+```
+
+旁白
+
+k8s 的kubelet 是主动上报的， borg 是主动拉取的， 跟普罗米修斯相似
+
+```
 
 The elected master is responsible for preparing messages to send to the Borglets and for updating the cell’s state with their responses. For performance scalability, each Borgmaster replica runs a stateless link shard to handle the communication with some of the Borglets; the partitioning is recalculated whenever a Borgmaster election occurs. For resiliency, the Borglet always reports its full state, but the link shards aggregate and compress this information by reporting only differences to the state machines, to reduce the update load at the elected master.
 
@@ -331,7 +401,12 @@ Early versions of Borgmaster had a simple, synchronous loop that accepted reques
 
 早起版本的borgmaster 有一个简单的，同步循环来处理请求， 调度任务，和与borglet 的通信。 为了处理大规模的cell，我们把调度分离出了一个单独的进程，因此它可以和其他的borgmaster 功能并行的执行。 这些master 有多个副本用来容错。 一个调度器副本执行在一个缓存的cell 状态拷贝。 他重复的执行下面操作： 从选举master中检索状态变化\(包括已经分配的和pending work\), 更新他的本地copy，执行一个调度来分配task，把分配信息通知给master。 borgmaster 接受并且应用这些分配，如果他们不适合例如 基于过时的数据状态） ， 这就会导致他们进入到下一轮的调度。 这于omega 使用的乐观optimistic 并发控制很相似， 我们最近给borg增加了一个能力 对于不同负载调用不同调度器的功能。
 
-**旁白 kubernetes 也支持多种调度器，支持用户自定义调度， kubernetes 的scheduler 也和apiserver 做了分离**
+```
+旁白 
+
+kubernetes 也支持多种调度器，支持用户自定义调度， kubernetes 的scheduler 也和apiserver 做了分离
+
+```
 
 To improve response times, we added separate threads to talk to the Borglets and respond to read-only RPCs. For greater performance, we sharded \(partitioned\) these functions across the five Borgmaster replicas §3.3. Together,
 
@@ -349,23 +424,29 @@ Several things make the Borg scheduler more scalable:
 
 缓存评分: 计算一台机器的可行性和评分是比较昂贵的。因此borg 缓存了这些评分 直到machine的属性或者task 有了改变。 例如： 一个机器上的task终止，一个属性修改了， 或者task的需求改变。 忽略小额的资源变化减少了缓存的失效性。
 
-**旁白： kubernetes sheduler 内部也是用了大量的缓存， scheduler 内部维护了一个大的数据接口，自己算每个host 的资源状态， 有任何一个node或者pod变化都会更新这个大缓存。 但是scheduler 是在每次pod创建时候，对每个host 进行的实时打分**
+```
+旁白
+
+kubernetes sheduler 内部也是用了大量的缓存， scheduler 内部维护了一个大的数据接口，自己算每个host 的资源状态， 有任何一个node或者pod变化都会更新这个大缓存。 但是scheduler 是在每次pod创建时候，对每个host 进行的实时打分
+```
 
 **Equivalence classes**: Tasks in a Borg job usually have identical requirements and constraints, so rather than determining feasibility for every pending task on every machine, and scoring all the feasible machines, Borg only does feasibility and scoring for one task per equivalence class – a group of tasks with identical requirements.
 
 任务等效类： 同一个job里的task 通常具有相同的请求和约束， 因此 borg仅仅对等效类中的task 做可行性和打分，而不是对每个机器上的每一个pending task 进行可行性检查。
 
-**旁白： 没怎么明白 ~~~** 
 
 **Relaxed randomization**: It is wasteful to calculate feasibility and scores for all the machines in a large cell, so the scheduler examines machines in a random order until it has found “enough” feasible machines to score, and then selects the best within that set. This reduces the amount of scoring and cache invalidations needed when tasks enter and leave the system, and speeds up assignment of tasks to machines. Relaxed randomization is somewhat akin to the batch sampling of Sparrow \[65\] while also handling priorities, preemptions, heterogeneity and the costs of package installation.
 
 relaxed 随机： 在一个大的cell中对多有机器进行可行性和评分是很浪费的
 
-**旁白： 恰恰kubernetes 就是这么搞的， 啊哈哈哈** 
 
 因此调度器会随机的检查机器，直到他发现了足够可行性检查的机器去评分， 并且从中选择一个最好的一个来评分。
 
-**旁白： 印象中kubernetes 是对所有的机器进行评分， 有空看看代码，可以提交个patch， 啊哈哈**
+```
+旁白
+
+印象中kubernetes 是对所有的机器进行评分， 有空看看代码
+```
 
 这减少了评分次数和缓存失效次数当task进入和离开系统时候， 提升了task 分配给machines 的能力。 Relaxed randomization 是有时候类似于batch 采样技术。但是borg 还处理了优先级，抢占，异构和软件安装包的成本。
 
@@ -561,7 +642,12 @@ VMs and security sandboxing techniques are used to run external software by Goog
 
 GAE 和GCE 使用vm 和安全沙箱 技术来运行外部的软件， 我们吧运行在kvm进程中的每个host vm 都作为一个borg task 来运行。
 
-**旁白， 这难道是borg 也管理vm ？？？？？**
+```
+旁白
+
+ 这难道是borg 也管理vm ？？？？？
+
+```
 
 ### performance isolation 性能隔离
 
@@ -569,7 +655,10 @@ Early versions of Borglet had relatively primitive resource isolation enforcemen
 
 早起版本的borglet 使用一种相对原始的primitive 的资源隔离措施： 事后检查内存，硬盘和cpu的使用量， 终止使用过多内存和硬盘的task，积极使用linux cpu 有限制来控制rein使用过多cpu 的task, 但是rogue\(粗暴\)的task 还是太容易影响同一机器上的其他task，因此一些用户就inflated\(膨胀， 抬高\) 他们的资源request数量， 来降低本来borg 可以使他们共存的task的数量， 这样就降低了资源使用率。资源回收 可以claw back（回收） 部分surplus（盈余）。 但是不是所有的， 因为还涉及到 safety margins. 在大多数极端情况， 用户会要求使用转悠机器或者cells.
 
-**旁白： 这也是现在国内大部分现状** 
+```
+旁白： 这也是现在国内大部分现状
+
+```
 
 Now, all Borg tasks run inside a Linux cgroup-based resource container \[17, 58, 62\] and the Borglet manipulates the container settings, giving much improved control because the OS kernel is in the loop. Even so, occasional low-level resource interference \(e.g., memory bandwidth or L3 cache pollution\) still happens, as in \[60, 83\].
 
@@ -589,7 +678,11 @@ A user-space control loop in the Borglet assigns memory to containers based on p
 
 borglet 有一个用户态的控制循序： 给容器分配内存， 对于prod task 是基于未来 predicted预测的使用量， 对于non-prod task 基于内存压力； 处理来自内核的OOM事件； 杀掉哪些已经超过自身内存限额的task， 或者当一个过载的机器使用完所有内存。 linux 的 文件缓存 显著的（significantly） 让这些实现复杂化（complicates）因为需要精确计算内存的使用量。
 
-**旁白， kubernetes 吧swap 给关了**
+```
+旁白
+
+kubernetes 吧swap 给关了
+```
 
 To improve performance isolation, LS tasks can reserve entire physical CPU cores, which stops other LS tasks from using them. Batch tasks are permitted to run on any core, but they are given tiny scheduler shares relative to the LS tasks. The Borglet dynamically adjusts the resource caps of greedy LS tasks in order to ensure that they do not starve batch tasks for multiple minutes, selectively applying CFS bandwidth control when needed \[75\]; shares are insufficient because we have multiple priority levels.
 
