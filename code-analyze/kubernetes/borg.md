@@ -8,7 +8,7 @@ kubernetes: borg
 
 Google’s Borg system is a cluster manager that runs hundreds of thousands of jobs, from many thousands of different applications, across a number of clusters each with up to tens of thousands of machines.
 
-borg 系统是一个集群管理系统， borg 运行了成千上万的jobs，来自于数千个不同的应用， 能够跨集群管理， 每个集群可以有成千上万个机器。
+borg 系统是一个集群管理系统， borg 运行了成千上万的jobs，来自于数千个不同的应用， 能够跨集群管理， 每个集群可以有成千上万个机器。。。
 
 It achieves high utilization by combining admission control, efficient task-packing, over-commitment, and machine sharing with process-level performance isolation. It supports high-availability applications with runtime features that minimize fault-recovery time, and scheduling policies that reduce the probability of correlated failures. Borg simplifies life for its users by offering a declarative job specification language, name service integration, realtime job monitoring, and tools to analyze and simulate system behavior.
 
