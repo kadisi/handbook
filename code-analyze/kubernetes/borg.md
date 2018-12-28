@@ -10,6 +10,8 @@ Google’s Borg system is a cluster manager that runs hundreds of thousands of j
 
 borg 系统是一个集群管理系统， borg 运行了成千上万的jobs，来自于数千个不同的应用， 能够跨集群管理， 每个集群可以有成千上万个机器。。。
 
+test
+
 It achieves high utilization by combining admission control, efficient task-packing, over-commitment, and machine sharing with process-level performance isolation. It supports high-availability applications with runtime features that minimize fault-recovery time, and scheduling policies that reduce the probability of correlated failures. Borg simplifies life for its users by offering a declarative job specification language, name service integration, realtime job monitoring, and tools to analyze and simulate system behavior.
 
 borg 通过管理控制， 高效的task 包装， 超售， 以及进程级别的性能隔离 实现了资源的高效利用。 它支持具有运行时特性的高可用应用程序, 最小化故障恢复时间， 以及具有降低相关故障率的调度策略。 borg 通过提供一个声明式的语言规范、name service 集成、实时job 监控，和分析和模拟系统行为的工具, 简化了用户的工作
