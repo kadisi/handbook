@@ -46,7 +46,6 @@ borg 的用户是google 的开发人员和系统管理员，他们在borg上运�
 每个job 运行在borg 的cell 里， 这个cell 可以认为是多台机器组成的管理单元
 
 ```
-旁白 
 
 这个cell 相当于kubernetes一个集群
 ```
@@ -75,7 +74,6 @@ For this paper, we classify higher-priority Borg jobs as “production” \(prod
 在这篇论文里， 我们把搞优先级的borg job 归类为prod\(生成的意思\) ，剩下的归类于 non-prod\(非生产的\) ， 大多数的长期服务是prod，大多数的batch jobs 是non-prod.
 
 ```
-旁白
 
 这里隐含了一个意思， 都是生成的job 可能无法再细分优先级， 如果再继续分优先级， 这就要更加细粒度的抢占策略， 这样很可能导致上层用户服务的不可用， 从产品层面和收费层面 估计不可行 所以优先级 抢占可能仅仅发生在 prod 与non-prod 之间
 
@@ -101,7 +99,6 @@ A Borg job’s properties include its name, owner, and the number of tasks it ha
 jobs 属性包括： name， 拥有者，一组task。jobs 可以提供约束来强制他的task 运行在具有特定架构的机器上。这些架构包括：处理器， 操作系统版本， 或者外部IP。 约束条件可以是硬约束也可以是软约束。 软约束相当于最好而不是要求。 job 的启动可以被延迟，直到一个优先的job完成了。 一个job 只能运行在一个cell中。
 
 ```
-旁白
 
 这里的约束相当于kubernetes的node seleter 以及现在普遍使用的 affinity， affinity 分为 nodeaffinity 和 podaffinity 以及 podantiaffinity , 同时k8s 也提供了 软约束和硬约束 preferredDuringSchedulingIgnoredDuringExecution 和 requiredDuringSchedulingIgnoredDuringExecution , 约束条件支持多种形式
 
@@ -112,7 +109,8 @@ Each task maps to a set of Linux processes running in a container on a machine \
 每个task 对应了一组linux process，这些process 运行在机器的容器里。 
 
 ```
-注意 绝大多数borg 的工作负载没有运行在虚拟机中， 因为我们不想支付虚拟化带来的成本， 而且在这个系统的设计之初，我们已经在不支持硬件虚拟化的处理器上做了大量的投入， 旁白： 估计那时候还没有硬件虚拟化的事
+
+注意 绝大多数borg 的工作负载没有运行在虚拟机中， 因为我们不想支付虚拟化带来的成本， 而且在这个系统的设计之初，我们已经在不支持硬件虚拟化的处理器上做了大量的投入， 估计那时候还没有硬件虚拟化的事
 
 ```
 
@@ -121,7 +119,6 @@ A task has properties too, such as its resource requirements and the task’s in
 task 也有属性， 如它的资源需求，task 在job 中的索引位置. 在一个job 中的所有task中， 大多数task的属性都是相同的， 但是可以被重写。 例如： 提供了task 专用命令行参数。 每个资源需求（cpu 内存，磁盘空间，访问速率， tcp端口等等）都可以按照一个粒度单独的提供 ，borg 程序是静态连接的。 目的是为了降低他们对运行环境的依赖。 这些应用程序的二进制和数据文件被打包成一个package。 应用程序的安装完全依靠borg 进行编排。
 
 ```
-旁白 
 kubernetes 的 pod和 container 跟 borg 的job task 异曲同工。 现在业内的容器也是普遍使用镜像来讲应用程序打包， 解决依赖的问题。 现在的镜像格式遵循OCI image spec
 ```
 
@@ -130,14 +127,12 @@ Users operate on jobs by issuing remote procedure calls \(RPCs\) to Borg, most c
 用户通过RPC 来操作borg 的job。 大多数还是通过命令行 或者监控系统。
 
 ```
-旁白
  Google 内有深厚的技术积累， 开发人员和使用者反而觉得命令行比界面操作便利 和 快速。 而国内大部分的容器产品或者思维方式，还是把api 或者命令行进行界面化
 ```
 
 大多数的job 描述都是使用BCL 这种声明式配置语言编写的
 
 ```
-旁白 
 kubernetes 的对资源的编写也是声明式的 yaml 或者json 文件
 ```
 
@@ -145,7 +140,7 @@ BCL 是GCL的一个变种， 它能够生成protobuf 文件。 GCL提供了lambd
 
 Figure 2 illustrates the states that jobs and tasks go through during their lifetime.
 
-稀土展示了job 和task 的整个生命周期
+下图展示了job 和task 的整个生命周期
 
 ![](../../.gitbook/assets/borg2.png)
 
@@ -154,14 +149,12 @@ A user can change the properties of some or all of the tasks in a running job by
 用户可以改变一个运行中job 里的一些或者所有的task属性，通过push 一个新的job 配置文件， 它会告知borg来把job 的task 更新成新的配置。
 
 ```
-旁白 
 类似于kubectl apply
 ```
 
 这个操作类似于一个轻量级，非原子性的事务。这种操作可以很容易的undone 知道它是关闭。 更新通常是滚动式的， 可以限制因为更新导致task中断的数量
 
 ```
-旁白 
 kubectl scale
 ```
 
@@ -198,10 +191,9 @@ Every job has a priority, a small positive integer. A highpriority task can obta
 
 Although a preempted task will often be rescheduled elsewhere in the cell, preemption cascades could occur if a high-priority task bumped out a slightly lower-priority one, which bumped out another slightly-lower priority task, and so on. To eliminate most of this, we disallow tasks in the production priority band to preempt one another. Finegrained priorities are still useful in other circumstances –e.g., MapReduce master tasks run at a slightly higher priority than the workers they control, to improve their reliability.
 
-虽然一个被抢占的task 经常会被调度到cell 中其他地方， 它总能在一个cell中找到一席之地。抢占瀑布可能会发生： 就是如果一个搞优先级的task 抢占了一个低优先级的task，而这个低优先级的task 又抢占了另一个更低优先级的task，如此等等，会发生抢占瀑布。 为了避免这种情况， 我们不允许prod 级别的task 互相排挤抢占
+虽然一个被抢占的task 经常会被调度到cell 中其他地方， 它总能在一个cell中找到一席之地。抢占瀑布可能会发生： 就是如果一个高优先级的task 抢占了一个低优先级的task，而这个低优先级的task 又抢占了另一个更低优先级的task，如此等等，会发生抢占瀑布。 为了避免这种情况， 我们不允许prod 级别的task 互相排挤抢占
 
 ```
-旁白
  borg 这个理论给我们一个好的提示，就是如果两个用户的task 都是生产级别的，那我们不能让两个用户的task 互相抢占， 即使你给更多的钱 ， 哈哈 ~~~, 我们只能让生产的 去抢占batch 去抢占测试的， 这样才对
 ```
 
@@ -214,7 +206,6 @@ Priority expresses relative importance for jobs that are running or waiting to r
 Quota-checking 是管理控制的一部分， 这并不是调度层的，配额不足的job 在提交时候会立刻被拒绝。
 
 ```
-旁白
  这一点跟kubernetes 不一样， kubernetes在调度层才知道配额是否不足， 如果配额不足， 在调度的事件中才会提示
 ```
 
@@ -223,7 +214,6 @@ Higher-priority quota costs more than quota at lowerpriority. Production-priorit
 高优先级的配额比低优先级的配额话费更多。 生成级别的配额会被限制在一个cell中实际的可用资源中。 所以，提交适合他们配额的生产级别job的用户可以期望它来运行，modulo fragmentation and constraints \(没搞明白\) 。
 
 尽管 我们鼓励用户购买的配额不要超过他们的需求
-
 
 许多用户超买（不是超卖）因为当他们的应用程序的用户突然爆发时候， 他们因为已经超买了可以杜绝这种短期的影响。 我们做出的回应是对低优先级的进行超卖（超售\): 每个用户在优先级为0 时候， 都有无限的配, 尽管这个很难执行 因为资源已经超额预订了。 一个低优先级的job 会被接纳， 但是由于资源不足，仍然会处于pending 状态。
 
@@ -242,14 +232,12 @@ It’s not enough to create and place tasks: a service’s clients and other sys
 单纯创建和安置task 是不够的： 一个service 的客户端和其他系统需要能够找到他们， 即使他们换了一个机器。 为了搞定这个， borg创建了一个稳定的 ‘borg name service’ 名字给每一个task。 这个名字包括cell 名字， job 名字和task number。
 
 ```
-旁白
  container 的命名规范 kubernetes 也有点类似
 ```
 
 borg 把task 的hostname 和端口写在一个持久化的高可用文件里。这个文件被用来我们的RPC系统来发现task 的endpoint。
 
 ```
-旁白
  kubernetes 实际上是把pod 的信息注册到etcd中， 然后由endpoint controller 来发现这些endpoint
 ```
 
@@ -260,7 +248,7 @@ Almost every task run under Borg contains a built-in HTTP server that publishes 
 在borg上 几乎每个task 都会内置一个http server ，用来公开这个task 的健康状况和数千个性能metrics,\(例如rpc 延迟\) 。borg 监控这个监控探测的url。 并且重启那些没有返回的或者返回一个http错误码的task。其他的数据 是有监控工具来跟踪。
 
 ```
-旁白： kubernetes 也有相应的监控探测接口 Probe 分别是 readinessProbe 和 livenessProbe
+kubernetes 也有相应的监控探测接口 Probe 分别是 readinessProbe 和 livenessProbe
 ```
 
 A service called Sigma provides a web-based user interface \(UI\) through which a user can examine the state of all their jobs, a particular cell, or drill down to individual jobs and tasks to examine their resource behavior, detailed logs, execution history, and eventual fate. Our applications generate voluminous logs; these are automatically rotated to avoid running out of disk space, and preserved for a while after the task’s exit to assist with debugging. If a job is not running Borg provides a “why pending?” annotation, together with guidance on how to modify the job’s resource requests to better fit the cell. We publish guidelines for “conforming” resource shapes that are likely to schedule easily.
@@ -279,10 +267,9 @@ All of these features help users to understand and debug the behavior of Borg an
 
 A Borg cell consists of a set of machines, a logically centralized controller called the Borgmaster, and an agent process called the Borglet that runs on each machine in a cell \(see Figure 1\). All components of Borg are written in C++.
 
-一个borg的cell 包含一组机器， 一个逻辑的中心控制器称作为borgmaster， 运行在cell里的每个集群上的agent 称作为borglet。borg 所有的组件都用c++ 写的。
+一个borg的cell 包含一组机器，一个逻辑的中心控制器称作为borgmaster， 运行在cell里的每个集群上的agent 称作为borglet。borg 所有的组件都用c++ 写的。
 
 ```
-旁白 
 borgmaster 对应kubernetes 的 etcd + apiserver+ scheduler + controller-manager , borglet 对应kubernetes 的kubelet
 ```
 
@@ -294,7 +281,7 @@ Each cell’s Borgmaster consists of two processes: the main Borgmaster process 
 
 The Borgmaster is logically a single process but is actually replicated five times. Each replica maintains an inmemory copy of most of the state of the cell, and this state is also recorded in a highly-available, distributed, Paxos-based store \[55\] on the replicas’ local disks. A single elected master per cell serves both as the Paxos leader and the state mutator, handling all operations that change the cell’s state, such as submitting a job or terminating a task on a machine. A master is elected \(using Paxos\) when the cell isbrought up and whenever the elected master fails; it acquires a Chubby lock so other systems can find it. Electing a master and failing-over to the new one typically takes about 10 s, but can take up to a minute in a big cell because some in-memory state has to be reconstructed. When a replica recovers from an outage, it dynamically re-synchronizes its state from other Paxos replicas that are up-to-date.
 
-borgmaster 是一个逻辑的单进程， 但是实际上有5个副本。 每个副本在内存中保存了大多数cell状态的拷贝。 这些状态也被记录在副本的本地磁盘上，一个基于paxos的高可用，分布式的存储。每个cell 都有一个单独选举出来的master，它同事作为paxos的leader 和 状态的修改者， 处理所有变更cell状态的操作请求，例如提交一个job 或者在一个机器上中断一个task。 当cell 启动或者当一个master 故障时候， 新的master会通过paxos 算法重新选举出来。 新的master 会获得一个chubby锁，这样其他的系统可以找到它。选举并转移到一个新的master 一般需要花费10s， 但是在一个大的cell里可以花费1分钟， 以为一些内存状态需要背重构。 当一个副本从停机中恢复后， 它会从其他的paxos 副本中动态的同步他的状态
+borgmaster 是一个逻辑的单进程， 但是实际上有5个副本。 每个副本在内存中保存了cell大多数状态的拷贝。 这些状态也被记录在副本的本地磁盘上，一个基于paxos的高可用，分布式的存储。每个cell 都有一个单独选举出来的master，它同时作为paxos的leader 和 状态的修改者， 处理所有变更cell状态的操作请求，例如提交一个job 或者在一个机器上中断一个task。 当cell 启动或者当一个master 故障时候， 新的master会通过paxos 算法重新选举出来。 新的master 会获得一个chubby锁，这样其他的系统可以找到它。选举并转移到一个新的master 一般需要花费10s， 但是在一个大的cell里可以花费1分钟， 以为一些内存状态需要背重构。 当一个副本从停机中恢复后， 它会从其他的paxos 副本中动态的同步他的状态
 
 The Borgmaster’s state at a point in time is called a checkpoint, and takes the form of a periodic snapshot plus a change log kept in the Paxos store. Checkpoints have many uses, including restoring a Borgmaster’s state to an arbitrary point in the past \(e.g., just before accepting a request that triggered a software defect in Borg so it can be debugged\); fixing it by hand in extremis; building a persistent log of events for future queries; and offline simulations.
 
@@ -311,14 +298,12 @@ When a job is submitted, the Borgmaster records it persistently in the Paxos sto
 当一个job提交后， borgmaster 把它持久化到paxos存储中，并且增加job task 到一个pending 队列中。 调度器异步扫描等待队列， 如果有足够的可用资源 来满足job的约束条件，调度器会分配task到机器上。（调度器主要是操作task 而不是job）
 
 ```
-旁白
 kubernetes 队列中存的是pod， 实际调度也是pod 跟borg 还有点不一样， 最根本原因估计是pod 和 container 是不能分离到多个machine 上的
 ```
 
 调度器根据优先级从高到底进行扫描， 在同一个优先级下，通过轮转的方式来确保对每个用户公平， 避免队首阻塞大型作业。 调度算法分为两部分： 可行性检查， 为了找出task 适合的机器， 第二部分是打分， 从中选出一个合适的机器。
 
 ```
-旁白 
 
 kubernetes 的scheduler 调度算法分为预选 和 优选 跟borg 的很相似
 
@@ -347,7 +332,6 @@ If the machine selected by the scoring phase doesn’t have enough available res
 如果一个被选的机器被评分系统认为没有足够的资源去分配新的task，borg 抢占kill 低优先级的task， 按照由低到高的顺序， 直到它可以有合适的资源。我们把被强占的task 增加到调度器的pending 队列中， 而不是迁移或者休眠他们。
 
 ```
-旁白 
 
 这样如果有合适的资源后，会重新调度他们
 ```
@@ -357,7 +341,6 @@ Task startup latency \(the time from job submission to a task running\) is an ar
 task 启动延迟（job提交到task running的时间）是一个重点关注的区域。 启动延迟时间是高度可变的。 中等时间大约是25s，package的安装占用了大约80%的时间： 一个已知的瓶颈是软件包写磁盘的争用。为了减少task 启动时间， 调度器更喜欢把那些task 分配到那些已经有pacakge安装的机器里： 大多数的package 是不可变的， 并且可以被共享和缓存。（这是borg调度器唯一的数据局部性支持） ,另外， borg 使用类似BT协议 分发package 到机器上。
 
 ```
-旁白
 
 kubernetes 调度器貌似没有对镜像是否已经安装的调度算法， kubernetes 的镜像分发也没用使用BT协议
 
@@ -376,8 +359,6 @@ The Borgmaster polls each Borglet every few seconds to retrieve the machine’s 
 borgmaster 每个几秒轮训borglet 来获得机器的当前状态， 并向其发送输出请求。borgmaster 控制通信频率， 避免了显式的流量控制需求，阻止了恢复风暴
 
 ```
-
-旁白
 
 k8s 的kubelet 是主动上报的， borg 是主动拉取的， 跟普罗米修斯相似
 
@@ -402,7 +383,6 @@ Early versions of Borgmaster had a simple, synchronous loop that accepted reques
 早起版本的borgmaster 有一个简单的，同步循环来处理请求， 调度任务，和与borglet 的通信。 为了处理大规模的cell，我们把调度分离出了一个单独的进程，因此它可以和其他的borgmaster 功能并行的执行。 这些master 有多个副本用来容错。 一个调度器副本执行在一个缓存的cell 状态拷贝。 他重复的执行下面操作： 从选举master中检索状态变化\(包括已经分配的和pending work\), 更新他的本地copy，执行一个调度来分配task，把分配信息通知给master。 borgmaster 接受并且应用这些分配，如果他们不适合例如 基于过时的数据状态） ， 这就会导致他们进入到下一轮的调度。 这于omega 使用的乐观optimistic 并发控制很相似， 我们最近给borg增加了一个能力 对于不同负载调用不同调度器的功能。
 
 ```
-旁白 
 
 kubernetes 也支持多种调度器，支持用户自定义调度， kubernetes 的scheduler 也和apiserver 做了分离
 
@@ -410,7 +390,7 @@ kubernetes 也支持多种调度器，支持用户自定义调度， kubernetes 
 
 To improve response times, we added separate threads to talk to the Borglets and respond to read-only RPCs. For greater performance, we sharded \(partitioned\) these functions across the five Borgmaster replicas §3.3. Together,
 
-为了提高相应时间， 我们增加独立线程去粉笔通信和相应只读的RPC， 为了更好的性能， 我们将这些功能划分给了5个master副本。
+为了提高相应时间， 我们增加独立线程去本别通信和相应只读的RPC， 为了更好的性能， 我们将这些功能划分给了5个master副本。
 
 these keep the 99%ile response time of the UI below 1s and the 95%ile of the Borglet polling interval below 10 s.
 
@@ -425,7 +405,6 @@ Several things make the Borg scheduler more scalable:
 缓存评分: 计算一台机器的可行性和评分是比较昂贵的。因此borg 缓存了这些评分 直到machine的属性或者task 有了改变。 例如： 一个机器上的task终止，一个属性修改了， 或者task的需求改变。 忽略小额的资源变化减少了缓存的失效性。
 
 ```
-旁白
 
 kubernetes sheduler 内部也是用了大量的缓存， scheduler 内部维护了一个大的数据接口，自己算每个host 的资源状态， 有任何一个node或者pod变化都会更新这个大缓存。 但是scheduler 是在每次pod创建时候，对每个host 进行的实时打分
 ```
@@ -443,7 +422,6 @@ relaxed 随机： 在一个大的cell中对多有机器进行可行性和评分�
 因此调度器会随机的检查机器，直到他发现了足够可行性检查的机器去评分， 并且从中选择一个最好的一个来评分。
 
 ```
-旁白
 
 印象中kubernetes 是对所有的机器进行评分， 有空看看代码
 ```
@@ -643,7 +621,6 @@ VMs and security sandboxing techniques are used to run external software by Goog
 GAE 和GCE 使用vm 和安全沙箱 技术来运行外部的软件， 我们吧运行在kvm进程中的每个host vm 都作为一个borg task 来运行。
 
 ```
-旁白
 
  这难道是borg 也管理vm ？？？？？
 
@@ -656,7 +633,8 @@ Early versions of Borglet had relatively primitive resource isolation enforcemen
 早起版本的borglet 使用一种相对原始的primitive 的资源隔离措施： 事后检查内存，硬盘和cpu的使用量， 终止使用过多内存和硬盘的task，积极使用linux cpu 有限制来控制rein使用过多cpu 的task, 但是rogue\(粗暴\)的task 还是太容易影响同一机器上的其他task，因此一些用户就inflated\(膨胀， 抬高\) 他们的资源request数量， 来降低本来borg 可以使他们共存的task的数量， 这样就降低了资源使用率。资源回收 可以claw back（回收） 部分surplus（盈余）。 但是不是所有的， 因为还涉及到 safety margins. 在大多数极端情况， 用户会要求使用转悠机器或者cells.
 
 ```
-旁白： 这也是现在国内大部分现状
+
+这也是现在国内大部分现状
 
 ```
 
@@ -672,14 +650,13 @@ To help with overload and overcommitment, Borg tasks have an application class o
 
 A second split is between compressible resources \(e.g., CPU cycles, disk I/O bandwidth\) that are rate-based and can be reclaimed from a task by decreasing its quality of service without killing it; and non-compressible resources \(e.g., memory, disk space\) which generally cannot be reclaimed without killing the task. If a machine runs out of non-compressible resources, the Borglet immediately terminates tasks, from lowest to highest priority, until the remaining reservations can be met. If the machine runs out of compressible resources, the Borglet throttles usage \(favoring LS tasks\) so that short load spikes can be handled without killing any tasks. If things do not improve, Borgmaster will remove one or more tasks from the machine.
 
-另一种区分是： 可压缩资源（例如cpu， 磁盘io带宽） ，这些都是基于速率的， 通过降低俯卧质量而不是杀死他们来回收。 不可压缩的资源（例如内存， 磁盘空间） ，一般来说不杀死task 是不能回收这些资源的。 如果一个机器runs out of 用光了这些不可压缩的资源， borglet 会立刻中断这些task， 从低优先级的顺序开始。知道剩余的预留可以满足条件。 如果机器用光了可压缩的资源， borglet 会throttles 限制 使用率（偏好LS task） ，这样不用杀死task 来处理短期负载， 如果没有改善， 则borgmaster 会从这个机器上移除一个或者多个task
+另一种区分是： 可压缩资源（例如cpu， 磁盘io带宽） ，这些都是基于速率的， 通过降低服务质量而不是杀死他们来回收。 不可压缩的资源（例如内存， 磁盘空间） ，一般来说不杀死task 是不能回收这些资源的。 如果一个机器runs out of 用光了这些不可压缩的资源， borglet 会立刻中断这些task， 从低优先级的顺序开始。知道剩余的预留可以满足条件。 如果机器用光了可压缩的资源， borglet 会throttles 限制 使用率（偏好LS task） ，这样不用杀死task 来处理短期负载， 如果没有改善， 则borgmaster 会从这个机器上移除一个或者多个task
 
 A user-space control loop in the Borglet assigns memory to containers based on predicted future usage \(for prod tasks\) or on memory pressure \(for non-prod ones\); handles Out-of-Memory \(OOM\) events from the kernel; and kills tasks when they try to allocate beyond their memory limits, or when an over-committed machine actually runs out of memory. Linux’s eager file-caching significantly complicates the implementation because of the need for accurate memory-accounting.
 
 borglet 有一个用户态的控制循序： 给容器分配内存， 对于prod task 是基于未来 predicted预测的使用量， 对于non-prod task 基于内存压力； 处理来自内核的OOM事件； 杀掉哪些已经超过自身内存限额的task， 或者当一个过载的机器使用完所有内存。 linux 的 文件缓存 显著的（significantly） 让这些实现复杂化（complicates）因为需要精确计算内存的使用量。
 
 ```
-旁白
 
 kubernetes 吧swap 给关了
 ```
@@ -692,11 +669,11 @@ To improve performance isolation, LS tasks can reserve entire physical CPU cores
 
 Like Leverich \[56\], we found that the standard Linux CPU scheduler \(CFS\) required substantial tuning to support both low latency and high utilization. To reduce scheduling delays, our version of CFS uses extended per-cgroup load history \[16\], allows preemption of batch tasks by LS tasks, and reduces the scheduling quantum when multiple LS tasks are runnable on a CPU. Fortunately, many of our applications use a thread-per-request model, which mitigates the effects of persistent load imbalances. We sparingly use cpusets to allocate CPU cores to applications with particularly tight latency requirements. Some results of these efforts are shown in Figure 13. Work continues in this area, adding thread placement and CPU management that is NUMA-, hyperthreading-, and power-aware \(e.g., \[81\]\), and improving the control fidelity of the Borglet.
 
-Like Leverich \[56\], 我们发现标准CPU 调度器CFS 需要 大福（substantial） 调优（tuning） 来支持低延迟和高利用率， 为了降低调度延迟， 我们使用的CFS版本 对每个cgroup都有负载历史。 允许LStask 抢占batch task。 当有多个LS task 运行在一个cpu时候， 会减少其调度量。 幸运干的事， 我们大多数的应用程序使用一个线程处理一个请求的模型， 这降低了持续负载失衡的影响。 我们sparingly\(节俭的 少量的\)使用cpuset 来给哪些对延迟要求特别高的应用程序分片cpu核数. 这些努力的效果在图13中展示。 我们继续在这方面投入， 增加线程 placement 和cpu 管理， 超线程， 来提高borglet 的控制精度
+Like Leverich \[56\], 我们发现标准CPU 调度器CFS 需要 大福（substantial） 调优（tuning） 来支持低延迟和高利用率， 为了降低调度延迟， 我们使用的CFS版本 对每个cgroup都有负载历史。 允许LStask 抢占batch task。 当有多个LS task 运行在一个cpu时候， 会减少其调度量。 幸运的是， 我们大多数的应用程序使用一个线程处理一个请求的模型， 这降低了持续负载失衡的影响。 我们sparingly\(节俭的 少量的\)使用cpuset 来给哪些对延迟要求特别高的应用程序分片cpu核数. 这些努力的效果在图13中展示。 我们继续在这方面投入， 增加线程 placement 和cpu 管理， 超线程， 来提高borglet 的控制精度
 
 Tasks are permitted to consume resources up to their limit. Most of them are allowed to go beyond that for compressible resources like CPU, to take advantage of unused \(slack\) resources. Only 5% of LS tasks disable this, presumably to get better predictability; fewer than 1% of batch tasks do. Using slack memory is disabled by default, because it increases the chance of a task being killed, but even so, 10% of LS tasks override this, and 79% of batch tasks do so because it’s a default setting of the MapReduce framework. This complements the results for reclaimed resources \(§5.5\). Batch tasks are willing to exploit unused as well as reclaimed memory opportunistically: most of the time this works, although the occasional batch task is sacrificed when an LS task needs resources in a hurry.
 
-task 被允许在他们limit之内消费资源。 大多数他们被允许使用超出上限资源的可压缩资源， 如CPU， 利用空闲资源。 仅仅5%的LS task 禁止这么做， presumably\(大概\)是为了获得更好的可预测性。 小于1%的batch task 也禁止了。 使用slack memory 默认被禁止， 因为这增加了task 被kill 的几率。 不过即使这样， 10%的LS task 解除了这种限制， 79%的 的batch task 也解除了限制， 因为这是mapreduce 框架的默认设置。 这补偿了资源回收的后果， batch task 愿意 利用（exploit）未被使用的内存或者回收的内存： 大多数时间他们都能正常工作， 尽管偶尔batch task 会牺牲（sacrificed） 当一个LS task 突然需要资源时候
+task 被允许在他们limit之内消费资源。 大多数他们被允许使用超出上限资源的可压缩资源， 如CPU， 利用空闲资源。 仅仅5%的LS task 禁止这么做， presumably\(大概\)是为了获得更好的可预测性。 小于1%的batch task 也禁止了。 使用slack memory 默认被禁止， 因为这增加了task 被kill 的几率。 不过即使这样，10%的LS task 解除了这种限制， 79%的 的batch task 也解除了限制， 因为这是mapreduce 框架的默认设置。 这补偿了资源回收的后果， batch task 愿意 利用（exploit）未被使用的内存或者回收的内存： 大多数时间他们都能正常工作， 尽管偶尔batch task 会牺牲（sacrificed） 当一个LS task 突然需要资源时候
 
 ![](../../.gitbook/assets/borg10.png)
 
