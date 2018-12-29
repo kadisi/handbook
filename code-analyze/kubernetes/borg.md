@@ -4,7 +4,7 @@ kubernetes: borg
 
 # borg
 
-## 摘要
+# 摘要
 
 Google’s Borg system is a cluster manager that runs hundreds of thousands of jobs, from many thousands of different applications, across a number of clusters each with up to tens of thousands of machines.
 
@@ -20,7 +20,7 @@ We present a summary of the Borg system architecture and features, important des
 
 我们总结了borg系统的架构和特定， 重要的设计决策，定量分析了它的一些策略决策， 并且总结了十年来运维经验和学到的东西。
 
-## 介绍
+# 介绍
 
 The cluster management system we internally call Borg admits, schedules, starts, restarts, and monitors the full range of applications that Google runs. This paper explains how.
 
@@ -38,7 +38,7 @@ borg 并不是第一个专注于解决这些问题的系统。 但是，他是�
 
 ![](../../.gitbook/assets/borg1.png)
 
-## 用户视角
+# 用户视角
 
 Borg’s users are Google developers and system administrators \(site reliability engineers or SREs\) that run Google’s applications and services. Users submit their work to Borg in the form of jobs, each of which consists of one or more tasks that all run the same program \(binary\). Each job runs in one Borg cell, a set of machines that are managed as a unit. The remainder of this section describes the main features exposed in the user view of Borg.
 
@@ -54,7 +54,7 @@ borg 的用户是google 的开发人员和系统管理员，他们在borg上运�
 
 本章节剩余部分主要介绍了在用户视角下borg系统提供的主要功能
 
-### 工作负载
+## 工作负载
 
 Borg cells run a heterogenous workload with two main parts. The first is long-running services that should “never” go down, and handle short-lived latency-sensitive requests \(a few μs to a few hundred ms\). Such services are used for end-user-facing products such as Gmail, Google Docs, and web search, and for internal infrastructure services \(e.g., BigTable\). The second is batch jobs that take from a few seconds to a few days to complete; these are much less sensitive to short-term performance fluctuations. The workload mix varies across cells, which run different mixes of applications depending on their major tenants \(e.g., some cells are quite batch-intensive\), and also varies over time: batch jobs come and go, and many end-user-facing service jobs see a diurnal usage pattern. Borg is required to handle all these cases equally well.
 
@@ -83,7 +83,7 @@ For this paper, we classify higher-priority Borg jobs as “production” \(prod
 
 在一个比较典型的cell中， prod job 给分配了70%的CPU资源，然而实际使用了60%的资源。 分配了55%的内存，然而实际使用了85%的内存。 在5.5章 展示了分配 和实际值的差是很重要的（旁边， 类似于kubernetes 的request 和limit）
 
-### 集群和cell
+## 集群和cell
 
 The machines in a cell belong to a single cluster, defined by the high-performance datacenter-scale network fabric that connects them. A cluster lives inside a single datacenter building, and a collection of buildings makes up a site.1 A cluster usually hosts one large cell and may have a few smaller-scale test or special-purpose cells. We assiduously avoid any single point of failure.
 
@@ -94,7 +94,7 @@ Our median cell size is about 10 k machines after excluding test cells; some are
 
 排除测试cell， 我们中等规模的cell 大约有1w台机器。 有一些会大的很多。一个cell 中的机器很多都是异构的: 大小\( CPU 内存， 硬盘， 网络\) 处理器类型， 性能， 以及外部ip地址 或者flash 存储。 borg 给用户隔离了这些差异。 让用户单纯的运行task，分配资源，安装应用程序和其他的依赖， 监控，以及在出现故障时候重启。
 
-### job 和 tasks
+## job 和 tasks
 
 A Borg job’s properties include its name, owner, and the number of tasks it has. Jobs can have constraints to force its tasks to run on machines with particular attributes such as processor architecture, OS version, or an external IP address. Constraints can be hard or soft; the latter act like preferences rather than requirements. The start of a job can be deferred until a prior one finishes. A job runs in just one cell.
 
@@ -168,7 +168,7 @@ Tasks can ask to be notified via a Unix SIGTERM signal before they are preempted
 
 Task 要求能够接受unix sigterm 通过SKIGKILL 在他们被抢占之前， 因此他们还是有一些时间去清理， 保存状态，完成任何一个当前执行的请求, 并拒绝新的请求。 如果抢占者使用了延迟限制，实际的通知可能会少一些 .
 
-### Allocs
+## Allocs
 
 A Borg alloc \(short for allocation\) is a reserved set of resources on a machine in which one or more tasks can be run; the resources remain assigned whether or not they are used. Allocs can be used to set resources aside for future tasks, to retain resources between stopping a task and starting it again, and to gather tasks from different jobs onto the same machine – e.g., a web server instance and an associated logsaver task that copies the server’s URL logs from the local disk to a distributed file system. The resources of an alloc are treated in a similar way to the resources of a machine; multiple tasks running inside one share its resources. If an alloc must be relocated to another machine, its tasks are rescheduled with it.
 
@@ -181,7 +181,7 @@ An alloc set is like a job: it is a group of allocs that reserve resources on mu
 一个alloc set 类似一个job， 他是一组allocs 保留了多个机器的资源。 一旦一个alloc set 被创建， 一个或者多个job 可以被提交进去跑。 总而言之， 我们通常会用task 表示一个alloc 或者一个top-level的task和job 来表示一个job 或者alloc set。
 
 
-### 优先级， 配额和管理控制
+## 优先级， 配额和管理控制
 
 What happens when more work shows up than can be accommodated? Our solutions for this are priority and quota.
 
@@ -227,7 +227,7 @@ Borg has a capability system that gives special privileges to some users; for ex
 
 borg 有一个容量系统 给某些用户一些特殊权限。 例如： 允许管理员删除或者修改cell里的job，或者允许用户访问受限的kernel feature，或者禁止borg对他们的jobs进行资源评估。
 
-### 命名和监控
+## 命名和监控
 
 It’s not enough to create and place tasks: a service’s clients and other systems need to be able to find them, even after they are relocated to a new machine. To enable this, Borg creates a stable “Borg name service” \(BNS\) name for each task that includes the cell name, job name, and task number. Borg writes the task’s hostname and port into a consistent, highly-available file in Chubby \[14\] with this name, which is used by our RPC system to find the task endpoint. The BNS name also forms the basis of the task’s DNS name, so the fiftieth task in job jfoo owned by user ubar in cell cc would be reachable via 50.jfoo.ubar.cc.borg.google.com. Borg also writes job size and task health information into Chubby whenever it changes, so load balancers can see where to route requests to.
 
@@ -265,7 +265,7 @@ All of these features help users to understand and debug the behavior of Borg an
 
 所有的features 帮助用户理解和debug borg和他们jobs的行为， 并且帮助SRE工程师们管理程序上万的主机。
 
-## borg 架构
+# borg 架构
 
 A Borg cell consists of a set of machines, a logically centralized controller called the Borgmaster, and an agent process called the Borglet that runs on each machine in a cell \(see Figure 1\). All components of Borg are written in C++.
 
@@ -275,7 +275,7 @@ A Borg cell consists of a set of machines, a logically centralized controller ca
 borgmaster 对应kubernetes 的 etcd + apiserver+ scheduler + controller-manager , borglet 对应kubernetes 的kubelet
 ```
 
-### borgmaster
+## borgmaster
 
 Each cell’s Borgmaster consists of two processes: the main Borgmaster process and a separate scheduler \(§3.2\). The main Borgmaster process handles client RPCs that either mutate state \(e.g., create job\) or provide read-only access to data \(e.g., lookup job\). It also manages state machines for all of the objects in the system \(machines, tasks, allocs, etc.\), communicates with the Borglets, and offers a web UI as a backup to Sigma.
 
@@ -293,7 +293,7 @@ A high-fidelity Borgmaster simulator called Fauxmaster can be used to read check
 
 一个高保真的borgmaster 模拟器被称作为 Fauxmaster。 Fauxmaster 可以读取checkpoint 文件， 并且包含了一个生产borgmaster的全部代码拷贝， 并且对borglet提供stubbed-out 接口。 它接受RPC请求来改变机器状态，执行操作， 例如： 调度所有等待的tasks。 并且我们用它去debug failures。 就像是跟在线的borgmaster进行交互一样。 通过模拟的borglet 重放checkpoint files 里的真实 交互。 用户可以单步执行 并且观察这个系统在过去发生状态的变化。Fauxmaster 也用于容量规划（可以适合多少此类型的jobs） 也可以在更改cell配置之前做相关检查。
 
-### scheduling 调度
+## scheduling 调度
 
 When a job is submitted, the Borgmaster records it persistently in the Paxos store and adds the job’s tasks to the pending queue. This is scanned asynchronously by the scheduler, which assigns tasks to machines if there are sufficient available resources that meet the job’s constraints. \(The scheduler primarily operates on tasks, not jobs.\) The scan proceeds from high to low priority, modulated by a round-robin scheme within a priority to ensure fairness across users and avoid head-of-line blocking behind a large job. The scheduling algorithm has two parts: feasibility checking, to find machines on which the task could run, and scoring, which picks one of the feasible machines.
 
@@ -350,7 +350,7 @@ kubernetes 调度器貌似没有对镜像是否已经安装的调度算法， ku
 
 Additionally, the scheduler uses several techniques to let it scale up to cells with tens of thousands of machines \(§3.4\). 此外 调度器采用多种技术让它能够扩展到数万台机器的cell中。
 
-### borglet
+## borglet
 
 The Borglet is a local Borg agent that is present on every machine in a cell. It starts and stops tasks; restarts them if they fail; manages local resources by manipulating OS kernel settings; rolls over debug logs; and reports the state of the machine to the Borgmaster and other monitoring systems.
 
@@ -374,7 +374,7 @@ If a Borglet does not respond to several poll messages its machine is marked as 
 
 如果一个borglet 在几次轮训后没有相应，它所在的机器会被标记为下线。 跑在上面的任何task 都会被重新调度到其他机器上。 如果通信恢复了， borgmaster 告诉borglet 去删掉那些已经被重新调度的task， 去避免重复。 borglet 继续正常运行即使它失去了master的联系， 因此 即使所有master 副本都故障了， 当前运行的task 和service 都会正常运行.
 
-### scalability
+## scalability
 
 We are not sure where the ultimate scalability limit to Borg’s centralized architecture will come from; so far, every time we have approached a limit, we’ve managed to eliminate it. A single Borgmaster can manage many thousands of machines in a cell, and several cells have arrival rates above 10000 tasks per minute. A busy Borgmaster uses 10–14 CPU cores and up to 50 GiB RAM. We use several techniques to achieve this scale.
 
@@ -434,7 +434,7 @@ In our experiments \(§5\), scheduling a cell’s entire workload from scratch t
 
 在我们的实验中， 调度一个cell的整个工作负载通常需要几百秒， 但是禁用上面的技术的话， 3天都不够。正常情况下，半秒就能完成一遍在线调度的等待队列
 
-## Availability 可用性
+# Availability 可用性
 
 ![](../../.gitbook/assets/borg3.png)
 
@@ -478,13 +478,13 @@ Borgmaster uses a combination of techniques that enable it to achieve 99.99% ava
 
 master 用一种组合的技术来确保它在实际中获得99%的的高可用性： 多副本应对机器故障， 管理控制来避免过载， 使用简单，底层的工具来部署实例 ，最小化的减少依赖。 每个cell彼此孤立，最小化的减少了关联错误操作和古装传播的机会。这些目标，不是扩展的限制，是我们反对cell规模过大的主要论据
 
-### Utilization 利用率
+# Utilization 利用率
 
 One of Borg’s primary goals is to make efficient use of Google’s fleet of machines, which represents a significant financial investment: increasing utilization by a few percentage points can save millions of dollars. This section discusses and evaluates some of the policies and techniques that Borg uses to do so.
 
 borg的主要目标是充分利用google 大量的机器（这个是一大笔金融投入）: 提升几个百分点的使用率能够节省几百万美元， 本章节讨论和评估了一些borg使用的技术和策略
 
-### Evaluation methodology 评估方法
+## Evaluation methodology 评估方法
 
 Our jobs have placement constraints and need to handle rare workload spikes, our machines are heterogenous, and we run batch jobs in resources reclaimed from service jobs. So, to evaluate our policy choices we needed a more sophisticated metric than “average utilization”. After much experimentation we picked cell compaction: given a workload, we found out how small a cell it could be fitted into by removing machines until the workload no longer fitted, repeatedly re-packing the workload from scratch to ensure that we didn’t get hung up on an unlucky configuration. This provided clean termination conditions and facilitated automated comparisons without the pitfalls of synthetic workload generation and modeling \[31\]. A quantitative comparison of evaluation techniques can be found in \[78\]: the details are surprisingly subtle.
 
@@ -512,7 +512,7 @@ In production, we deliberately leave significant headroom for workload growth, o
 
 ![](../../.gitbook/assets/borg4.png)
 
-### Cell  sharing cell 共享
+## Cell  sharing cell 共享
 
 Nearly all of our machines run both prod and non-prod tasks at the same time: 98% of the machines in shared Borg cells, 83% across the entire set of machines managed by Borg. \(We have a few dedicated cells for special uses.\)
 
@@ -550,7 +550,7 @@ These experiments confirm that performance comparisons at warehouse-scale are tr
 
 这些实验表明了在warehouse-scale 的性能比较是很棘手的， 重新强化了在【51】中的观察， 并且也暗示了共享没有drastically\(大福的\) 增加应用程序的开销。 但是 假设从最不利的结果来看， 共享仍然是有利的： cpu 的降速通过增加需要多种不同分区方案的机器所抵消outweighed ，并且共享的优势应用于所有资源， 包括内存， disk 不仅仅是cpu
 
-### large cells 大型cell
+## large cells 大型cell
 
 Google builds large cells, both to allow large computations to be run, and to decrease resource fragmentation. We tested the effects of the latter by partitioning the workload for a cell across multiple smaller cells – by first randomly permuting the jobs and then assigning them in a round-robin manner among the partitions. Figure 7 confirms that using smaller cells would require significantly more machines.
 
@@ -558,7 +558,7 @@ google 构建了大型的cell， 意识为了允许大型计算任务， 而是�
 
 ![](../../.gitbook/assets/borg7.png)
 
-### Fine-grained resource requests 细粒度资源请求
+## Fine-grained resource requests 细粒度资源请求
 
 Borg users request CPU in units of milli-cores, and memory and disk space in bytes. \(A core is a processor hyperthread, normalized for performance across machine types.\) Figure 8 shows that they take advantage of this granularity: there are few obvious “sweet spots” in the amount of memory or CPU cores requested, and few obvious correlations between these resources. These distributions are quite similar to the ones presented in \[68\], except that we see slightly larger memory requests at the 90%ile and above.
 
@@ -568,7 +568,7 @@ Offering a set of fixed-size containers or virtual machines, although common amo
 
 尽管iaas 普遍提供一株固定大小规格的容器或者虚拟机 ，但是不是很符合我们的需求。 为了说明这一点， 我们把给prod job 和allocs 的cpu核数和内存资源限制 形成一个个桶， 通过向上取整接近2的幂, 这些桶从cpu 0.5核和1G内存 开始。图9 展示了 在一般情况下 这需要增加30-50%的资源。这个上限来自于把整个机器分配给那些大的任务， 那些大的任务在压缩之前把原始cell 四倍化后就不合适了。 下限是允许这些task 一直pending
 
-### Resource reclamation 资源回收
+## Resource reclamation 资源回收
 
 A job can specify a resource limit – an upper bound on the resources that each task should be granted. The limit is used by Borg to determine if the user has enough quota to admit the job, and to determine if a particular machine has enough free resources to schedule the task. Just as there are users who buy more quota than they need, there are users who request more resources than their tasks will use, because Borg will normally kill a task that tries to use more RAM or disk space than it requested, or throttle CPU to what it asked for. In addition, some tasks occasionally need to use all their resources \(e.g., at peak times of day or while coping with a denial-of-service attack\), but most of the time do not.
 
@@ -606,13 +606,13 @@ Figure 12 shows what happened. Reservations are clearly closer to usage in the s
 
 ![](../../.gitbook/assets/borg9.png)
 
-## isolation 隔离
+# isolation 隔离
 
 50% of our machines run 9 or more tasks; a 90%ile machine has about 25 tasks and will be running about 4500 threads \[83\]. Although sharing machines between applications increases utilization, it also requires good mechanisms to prevent tasks from interfering with one another. This applies to both security and performance.
 
 50% 的机器上运行里9个以上的task， 90%的机器运行了大约25个task， 大约4500个线程. 尽管应用之间共享机器增加了使用率， 但是这也需要个好的机制来阻止一个task interfering 干扰另一个task。 这个同样适用于安全和性能。
 
-### security isolation
+## security isolation
 
 We use a Linux chroot jail as the primary security isolation mechanism between multiple tasks on the same machine. To allow remote debugging, we used to distribute \(and rescind\) ssh keys automatically to give a user access to a machine only while it was running tasks for the user. For most users, this has been replaced by the borgssh command, which collaborates with the Borglet to construct an ssh connection to a shell that runs in the same chroot and cgroup as the task, locking down access even more tightly.
 
@@ -628,7 +628,7 @@ GAE 和GCE 使用vm 和安全沙箱 技术来运行外部的软件， 我们吧�
 
 ```
 
-### performance isolation 性能隔离
+## performance isolation 性能隔离
 
 Early versions of Borglet had relatively primitive resource isolation enforcement: post-hoc usage checking of memory, disk space and CPU cycles, combined with termination of tasks that used too much memory or disk and aggressive application of Linux’s CPU priorities to rein in tasks that used too much CPU. But it was still too easy for rogue tasks to affect the performance of other tasks on the machine, so some users inflated their resource requests to reduce the number of tasks that Borg could co-schedule with theirs, thus decreasing utilization. Resource reclamation could claw back some of the surplus, but not all, because of the safety margins involved. In the most extreme cases, users petitioned to use dedicated machines or cells.
 
@@ -679,7 +679,7 @@ task 被允许在他们limit之内消费资源。 大多数他们被允许使用
 
 ![](../../.gitbook/assets/borg10.png)
 
-## related work
+# related work
 
 Resource scheduling has been studied for decades, in contexts as varied as wide-area HPC supercomputing Grids, networks of workstations, and large-scale server clusters. We focus here on only the most relevant work in the context of large-scale server clusters.
 
@@ -741,13 +741,13 @@ And finally, as we have indicated, another important part of managing large scal
 
 最后， 如同我们indicated\(指出的:\) 大规模集群管理的另一个最重要的部分是 自动化 和 "operator scaleout" . \[43\]描述了 失效计划， 多租户， 健康检查， 准入控制和 可重启对实现一个运维人员对大量机器的管理是必须的。 borg 的设计philosophy（哲学）也是这样的， 允许职称我们每个SRE 管理上万台机器
 
-## lessons and future work 经验教育和未来工作
+# lessons and future work 经验教育和未来工作
 
 In this section we recount some of the qualitative lessons we’ve learned from operating Borg in production for more than a decade, and describe how these observations have been leveraged in designing Kubernetes \[53\].
 
 在本章节中， 我们总结里数十年来生成环境运行borg 的经验和教训。 然后介绍设计kubernetes 是如何吸收这些经验的
 
-### lessons learned: the bad
+## lessons learned: the bad
 
 We begin with some features of Borg that serve as cautionary tales, and informed alternative designs in Kubernetes.
 
@@ -769,7 +769,7 @@ Optimizing for power users at the expense of casual ones. Borg provides a large 
 
 以牺牲普通用户为代价为高级用户做优化： borg 提供了大量的一组特性来针对资深用户， 他们可以仔细的提交他们程序运行方式BCL 规范大约有230个参数）：这个最初的目的就是为了支持google 中大型资源的用户， 对于他们来说，提升效率是最显著的paramount.。 不幸的是， 负载的API 让初级用户变得很困难, 并且限制了他的演进。 我们的解决方案是构建一个自动化的工具和服务运行在borg 上层。 从实验中决定最合理的配置。 这些得益于容错的应用程序提供的实验自由： 如果这个自动化带来了失误， 这也是一个麻烦（nuisance） 并不会导致一个灾难
 
-### Lessons learned: the good
+## Lessons learned: the good
 
 On the other hand, a number of Borg’s design features have been remarkably beneficial and have stood the test of time.
 
@@ -807,13 +807,13 @@ The Kubernetes architecture goes further: it has an API server at its core that 
 
 k8s 架构走的更远一些， 他有一个apiserver 作为核心， 它是用来相应和处理请求。 集群管理逻辑是构建在一个小的， 可组合的微服务\(apiserver 的客户端\) ， 如： rc 用来维护期望的pod 副本数目即使在故障情况下， 以及node controller， 管理着主机的声明周期
 
-### conclusion 总结
+## conclusion 总结
 
 Virtually all of Google’s cluster workloads have switched to use Borg over the past decade. We continue to evolve it, and have applied the lessons we learned from it to Kubernetes.
 
 在过去的10年 几乎所有的google 负载都迁移到borg上， 我们仍在继续改进他， 并且把经验应用于k8s 上。
 
-## Acknowledgments
+# Acknowledgments
 
 The authors of this paper performed the evaluations and wrote the paper, but the dozens of engineers who designed, implemented, and maintained Borg’s components and ecosystem are the key to its success. We list here just those who participated most directly in the design, implementation, and operation of the Borgmaster and Borglets. Our apologies if we missed anybody.
 
