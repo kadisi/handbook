@@ -184,6 +184,11 @@ SACK选项
 
 ![](../../.gitbook/assets/sack1.png)
 
+sack 选项要和ack 同时使用， 才能达到表示不连续数据块的意思
+
+首先ack 表示了希望再接受的字节序开始， sack 还有left 和right， left 和right 之间表示的是已经收到的连续的数据段[left, right-1] 闭区间
+所以第一个没收到的数据段是 ack 到第一个left-1
+
 
 ## TCP 的交互数据流
 
