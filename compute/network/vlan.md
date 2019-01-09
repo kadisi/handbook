@@ -126,6 +126,12 @@ vlan 设备下可以再绑定macvlan bridge
 
 PVID并不是加在帧头的标记，而是端口的属性，用来标识端口接收到的未标记的帧
 
+# 引用
+
+https://blog.csdn.net/phunxm/article/details/9498829
+
+
+
 
 
 
