@@ -60,3 +60,141 @@ IP forwarding involves transferring packets between network interfaces (real or 
 
 IP forward 包括了 数据包在网络接口之间的传输， 因此我认为如果你有两个物理接口 但是具有相同的网络， 你不得不开启ip forward 来允许数据包在这接口中的传递， 然而 因为接口是在相同的网络下， 因此他们之间的数据包传送没啥意义
 
+# ip route 命令
+
+在linux 系统中， 内核会为路由策略数据库配置三条缺省的规则：
+
+* 0 匹配任何条件， 查询路由表 local 路由表local 是一个特殊的路由表， 包含本地和广播地址的高级优先级路由
+
+* 32766 匹配任何条件  查询路由表 main， 路由表main 是一个通常的表，正常我们通过ip route show 命令， 查看的都是看的这张表， 包含所有无策略路由， 系统关系源可以删除或者使用另外规则覆盖
+
+* 32767 匹配任何条件， 查询路由表 default， 路由表default 是一个空表， 为后续的操作保留的。
+
+举例， 查询local 路由表规则
+
+```
+[root@172.20.7.99 ~]# ip route show table local
+broadcast 127.0.0.0 dev lo proto kernel scope link src 127.0.0.1
+local 127.0.0.0/8 dev lo proto kernel scope host src 127.0.0.1
+local 127.0.0.1 dev lo proto kernel scope host src 127.0.0.1
+broadcast 127.255.255.255 dev lo proto kernel scope link src 127.0.0.1
+broadcast 172.20.7.0 dev fake proto kernel scope link src 172.20.7.99
+local 172.20.7.99 dev fake proto kernel scope host src 172.20.7.99
+broadcast 172.20.7.255 dev fake proto kernel scope link src 172.20.7.99
+```
+
+
+默认 查看main 路由表
+
+```
+[root@172.20.7.99 ~]# ip route
+default via 172.20.7.254 dev fake
+172.20.7.0/24 dev fake proto kernel scope link src 172.20.7.99
+```
+
+或者 
+
+```
+[root@172.20.7.99 ~]# ip route show table main
+default via 172.20.7.254 dev fake
+172.20.7.0/24 dev fake proto kernel scope link src 172.20.7.99
+```
+
+## ip route 的scope link 含义
+
+scope 不写时候， 默认是 global
+
+```
+scope value 
+      the scope of the destinations covered by the route prefix.  SCOPE_VAL may be a number or a
+      string from the file /etc/iproute2/rt_scopes.  
+	  If this parameter is omitted, ip assumes scope global for all gatewayed unicast routes
+	  scope link for direct unicast and broadcast routes
+      scope host for local routes.
+
+
+onlink pretend that the nexthop is directly attached to this link, even if it does not match any interface prefix.
+```
+
+简单点 scope link 可以代表是单播或者广播路由， 就是能够arp 到目标地址的， 意思就是说 目标地址 属于跟本地直连的二层链路上， 而不是垮三层。
+
+
+## ip route 的 proto kernel 含义
+
+proto 不写的时候， 默认是boot
+
+```
+ protocol RTPROTO
+                     the routing protocol identifier of this route.  RTPROTO may be a number or a string from the
+                     file /etc/iproute2/rt_protos.  If the routing protocol ID is not given, ip assumes protocol
+                     boot (i.e. it assumes the route was added by someone who doesn't understand what they are
+                     doing). Several protocol values have a fixed interpretation.  Namely:
+
+                             redirect - the route was installed due to an ICMP redirect.
+
+                             kernel - the route was installed by the kernel during autoconfiguration.
+
+                             boot - the route was installed during the bootup sequence.  If a routing daemon starts,
+                             it will purge all of them.
+
+                             static - the route was installed by the administrator to override dynamic routing.
+                             Routing daemon will respect them and, probably, even advertise them to its peers.
+
+                             ra - the route was installed by Router Discovery protocol.
+
+                     The rest of the values are not reserved and the administrator is free to assign (or not to
+                     assign) protocol tags.
+
+```
+
+
+
+# linux 系统配置rp_filter
+
+rp_filter reserve path filter, 参数用于控制系统是否开启对数据包源地址校验。
+
+```
+0：不开启源地址校验。
+1：开启严格的反向路径校验。对每个进来的数据包，校验其反向路径是否是最佳路径。如果反向路径不是最佳路径，则直接丢弃该数据包。
+
+2：开启松散的反向路径校验。对每个进来的数据包，校验其源地址是否可达，即反向路径是否能通（通过任意网口），如果反向路径不同，则直接丢弃该数据包。
+```
+
+举例
+```
+[root@172.20.7.99 ~]# sysctl net.ipv4 |grep -v arp_filter |grep rp_filter
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.eth0.rp_filter = 1
+net.ipv4.conf.fake.rp_filter = 1
+net.ipv4.conf.lo.rp_filter = 0
+```
+
+# linux 系统配置 arp_filter
+
+arp_filter 的表兄弟就是 rp_filter
+
+```
+arp_filter - BOOLEAN
+	1 - Allows you to have multiple network interfaces on the same
+	subnet, and have the ARPs for each interface be answered
+	based on whether or not the kernel would route a packet from
+	the ARP'd IP out that interface (therefore you must use source
+	based routing for this to work). In other words it allows control
+	of which cards (usually 1) will respond to an arp request.
+	
+	0 - (default) The kernel can respond to arp requests with addresses
+	from other interfaces. This may seem wrong but it usually makes
+	sense, because it increases the chance of successful communication.
+	IP addresses are owned by the complete host on Linux, not by
+	particular interfaces. Only for more complex setups like load-
+	balancing, does this behaviour cause problems.
+	
+	arp_filter for the interface will be enabled if at least one of
+	conf/{all,interface}/arp_filter is set to TRUE,
+	it will be disabled otherwise
+```
+
+当一台机器有多个位于同一个网段中的网卡， 每个网卡都有各自IP， 是否允许把一个网卡的mac 地址作为对另一个网卡的arp 请求回应
+
+默认为0 表示允许， 这样即使一块网卡故障了， 报文可以被另一个网卡接受
