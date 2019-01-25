@@ -4,6 +4,12 @@ description: 手记 -- 博客
 
 # 手记
 
+# git hub work flow 例子
+
+git remote add upstream git@github.com:kubernetes/kubernetes.git
+
+git remote set-url --push upstream no_push
+
 ## 通用标题
 
 Becoming a super hero is a fairly straight forward process:
