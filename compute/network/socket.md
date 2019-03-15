@@ -179,7 +179,7 @@ pid_t waitpid(pid_t pid, int *statloc, int options)
 
 函数wait 和waitpid 均返回两个值： 已终止子进程的进程ID号， 以及通过statloc 指针返回的子进程终止状态（一个整数） 我们可以调用三个宏来检查终止状态。并辨别子进程是正常终止， 由某个信号杀死 还是仅仅由作业控制停止而已。
 
-如果调用wait 的进程没有已经终止的子进程， 不过有一个或者多个子进程扔在执行， 那么wait 将阻塞到现有子进程第一个终止为止。 注意  **wait 是阻塞的**  ~~~
+如果调用wait 的进程没有已经终止的子进程， 不过有一个或者多个子进程扔在执行， 那么wait 将阻塞到现有子进程第一个终止为止。 注意 **wait 是阻塞的** ~~~
 
 waitpid 函数就会等待哪个进程以及是否阻塞给了我们更多的控制， （ **因为waitpid 有三个参数， 第三个参数可以指明是否阻塞**） 首先pid 参数允许我们制定想等待的进程ID， 如果值是-1 ，则表示等待第一个终止的子进程。 其次options 参数允许我们制定附加选项， 最常用的是 `WHOHANG`, 它告知内核在没有已终止子进程时候不要阻塞。
 
@@ -193,44 +193,38 @@ waitpid 函数就会等待哪个进程以及是否阻塞给了我们更多的控
 
 类似于前一节 中介绍的被终端系统调用的例子， 另有一种情形也能够导致accept 返回一个非致命的错误， 在这种情况下， 只需要再次调用accept
 
-
 ## close 和shutdown区别
 
 首先 1 关于引用计数问题
 
 close 只是关闭本进程的socket id， 但是连接不一定能关闭， 如果这个socket id 在多个进程中共享，只有这个socket id 的引用计数 为0 时候， 才会关闭socket 连接， TCP 发送FIN 包， 正常close 后， socket id 的引用计数会变为1
 
-
 shutdown 不管引用计数的问题， 只要执行了shutdown， socket 就会执行tcp 断开连接的第一步， 发送FIN 包
 
 当close 和shutdown 在最后断开TCP连接时候， 内核的默认行为是发送 套接字发送队列的原始数据以及 close 产生的FIN 标记， 如果发送队列没有残留之前的数据， 那么这个FIN 标记将单独产生一个新数据包， 发送出去。
 
-但是执行close 的区别在于， 执行完close 后， 会销毁这个套接字接口， 这样当函数close 返回后，即使 实际上是内核发送了FIN 包， 会进入FIN_WAIT1, 状态， 这时候，如果对端继续给他发送数据， tcp 协议栈会返回一个RST 包， 强制让对端发送FIN 包， 关闭对端的tcp 发送端。
-
-
+但是执行close 的区别在于， 执行完close 后， 会销毁这个套接字接口， 这样当函数close 返回后，即使 实际上是内核发送了FIN 包， 会进入FIN\_WAIT1, 状态， 这时候，如果对端继续给他发送数据， tcp 协议栈会返回一个RST 包， 强制让对端发送FIN 包， 关闭对端的tcp 发送端。
 
 其次， 关于TCP 双向断开连接的问题
 
+shutdown 函数根据参数的区别， 更够很优雅的关闭tcp连接，
 
-shutdown 函数根据参数的区别， 更够很优雅的关闭tcp连接， 
-
-```
+```text
 int shutdown(int socket, int how);
 
 how
-	Specifies the type of shutdown. The values are as follows:
+    Specifies the type of shutdown. The values are as follows:
 SHUT_RD
-	Disables further receive operations.
+    Disables further receive operations.
 SHUT_WR
-	Disables further send operations.
+    Disables further send operations.
 SHUT_RDWR
-	Disables further send and receive operations.
-
+    Disables further send and receive operations.
 ```
 
-SHUT_RD 代表了， 不允许读数据， 经过测试，实际上内核不会发送FIN 包， 接受队列里也会接受 对端发送的数据 只是这些数据不会传给用户态
+SHUT\_RD 代表了， 不允许读数据， 经过测试，实际上内核不会发送FIN 包， 接受队列里也会接受 对端发送的数据 只是这些数据不会传给用户态
 
+SHUT\_WR 代表了优雅的关闭TCP连接， 发送FIN 包， 这时候就不允许再发送数据了， 但是接受队列可以接受对端发送的数据， 同时这些数据也可以传给用户态
 
-SHUT_WR  代表了优雅的关闭TCP连接， 发送FIN 包， 这时候就不允许再发送数据了， 但是接受队列可以接受对端发送的数据， 同时这些数据也可以传给用户态
+SHUT\_RDWR 则就和close 效果一样了， 发送FIN 包， 如果对端还发送数据， 会发送RST 包， 让对端也发送FIN包
 
-SHUT_RDWR 则就和close 效果一样了， 发送FIN 包， 如果对端还发送数据， 会发送RST 包， 让对端也发送FIN包 

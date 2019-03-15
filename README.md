@@ -4,13 +4,15 @@ description: 手记 -- 博客
 
 # 手记
 
-# git hub work flow 例子
+## 手记
+
+## git hub work flow 例子
 
 git remote add upstream git@github.com:kubernetes/kubernetes.git
 
-git remote set-url --push upstream no_push
+git remote set-url --push upstream no\_push
 
-## 通用标题
+### 通用标题
 
 Becoming a super hero is a fairly straight forward process:
 
@@ -19,40 +21,38 @@ $ give me super-powers
 ```
 
 {% hint style="info" %}
- Super-powers are granted randomly so please submit an issue if you're not happy with yours.
+Super-powers are granted randomly so please submit an issue if you're not happy with yours.
 {% endhint %}
 
 Once you're strong enough, save the world:
 
-```
+```text
 // Ain't no code for that yet, sorry
 echo 'You got to trust me on this, I saved the world'
 ```
 
+### list
 
-
-## list
-
-### bulleted list
+#### bulleted list
 
 * list1
 * list2
 * list3
 
-### orderd list
+#### orderd list
 
 1. list1
 2. list2
 3. list3
 
-### task list
+#### task list
 
 * [ ] task1
 * [ ] task2
 * [ ] task3
 * [ ] task4
 
-## quoto
+### quoto
 
 > sdfsdf
 >
@@ -62,28 +62,28 @@ echo 'You got to trust me on this, I saved the world'
 >
 > sf
 
-### Image
+#### Image
 
 ![](.gitbook/assets/image%20%2819%29.png)
 
-### table
+#### table
 
 | title1 | title2 | title3 |
 | :--- | :---: | ---: |
 | ccc | ccc | ccc |
 | ccc | ccc | ccc |
 
-### page link
+#### page link
 
 {% page-ref page="./" %}
 
-### hint
+#### hint
 
 {% hint style="info" %}
 sdfsdfsdfsfsfssdf
 {% endhint %}
 
-### api method
+#### api method
 
 {% api-method method="get" host="" path="" %}
 {% api-method-summary %}
@@ -109,7 +109,7 @@ get tokens
 
 {% endapi-method-response-example-description %}
 
-```
+```text
 
 ```
 {% endapi-method-response-example %}
@@ -117,7 +117,7 @@ get tokens
 {% endapi-method-spec %}
 {% endapi-method %}
 
-### tabs
+#### tabs
 
 {% tabs %}
 {% tab title="First Tab" %}
@@ -133,25 +133,23 @@ bbbbb
 {% endtab %}
 {% endtabs %}
 
-### files
+#### files
 
 {% file src=".gitbook/assets/image \(33\).png" %}
 
-
-
-### bold 黑体
+#### bold 黑体
 
 **sdfsfdsf**
 
 \*\*\*\*
 
-### 斜线
+#### 斜线
 
 _sdfsfsfsfss_
 
 \_\_
 
-### 删除线
+#### 删除线
 
 ~~sdfsdfsfdfsdf~~
 

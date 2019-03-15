@@ -25,7 +25,7 @@ const (
 
 自增长常量经常包含一个自定义枚举类型，允许你依靠编译器完成自增设置。
 
-```text
+```go
 type Stereotype int
 
 const ( 

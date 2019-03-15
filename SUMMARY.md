@@ -91,7 +91,7 @@
 
 ## work
 
-* [问题](work/wen-ti/README.md)
+* [问题](work/wen-ti.md)
 
 ## code analyze
 

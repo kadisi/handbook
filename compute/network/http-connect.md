@@ -1,4 +1,4 @@
-# http1
+# http connect
 
 ## http 链接
 
@@ -15,7 +15,7 @@
 TCP/IP协议模型（Transmission Control Protocol/Internet Protocol），包含了一系列构成互联网基础的网络协议，是Internet的核心协议，通过20多年的发展已日渐成熟，并被广泛应用于局域网和广域网中，目前已成为事实上的国际标准。TCP/IP协议簇是一组不同层次上的多个协议的组合，通常被认为是一个四层协议系统，与OSI的七层模型相对应。
 
 HTTP协议就是基于TCP/IP协议模型来传输信息的。  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-e533b0cdd7fca359.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/590/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-e533b0cdd7fca359.png?imageMogr2/auto-orient/strip|imageView2/2/w/590/format/webp)
 
 \(1\). 链路层
 
@@ -41,22 +41,22 @@ UDP则为应用层提供一种非常简单的服务。它只是把称作数据�
 \(4\). 应用层
 
 应用层决定了向用户提供应用服务时通信的活动。TCP/IP 协议族内预存了各类通用的应用服务。包括 HTTP，FTP（File Transfer Protocol，文件传输协议），DNS（Domain Name System，域名系统）服务。  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-1891c256487e9d85.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/757/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-1891c256487e9d85.png?imageMogr2/auto-orient/strip|imageView2/2/w/757/format/webp)
 
-当应用程序用TCP传送数据时，数据被送入协议栈中，然后逐个通过每一层直到被当作一串比特流送入网络。其中每一层对收到的数据都要增加一些首部信息（有时还要增加尾部信息），该过程如图所示。![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-5d534a249b4825a9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/780/format/webp)
+当应用程序用TCP传送数据时，数据被送入协议栈中，然后逐个通过每一层直到被当作一串比特流送入网络。其中每一层对收到的数据都要增加一些首部信息（有时还要增加尾部信息），该过程如图所示。![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-5d534a249b4825a9.png?imageMogr2/auto-orient/strip|imageView2/2/w/780/format/webp)
 
 当目的主机收到一个以太网数据帧时，数据就开始从协议栈中由底向上升，同时去掉各层协议加上的报文首部。每层协议盒都要去检查报文首部中的协议标识，以确定接收数据的上层协议。这个过程称作分用（Demultiplexing）。协议是通过目的端口号、源I P地址和源端口号进行解包的。
 
 通过以上步骤我们从TCP/IP模型的角度来理解了一次HTTP请求与响应的过程。
 
-下面这张图更清楚明白：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-ecf824604debcdf1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/671/format/webp)
+下面这张图更清楚明白：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-ecf824604debcdf1.png?imageMogr2/auto-orient/strip|imageView2/2/w/671/format/webp)
 
 下面具体来看如何进行一步步操作的。
 
 #### 三、TCP三次握手
 
 TCP是面向连接的，无论哪一方向另一方发送数据之前，都必须先在双方之间建立一条连接。在TCP/IP协议中，TCP协议提供可靠的连接服务，连接是通过三次握手进行初始化的。三次握手的目的是同步连接双方的序列号和确认号并交换 TCP窗口大小信息。  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-f2fe3775bd2678c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/656/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-f2fe3775bd2678c2.png?imageMogr2/auto-orient/strip|imageView2/2/w/656/format/webp)
 
 第一次握手：建立连接。客户端发送连接请求报文段，将SYN位置为1，Sequence Number为x；然后，客户端进入SYN\_SEND状态，等待服务器的确认；
 
@@ -100,7 +100,7 @@ HTTP报文是面向文本的，报文中的每一个字段都是一些ASCII码�
 #### 五、HTTP请求报文
 
 一个HTTP请求报文由请求行（request line）、请求头部（header）、空行和请求数据4个部分组成，下图给出了请求报文的一般格式。  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-cd59a3899ef546e1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/466/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-cd59a3899ef546e1.png?imageMogr2/auto-orient/strip|imageView2/2/w/466/format/webp)
 
 **1.请求行**
 
@@ -121,7 +121,7 @@ URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 **端口和路径有时可以省略（HTTP默认端口号是80）**
 
 如下例：  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-54ce5eca048253be.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/725/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-54ce5eca048253be.png?imageMogr2/auto-orient/strip|imageView2/2/w/725/format/webp)
 
 有时会带参数，GET请求
 
@@ -134,7 +134,7 @@ URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 请求头部为请求报文添加了一些附加信息，由“名/值”对组成，每行一对，名和值之间使用冒号分隔。
 
 常见请求头如下：  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-539378eee14fa322.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/593/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-539378eee14fa322.png?imageMogr2/auto-orient/strip|imageView2/2/w/593/format/webp)
 
 请求头部的最后会有一个空行，表示请求头部结束，接下来为请求数据，这一行非常重要，必不可少。
 
@@ -159,7 +159,7 @@ URL:统一资源定位符，是一种自愿位置的抽象唯一识别方法。
 
 #### 六、HTTP响应报文
 
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-c6ee8f8526f59fc0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/480/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-c6ee8f8526f59fc0.png?imageMogr2/auto-orient/strip|imageView2/2/w/480/format/webp)
 
 HTTP响应报文主要由状态行、响应头部、空行以及响应数据组成。
 
@@ -178,13 +178,13 @@ HTTP响应报文主要由状态行、响应头部、空行以及响应数据组�
 4xx：客户端错误--请求有语法错误或请求无法实现。  
 5xx：服务器端错误--服务器未能实现合法的请求。
 
-下面列举几个常见的：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-8f3bf059bc4365e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/609/format/webp)
+下面列举几个常见的：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-8f3bf059bc4365e3.png?imageMogr2/auto-orient/strip|imageView2/2/w/609/format/webp)
 
 **2.响应头部**
 
 与请求头部类似，为响应报文添加了一些附加信息
 
-常见响应头部如下：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-33ed95479f541a07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600/format/webp)
+常见响应头部如下：![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-33ed95479f541a07.png?imageMogr2/auto-orient/strip|imageView2/2/w/600/format/webp)
 
 **3.响应数据**
 
@@ -223,7 +223,7 @@ Content-Type: text/html; charset=utf-8
 #### 七、TCP四次挥手
 
 当客户端和服务器通过三次握手建立了TCP连接以后，当数据传送完毕，肯定是要断开TCP连接的啊。那对于TCP的断开连接，这里就有了神秘的“四次分手”。  
-![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-c1c59148f8b26c43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/691/format/webp)
+![](https://github.com/kadisi/handbook/tree/2a1a6b26af1066aa3ee9376d140657da53c7d211/upload-images.jianshu.io/upload_images/3985563-c1c59148f8b26c43.png?imageMogr2/auto-orient/strip|imageView2/2/w/691/format/webp)
 
 第一次分手：主机1（可以使客户端，也可以是服务器端），设置Sequence Number，向主机2发送一个FIN报文段；此时，主机1进入FIN\_WAIT\_1状态；这表示主机1没有数据要发送给主机2了；
 
@@ -388,7 +388,7 @@ SSL/TLS在通信中主要有双向认证和单向认证，其原理基本差不�
 
 SSL/TLS在通信中主要有双向认证和单向认证，其原理基本差不多，单向认证中客户端会认证服务器端身份，服务器端不对客户端进行认证 ，双向认证要求客户端和服务端都会互相认证，即双发之间要证书交换 ，具体如下：
 
-#### 一、SSL协议加密方式  <a id="&#x4E09;ssl&#x534F;&#x8BAE;&#x52A0;&#x5BC6;&#x65B9;&#x5F0F;"></a>
+#### 一、SSL协议加密方式   <a id="&#x4E09;ssl&#x534F;&#x8BAE;&#x52A0;&#x5BC6;&#x65B9;&#x5F0F;"></a>
 
 SSL协议即用到了对称加密也用到了非对称加密\(公钥加密\)，在建立传输链路时，SSL首先对对称加密的密钥使用公钥进行非对称加密，链路建立好之后，SSL对传输内容使用对称加密。
 
@@ -400,7 +400,7 @@ SSL协议即用到了对称加密也用到了非对称加密\(公钥加密\)，�
 
    加密速度较慢，但能提供更好的身份认证技术，用来加密对称加密的密钥
 
-#### 二、单向认证  <a id="&#x56DB;&#x5355;&#x5411;&#x8BA4;&#x8BC1;"></a>
+#### 二、单向认证   <a id="&#x56DB;&#x5355;&#x5411;&#x8BA4;&#x8BC1;"></a>
 
 Https在建立Socket连接之前，需要进行握手，具体过程如下：
 
@@ -425,7 +425,7 @@ Https在建立Socket连接之前，需要进行握手，具体过程如下：
 
    在接下来的会话中，服务器和客户端将会使用该密码进行对称加密，保证通信过程中信息的安全。
 
-#### 三、双向认证  <a id="&#x4E94;&#x53CC;&#x5411;&#x8BA4;&#x8BC1;"></a>
+#### 三、双向认证   <a id="&#x4E94;&#x53CC;&#x5411;&#x8BA4;&#x8BC1;"></a>
 
 双向认证和单向认证原理基本差不多，只是除了客户端需要认证服务端以外，增加了服务端对客户端的认证，具体过程如下：
 
