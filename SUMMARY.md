@@ -66,6 +66,7 @@
 ## language
 
 * [golang](language/golang/README.md)
+  * [基础](language/golang/base.md)
   * [垃圾回收](language/golang/gc.md)
   * [内存管理](language/golang/golang-memory-manager.md)
   * [unsafe.Pointer](language/golang/unsafe.pointer.md)
