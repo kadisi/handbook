@@ -1,4 +1,4 @@
-#
+# 基础
 里面的结果可能会出现编译错误
 
 ## slice 
@@ -671,7 +671,8 @@ recover
 panic: i am dead
 
 
-解析： panic 会导致当前协程退出，但是退出前， 会执行所有的延迟调用defer
+解析： panic 如果在defer 中没遇到recover， 会导致当前进程退出，但是退出前， 会执行所有的延迟调用defer
+注意， panic 会导致进程退出， 而不是单纯协程
 ```
 
 
