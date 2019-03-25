@@ -966,6 +966,10 @@ map 的初始化需要用make 去初始化， golang 中有三种引用类型 sl
 ```go
 map 2.求输出结果
 
+type user struct {
+	Age int
+}
+
 func main() {
 	A := make(map[int]user)
 	A[1] = user{Age: 1}
