@@ -1051,6 +1051,104 @@ func main() {
 fatal error: all goroutines are asleep - deadlock!
 ```
 
+```go
+求输出结果
+
+func test() bool {
+	return true
+}
+func main() {
+
+	ticker := time.NewTicker(time.Second * 2)
+	stop := make(chan struct{})
+	go func() {
+		time.Sleep(time.Second * 5)
+		stop <- struct{}{}
+	}()
+
+	defer func() {
+		fmt.Println("defer here")
+	}()
+
+	for test() {
+		select {
+			case <-ticker.C:
+				fmt.Println("time here")
+			case <-stop:
+				fmt.Println("receive stop single")
+				break
+		}
+	}
+	fmt.Println("main end")
+}
+
+
+
+结果:
+
+time here
+time here
+receive stop single
+time here
+time here
+time here
+.
+.
+.
+time here 最后会无限循环
+
+解析： 本题主要考察select 里的break 是跳出select 而不是for 循环
+```
+
+
+```go
+
+求输出结果
+
+func test() bool {
+	return true
+}
+func main() {
+
+	ticker := time.NewTicker(time.Second * 2)
+	stop := make(chan struct{})
+	go func() {
+		time.Sleep(time.Second * 5)
+		stop <- struct{}{}
+	}()
+
+	defer func() {
+		fmt.Println("defer here")
+	}()
+
+	loop:
+	for test() {
+		select {
+			case <-ticker.C:
+				fmt.Println("time here")
+			case <-stop:
+				fmt.Println("receive stop single")
+				break loop
+		}
+	}
+	fmt.Println("main end")
+}
+
+
+
+结果：
+time here
+time here
+receive stop single
+main end
+defer here
+
+
+解析： break loop 后会直接跳到loop 所在的位置， 但是loop 下一行的for 循环不执行
+这个做法解决了， for 和select 配合使用时候， 用break 直接跳出for 循环的问题
+
+```
+
 ## make
 
 
