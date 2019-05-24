@@ -585,6 +585,8 @@ func main() {
 
 
 解析: 如果中断iota， 则必须显示恢复，切后续自增值按照行序递增
+如果 iota 中间出现插队的情况，那么后续的值会使用插队的值：直到重新遇到iota
+
 ```
 
 
@@ -612,6 +614,176 @@ func main() {
 1
 10
 100
+
+```
+
+```go
+
+求输出结果：
+
+const (
+	a = iota
+	b = iota
+)
+const (
+	c    = iota
+	d    = iota
+)
+func main() {
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+}
+
+
+
+
+结果：
+0
+1
+0
+1
+
+
+解析：
+
+iota 是代表常量生成器， iota 代表了下一行的自增值， 默认情况下， 不打断的情况下iota 没增加一行， 会+1
+
+iota 只能在常量表达式const 中使用。
+
+iota 可以这么理解： iota 只能在const 表达式里起作用， 它代表了const 表达式里的行索引， 因此不管iota 在const 表达式里第几行出现 , 还是在同一个const 表达式里出现几次， 都代表了行索引
+
+```
+
+
+
+```go
+求输出结果：
+
+const (
+	a = iota
+	b = iota
+)
+const (
+	te = "ttt"
+	c = iota
+	d = iota
+)
+func main() {
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+}
+
+
+
+
+结果：
+0
+1
+1
+2
+
+iota 在每个const 中起作用。 代表const 里的行索引， 因此a = 0 b = 1
+在第二个const 中， 虽然iota 是从第二行， c 开始的， 但是c 所在的是第二行， 索引所以是1， d 第三行 索引是2
+```
+
+
+
+
+```go
+
+求输出结果：
+const (
+	a = iota
+	b = iota
+)
+const (
+	t1 = "ttt"
+	t2 = "ttt"
+	c = iota
+	d = iota
+)
+func main() {
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+}
+
+
+
+
+结果：
+0
+1
+2
+3
+
+
+解析： iota 代表每个const 的行索引。第二个const 里， c 是第三行， 索引是2 ， d 是第四行， 索引是3
+
+```
+
+
+```go
+求输出结果：
+
+const (
+	a = iota
+	b = iota
+)
+const (
+	t1 = "ttt"
+	c
+	d = iota
+)
+func main() {
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+}
+
+
+
+结果：
+0
+1
+ttt
+2
+
+
+解析：在第二个const中， 由于c 没用任何赋值， 因此默认沿袭上面一行的值， 所以是ttt， d 代表了const 的行索引， 是第三行， 索引是2
+
+
+```
+
+
+```go
+求输出结果：
+
+const (
+	t1 = "ttt"
+	c
+)
+func main() {
+	fmt.Println(c)
+}
+
+
+
+
+
+结果：
+ttt
+
+
+
+
+解析:c 没有做任何赋值， 沿袭上一行的值
 
 ```
 
